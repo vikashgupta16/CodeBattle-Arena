@@ -1,0 +1,8 @@
+# Ignore the env files
+.env/
+
+# Ignore any node_modules
+node_modules/
+
+# Ignore configs
+.vscode/
