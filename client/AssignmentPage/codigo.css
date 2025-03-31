@@ -1,0 +1,156 @@
+.codingPageNav {
+    width: 100%;
+    height: 60px;
+    background-color: #1e1e1e; 
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    padding: 0 20px;
+    transition: all 0.3s ease-in-out;
+}
+
+.codingPageNav ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.codingPageNav li {
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.nav-link {
+    font-size: 0.94rem;
+    padding: 4px 8px;
+    border-radius: 0.2rem;
+    color: #e0e0e0; 
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: #00ff00; 
+    background: rgba(255, 255, 255, 0.1);
+    transition: 0.3s all linear;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #0d1117; 
+    color: #e0e0e0; 
+}
+
+p {
+    font-size: 1.2rem;
+    color: #d4d4d4;
+    margin-top: 80px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.coding-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 40px;
+    flex-wrap: wrap;
+}
+
+.language-box {
+    width: 300px;
+    padding: 20px;
+    background-color: #21262d; 
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.language-box:hover {
+    transform: translateY(-5px);
+}
+
+.c-box {
+    border-top: 4px solid #539bf5; 
+}
+
+.cpp-box {
+    border-top: 4px solid #f34f29; 
+}
+
+.language-box h3 {
+    margin: 0 0 15px 0;
+    color: #ffffff;
+}
+
+.language-box p {
+    margin: 0 0 15px 0;
+    font-size: 1rem;
+    color: #c9d1d9;
+}
+
+.language-box ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 0 0 20px 0;
+    color: #c9d1d9;
+}
+
+.language-box li {
+    margin: 5px 0;
+}
+
+.practice-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #238636; 
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.practice-btn:hover {
+    background-color: #2ea043;
+}
+
+
+
+.help-section {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #21262d;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.help-section h3 {
+    color: #ffffff;
+    margin: 0 0 15px 0;
+}
+
+.help-section p {
+    color: #c9d1d9;
+    font-size: 1rem;
+    margin: 0;
+}
