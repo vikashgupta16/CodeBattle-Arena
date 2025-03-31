@@ -16,8 +16,8 @@
     "dotenv",
     "http"
   ],
-  "author": "Rouvik_Maji Archis",
-  "license": "MIT",
+  "author": "Rouvik_Maji",
+  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/vikashgupta16/CodeBattle-Arena/issues"
   },
@@ -26,5 +26,6 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "ws": "^8.18.1"
-  }
+  },
+  "devDependencies": {}
 }
