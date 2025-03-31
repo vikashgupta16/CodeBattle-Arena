@@ -11,8 +11,20 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Subjectivity-bold';
+    src: url('fonts/subjectivity/Subjectivity/Subjectivity-Bold.otf') format('opentype'),
+         url('fonts/subjectivity/Subjectivity/Subjectivity-Bold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+}
+
 body {
     background-color: #191923;
+}
+
+main {
+    margin-top: -20px
 }
 
 .landingPageNavbar {
@@ -22,7 +34,7 @@ body {
     opacity: 0.6;
     border-radius: 66px;
     box-shadow: 0px 0px 17.7px 0px rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(40px);
     position: fixed;
     top: 20px;
     left: 5%;
@@ -91,3 +103,104 @@ body {
     scale: 0.95;
 }
 
+.hero-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    margin-top: 120px;
+}
+
+.hero-text p {
+    font-size: 1.2rem;
+    font-family: Poppins, sans-serif;
+    color: #e6e6e9;
+    text-align: center;
+    font-weight: 500;   
+}
+
+.hero-text img {
+    margin-top: 25px;
+}
+
+.cover-globe {
+    width: 100%;
+    height: 441px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    top: -60px;
+    overflow-y: hidden;
+}
+
+.cover-globe img {
+    width: 1024px;
+    height: auto;
+    display: block;
+    position: absolute;
+    /* top: -130px; */
+}
+
+.hero-desc {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: auto;
+    position: absolute;
+    top:390px;
+}
+
+.hero-desc p {
+    font-size: 1rem;
+    font-family: Poppins, sans-serif;
+    color: #e6e6e9;
+    text-align: center;
+    font-weight: 600;
+    line-height: 25px;
+}
+
+.hero-cta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 115px;
+    position: absolute;
+    top: 480px;
+}
+
+.hero-cta button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 280px;
+    height: 90px;
+    border: none;
+    border-radius: 124px;
+    /* background: url(assets/lets-dive-in-btn.png) no-repeat center center; */
+    /* background-size: cover; */
+    background: linear-gradient(to right, rgba(25, 25, 35, 1) 0%, rgba(58, 52, 82, 1) 44%, rgba(114, 97, 163, 1) 100%);
+    box-shadow: 0px 0px 10px 0px rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease-in-out;
+    font-family: poppins, sans-serif;
+    font-size: 1.5rem;
+    color: #e6e6e9;
+    font-weight: 600;
+}
+
+.hero-cta button:hover {
+    cursor: pointer;
+    scale: 1.05;
+    box-shadow: 0px 0px 17.7px 0px rgba(255, 255, 255, 0.55);
+}
+
+.hero-cta a{
+    text-decoration: none;
+}
