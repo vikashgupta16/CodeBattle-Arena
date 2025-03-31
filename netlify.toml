@@ -1,0 +1,9 @@
+[functions]
+    directory = "server/functions"
+    node_bundler = "esbuild"
+    external_node_modules = ["express", "ws", "serverless-http", "dotenv"]
+
+[[redirects]]
+    from = "/*"
+    to = "/.netlify/functions/index/:splat"
+    status = 200

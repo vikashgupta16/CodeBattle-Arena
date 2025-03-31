@@ -1,8 +1,8 @@
 {
-  "name": "server",
+  "name": "codebattlearena",
   "version": "1.0.0",
-  "description": "The server side package for this project",
-  "main": "index.js",
+  "description": "Main package to handle servers",
+  "main": "server/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,13 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/vikashgupta16/CodeBattle-Arena.git"
   },
-  "keywords": [
-    "express",
-    "ws",
-    "dotenv",
-    "http"
-  ],
-  "author": "Rouvik_Maji",
+  "author": "Rouvik Maji",
   "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/vikashgupta16/CodeBattle-Arena/issues"
@@ -25,7 +19,7 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "serverless-http": "^3.2.0",
     "ws": "^8.18.1"
-  },
-  "devDependencies": {}
+  }
 }
