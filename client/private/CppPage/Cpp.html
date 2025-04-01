@@ -55,19 +55,46 @@
 
     <script>
         const challenges = {
-            beginner: [
-                { title: "Basic Input/Output", description: "Write a program that takes a user's name and age as input and prints a greeting message.", link: "cComp.html?assignment=basic_io" },
-                { title: "Simple Calculator", description: "Create a basic calculator that performs addition, subtraction, multiplication, and division.", link: "cComp.html?assignment=calculator" }
-            ],
-            intermediate: [
-                { title: "Array Manipulation", description: "Implement a program that takes an array of integers and returns the sum of all even numbers.", link: "cComp.html?assignment=array_sum" },
-                { title: "String Reversal", description: "Write a program that reverses a given string without using built-in functions.", link: "cComp.html?assignment=string_reverse" }
-            ],
-            expert: [
-                { title: "Dynamic Memory Allocation", description: "Write a program that dynamically allocates memory for an array of n integers, fills it with user input, and sorts it in ascending order.", link: "cComp.html?assignment=memory_alloc" },
-                { title: "Multi-threading in C", description: "Implement a program that creates multiple threads, each performing a different mathematical operation on shared data.", link: "cComp.html?assignment=multi_threading" }
-            ]
-        };
+    beginner: [
+        { title: "Basic Input/Output", description: "Write a program that takes a user's name and age as input and prints a greeting message.", link: "cComp.html?assignment=basic_io" },
+        { title: "Simple Calculator", description: "Create a basic calculator that performs addition, subtraction, multiplication, and division.", link: "cComp.html?assignment=calculator" },
+        { title: "Even or Odd", description: "Write a program that checks if a number is even or odd.", link: "cComp.html?assignment=even_odd" },
+        { title: "Factorial Calculation", description: "Compute the factorial of a given number using a loop.", link: "cComp.html?assignment=factorial" },
+        { title: "Prime Number Checker", description: "Determine if a number is prime.", link: "cComp.html?assignment=prime_check" },
+        { title: "Fibonacci Sequence", description: "Print the first N numbers in the Fibonacci sequence.", link: "cComp.html?assignment=fibonacci" },
+        { title: "Swap Two Numbers", description: "Swap two numbers without using a third variable.", link: "cComp.html?assignment=swap_numbers" },
+        { title: "Sum of Digits", description: "Calculate the sum of digits of a given number.", link: "cComp.html?assignment=sum_digits" },
+        { title: "Reverse a Number", description: "Reverse the digits of a given number.", link: "cComp.html?assignment=reverse_number" },
+        { title: "Leap Year Checker", description: "Check whether a given year is a leap year.", link: "cComp.html?assignment=leap_year" }
+    ],
+    
+    intermediate: [
+        { title: "Array Manipulation", description: "Implement a program that takes an array of integers and returns the sum of all even numbers.", link: "cComp.html?assignment=array_sum" },
+        { title: "String Reversal", description: "Write a program that reverses a given string without using built-in functions.", link: "cComp.html?assignment=string_reverse" },
+        { title: "Palindrome Checker", description: "Check if a given string or number is a palindrome.", link: "cComp.html?assignment=palindrome" },
+        { title: "Matrix Multiplication", description: "Multiply two matrices and display the result.", link: "cComp.html?assignment=matrix_multiplication" },
+        { title: "Bubble Sort Algorithm", description: "Implement bubble sort on an array of integers.", link: "cComp.html?assignment=bubble_sort" },
+        { title: "Binary Search", description: "Implement binary search on a sorted array.", link: "cComp.html?assignment=binary_search" },
+        { title: "Counting Vowels & Consonants", description: "Count vowels and consonants in a string.", link: "cComp.html?assignment=count_vowels" },
+        { title: "Greatest Common Divisor (GCD)", description: "Find the GCD of two numbers.", link: "cComp.html?assignment=gcd" },
+        { title: "Power Function", description: "Write a program to calculate x^y without using built-in functions.", link: "cComp.html?assignment=power_function" },
+        { title: "Armstrong Number", description: "Check if a given number is an Armstrong number.", link: "cComp.html?assignment=armstrong_number" }
+    ],
+    
+    expert: [
+        { title: "Dynamic Memory Allocation", description: "Write a program that dynamically allocates memory for an array of n integers, fills it with user input, and sorts it in ascending order.", link: "cComp.html?assignment=memory_alloc" },
+        { title: "Multi-threading in C", description: "Implement a program that creates multiple threads, each performing a different mathematical operation on shared data.", link: "cComp.html?assignment=multi_threading" },
+        { title: "Graph Traversal (BFS & DFS)", description: "Implement breadth-first search (BFS) and depth-first search (DFS) for a graph.", link: "cComp.html?assignment=graph_traversal" },
+        { title: "Dijkstra’s Algorithm", description: "Find the shortest path between nodes in a graph using Dijkstra’s algorithm.", link: "cComp.html?assignment=dijkstra" },
+        { title: "Merge Sort", description: "Implement merge sort for an array of integers.", link: "cComp.html?assignment=merge_sort" },
+        { title: "File Handling", description: "Write a program that reads and writes data to a file.", link: "cComp.html?assignment=file_handling" },
+        { title: "Producer-Consumer Problem", description: "Implement the producer-consumer problem using multithreading.", link: "cComp.html?assignment=producer_consumer" },
+        { title: "Memory Leak Detection", description: "Write a program to check for memory leaks using malloc and free.", link: "cComp.html?assignment=memory_leak" },
+        { title: "LRU Cache Implementation", description: "Implement an LRU (Least Recently Used) Cache using linked lists.", link: "cComp.html?assignment=lru_cache" },
+        { title: "Binary Tree Operations", description: "Perform insert, delete, and traversal operations on a binary tree.", link: "cComp.html?assignment=binary_tree" }
+    ]
+};
+
 
         function showChallenges(level) {
             const container = document.getElementById("challenge-container");
