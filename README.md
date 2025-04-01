@@ -4,5 +4,5 @@ A simple practise project to create an online replica of sites like HackerRank w
 # Authors:
 [Rouvik Maji](https://github.com/Rouvik)
 [Archis](https://github.com/Dealer-09)
-[Vikas Gupta](https://github.com/vikashgupta16)
+[Vikash Gupta](https://github.com/vikashgupta16)
 [Rajbeer Saha](https://github.com/pixelpioneer404)
