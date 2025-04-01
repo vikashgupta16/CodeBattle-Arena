@@ -1,36 +1,139 @@
 .codingPageNav {
-    width: 100%;
-    height: 60px;
+    width: 13%;
+    height: 90%;
     /* background-color: #1e1e1e;  */
     background-color: #191923;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
-    display: flex;
+    display: none;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     position: fixed;
-    top: 0;
+    top: 5%;
+    left: 20px;
+    bottom: 5%;
     z-index: 10;
     padding: 0 20px;
     transition: all 0.3s ease-in-out;
+    border-radius: 30px;
+    translate: X(-100%);
+}
+
+.codingPageNav.show {
+    animation: slideIn 0.1s ease-in-out forwards;
+}
+
+.codingPageNav.hide {
+    animation: slideOut 0.1s ease-in-out forwards;
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+    
+}
+
+@keyframes slideOut {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-200%);
+    }
 }
 
 .codingPageNav ul {
     list-style-type: none;
     display: flex;
-    justify-content: space-around;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
+    height: 100%;
     margin: 0;
     padding: 0;
 }
 
-.codingPageNav li {
-    font-weight: bold;
+.codingPageNav li:last-child {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+}
+
+.codingPageNav li:last-child select {
+    text-align: center;
+    appearance: none;
+    margin-bottom: 25px;
+    width: 130px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    padding: 0 10px;
+    opacity: 0.5;
+    box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.5);
+    font-family: poppins, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    position: relative;
+    z-index: 0;
     cursor: pointer;
-    transition: color 0.3s;
+}
+
+.codingPageNav li:last-child a {
+    margin-bottom: 25px;
+    text-decoration: none;
+}
+
+.codingPageNav li:last-child button {
+    width: 130px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    opacity: 0.5;
+    box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.5);
+    font-family: poppins, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: black;
+    position: relative;
+    z-index: 0;
+    transition: background-color 0.3s linear, cursor 0.3s linear;
+}
+
+.codingPageNav li:last-child button::before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    left: 55px;
+    width: 20px;
+    height: 20px;
+    background-image: url(assets/logout-icon.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: -1;
+}
+
+.codingPageNav li:last-child button:hover {
+    cursor: pointer;
+    background-color: #ff0000; 
+    color: transparent; 
+}
+
+.codingPageNav li {
+    margin-top: 40px;
 }
 
 .nav-link {
+    width: 100%;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
     font-size: 0.94rem;
     padding: 4px 8px;
     border-radius: 0.2rem;
@@ -41,7 +144,35 @@
 .nav-link:hover {
     color: #00ff00; 
     background: rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
     transition: 0.3s all linear;
+}
+
+.outside-logo-sidebar {
+    display: flex;
+    width: 30px;
+    height: 30px;
+    background-image: url(assets/sidebar-icon.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    cursor: pointer;
+}
+
+.inside-logo-sidebar {
+    width: 30px;
+    height: 30px;
+    background-image: url(assets/sidebar-icon.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    top: 30px;
+    left: 15px;
+    cursor: pointer;
 }
 
 body {
@@ -55,19 +186,13 @@ body {
 p {
     font-size: 1rem;
     color: #d4d4d4;
-    /* margin-top: 50px; */
     text-align: center;
-    margin: 10px 0 10px 0;
     font-family: 'Poppins', sans-serif;
-}
-
-main {
-    margin-top: 80px;
 }
 
 .are-you-ready {
     font-size: 0.9rem;
-    margin-top: 60px;
+    margin-top: 50px;
     font-family: 'Poppins', sans-serif;
 }
 

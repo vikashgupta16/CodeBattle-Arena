@@ -1,27 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CodeArena-CODIGO</title>
     <link rel="stylesheet" href="codigo.css">
-    <link rel="shortcut icon" href="web-development.png" type="image/x-icon">
+    <link rel="shortcut icon" href="assets/web-development.png" type="image/x-icon">
 </head>
+
 <body>
+    <span class="outside-logo-sidebar" onclick=showNav()></span>
     <nav class="codingPageNav">
+        <span class="inside-logo-sidebar" onclick=hideNav()></span>
         <ul>
-            <li><a href="../LandingPage/index.html" class="nav-link">Home</a></li>
-            <li><a href="#c" class="nav-link">C</a></li>
-            <li><a href="#c++" class="nav-link">C++</a></li>
-            <li><a href="#help" class="nav-link">Our Ai</a></li>
+            <li><a href="../LandingPage/index.html" class="nav-link current">Home</a></li>
+            <li><a href="#c" class="nav-link">Practice</a></li>
+            <li><a href="#c++" class="nav-link">Stats</a></li>
+            <li><a href="#help" class="nav-link">Ask AI</a></li>
+            <li><a href="#help" class="nav-link">Contact Us</a></li>
+            <li>
+                <select name="theme-toggle" id="theme-toggle">
+                    <option value="Dark-theme" selected>Dark theme</option>
+                    <option value="Light-theme">Light theme</option>
+                </select>
+                <a href="../LandingPage/index.html"><button>Logout</button></a>
+            </li>
+            <!-- <li><a href="../LandingPage/index.html" class="nav-link"><button>Logout</button></a></li> -->
         </ul>
     </nav>
     <main>
         <p class="are-you-ready">ARE YOU READY !</p>
         <p>Practice Here, Rock Your Future</p>
         <h2>Practice a lot of code here, mainly C & C++</h2>
-        
-        <div class="coding-boxes" >
+
+        <div class="coding-boxes">
             <div class="language-box c-box" id="c">
                 <h3>C Programming</h3>
                 <p style="text-align: left;">A powerful, structured programming language that's great for:</p>
@@ -32,7 +45,7 @@
                 </ul>
                 <button class="practice-btn"><a href="../Cpage/c.html">Practice C Now</a></button>
             </div>
-            
+
             <div class="language-box cpp-box" id="c++">
                 <h3>C++ Programming</h3>
                 <p style="text-align: left;">An object-oriented extension of C, perfect for:</p>
@@ -46,10 +59,12 @@
         </div>
         <section class="help-section" id="help">
             <h3>Need Help?</h3>
-            <p>Our AI-powered help system, powered by Gemini AI, is here to assist you. 
-            Get instant solutions to your coding doubts in C and C++ using our free API integration. 
-            Ask anything, from syntax errors to complex concepts, and level up your skills!</p>
+            <p>Our AI-powered help system, powered by Gemini AI, is here to assist you.
+                Get instant solutions to your coding doubts in C and C++ using our free API integration.
+                Ask anything, from syntax errors to complex concepts, and level up your skills!</p>
         </section>
     </main>
+    <script src="script.js"></script>
 </body>
+
 </html>
