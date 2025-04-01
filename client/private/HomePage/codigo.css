@@ -426,7 +426,7 @@ section:not(.home-section){
 .send-btn {
     display: inline-block;
     padding: 12px 24px;
-    background: #1b6c23; 
+    background: #6de8e2; 
     color: white;
     border: none;
     border-radius: 8px;
@@ -437,45 +437,4 @@ section:not(.home-section){
 
 .send-btn:hover {
     background: #5ee347; 
-}
-
-/* Responsive Design */
-@media (max-width: 768px) { 
-    /* Tablets and smaller devices */
-    .contact-form {
-        max-width: 90%; /* Reduce width */
-        padding: 1.5rem; /* Adjust padding */
-    }
-
-    .contact-form input, 
-    .contact-form textarea {
-        font-size: 14px; /* Adjust text size */
-        padding: 10px;
-    }
-
-    .send-btn {
-        width: 100%; /* Full-width button */
-        padding: 14px;
-        font-size: 16px;
-    }
-}
-
-@media (max-width: 480px) { 
-    /* Mobile screens */
-    .contact-form {
-        max-width: 95%; /* Take more screen space */
-        padding: 1rem;
-    }
-
-    .contact-form input, 
-    .contact-form textarea {
-        font-size: 14px;
-        padding: 10px;
-    }
-
-    .send-btn {
-        width: 100%; /* Full-width button */
-        padding: 12px;
-        font-size: 16px;
-    }
 }
