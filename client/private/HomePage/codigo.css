@@ -31,16 +31,18 @@
     0% {
         transform: translateX(-100%);
     }
+
     100% {
         transform: translateX(0);
     }
-    
+
 }
 
 @keyframes slideOut {
     0% {
         transform: translateX(0);
     }
+
     100% {
         transform: translateX(-200%);
     }
@@ -58,12 +60,27 @@
     padding: 0;
 }
 
+.cross-icon-mobile {
+    display: none;
+    cursor: pointer;
+}
+
+.cross-icon-mobile img {
+    width: 30px;
+    height: 30px;
+}
+
 .codingPageNav li:last-child {
     margin-top: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100px;
+}
+
+.codingPageNav li:last-child a {
+    margin-bottom: 25px;
+    text-decoration: none;
 }
 
 .codingPageNav li:last-child select {
@@ -85,9 +102,9 @@
     cursor: pointer;
 }
 
-.codingPageNav li:last-child a {
-    margin-bottom: 25px;
-    text-decoration: none;
+.dark-mode {
+    display: none;
+    margin-bottom: 35px;
 }
 
 .codingPageNav li:last-child button {
@@ -122,8 +139,20 @@
 
 .codingPageNav li:last-child button:hover {
     cursor: pointer;
-    background-color: #ff0000; 
-    color: transparent; 
+    background-color: #ff0000;
+    color: transparent;
+}
+
+.logout-mobile {
+    display: none;
+    left: 55px;
+    width: 20px;
+    height: 20px;
+    margin-bottom: 35px;
+    background-image: url(assets/logout-icon.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .codingPageNav li {
@@ -138,12 +167,12 @@
     font-size: 0.94rem;
     padding: 4px 8px;
     border-radius: 0.2rem;
-    color: #e0e0e0; 
+    color: #e0e0e0;
     text-decoration: none;
 }
 
 .nav-link:hover {
-    color: #00ff00; 
+    color: #00ff00;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 30px;
     transition: 0.3s all linear;
@@ -181,8 +210,8 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #0d1117; 
-    color: #e0e0e0; 
+    background-color: #0d1117;
+    color: #e0e0e0;
 }
 
 main {
@@ -190,23 +219,24 @@ main {
     padding: 20px;
 }
 
-section:not(.home-section){
+section:not(.home-section) {
     display: none;
 }
 
 #home {
     scroll-margin-top: 0;
 }
-.home-info{
-        background-color: #191923;
-        border-radius: 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        width: 100%;
-        height: 30%;
-        flex-wrap: nowrap;
+
+.home-info {
+    background-color: #191923;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 30%;
+    flex-wrap: nowrap;
 }
 
 .home-section {
@@ -289,7 +319,7 @@ section:not(.home-section){
     width: 400px;
     height: auto;
     padding: 20px;
-    background-color: #21262d; 
+    background-color: #21262d;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease;
@@ -300,19 +330,19 @@ section:not(.home-section){
 }
 
 .c-box {
-    border-top: 4px solid #539bf5; 
+    border-top: 4px solid #539bf5;
 }
 
 .cpp-box {
-    border-top: 4px solid #f34f29; 
+    border-top: 4px solid #f34f29;
 }
 
 .java-box {
-    border-top: 4px solid #ffaf1b; 
+    border-top: 4px solid #ffaf1b;
 }
 
 .python-box {
-    border-top: 4px solid #3af329; 
+    border-top: 4px solid #3af329;
 }
 
 .language-box h3 {
@@ -345,7 +375,7 @@ section:not(.home-section){
 .practice-btn {
     width: 100%;
     padding: 10px;
-    background-color: #238636; 
+    background-color: #238636;
     color: #ffffff;
     border: none;
     border-radius: 5px;
@@ -382,43 +412,83 @@ section:not(.home-section){
 }
 
 /* Contact Form Styling */
+
+.contact-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: auto;
+}
+
+.contact-heading {
+    font-size: 2rem;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-bottom: 0;
+}
+
+.contact-desc {
+    font-size: 0.8rem;
+    color: #d4d4d4;
+    text-align: center;
+    font-family: sans-serif;
+}
+
 .contact-form {
     max-width: 600px;
-    margin: 2rem auto;
-    padding: 2rem; /* Added padding for clear edges */
-    border: 2px solid #ffffff; /* Soft border for visible edges */
-    border-radius: 12px; /* Rounded corners for smoothness */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
-    background: #000000; /* Dark background */
+    margin: auto;
+    padding: 2rem;
+    /* Added padding for clear edges */
+    border: 2px solid #ffffff;
+    /* Soft border for visible edges */
+    border-radius: 12px;
+    /* Rounded corners for smoothness */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Light shadow for depth */
+    background: #000000;
+    /* Dark background */
 }
 
 /* Input Fields */
 .contact-form input,
 .contact-form textarea {
     width: 100%;
-    padding: 12px; /* Padding for better visibility */
-    margin-bottom: 1rem; /* Space between inputs */
-    border: 1px solid #444; /* Darker border */
-    border-radius: 8px; /* Rounded input edges */
-    font-size: 16px; /* Larger font for readability */
-    box-sizing: border-box; /* Include padding in width */
-    background: #222; /* Dark background */
-    color: #fff; /* Light text */
+    padding: 12px;
+    /* Padding for better visibility */
+    margin-bottom: 1rem;
+    /* Space between inputs */
+    border: 1px solid #444;
+    /* Darker border */
+    border-radius: 8px;
+    /* Rounded input edges */
+    font-size: 16px;
+    /* Larger font for readability */
+    box-sizing: border-box;
+    /* Include padding in width */
+    background: #222;
+    /* Dark background */
+    color: #fff;
+    /* Light text */
 }
 
 /* Placeholder Color */
 .contact-form input::placeholder,
 .contact-form textarea::placeholder {
-    color: #aaa; /* Light gray for better visibility */
+    color: #aaa;
+    /* Light gray for better visibility */
 }
 
 /* Focus Effect */
 .contact-form input:focus,
 .contact-form textarea:focus {
     outline: none;
-    border: 2px solid #6ef58b; /* Highlight when focused */
+    border: 2px solid #6ef58b;
+    /* Highlight when focused */
     box-shadow: 0 0 8px rgb(86, 205, 112);
-    background: #333; /* Slightly lighter dark background */
+    background: #333;
+    /* Slightly lighter dark background */
     color: white;
 }
 
@@ -426,15 +496,75 @@ section:not(.home-section){
 .send-btn {
     display: inline-block;
     padding: 12px 24px;
-    background: #6de8e2; 
+    background: #6de8e2;
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-size: 18px;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .send-btn:hover {
-    background: #5ee347; 
+    background: #5ee347;
+}
+
+/* media query for the contact form */
+@media (max-width: 700px) {
+    .contact-form {
+        width: 60%;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        font-size: 0.9rem;
+        /* Smaller font for smaller screens */
+        padding: 0.6rem;
+        /* Adjust padding for smaller inputs */
+    }
+
+    .send-btn {
+        font-size: 1rem;
+        /* Adjust button font size */
+        padding: 10px 20px;
+        /* Adjust button padding */
+    }
+}
+
+/* media query for the sidebar */
+@media (max-width: 700px) {
+    .outside-logo-sidebar {
+        background-image: url(assets/hamburger-menu.png);
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+    .codingPageNav {
+        width: 30%;
+        height: 100dvh;
+        background-color: #191923;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+        top: 0;
+        left: 0;
+        bottom: 0;
+        border-radius: 0px;
+    }
+    .inside-logo-sidebar {
+        display: none;
+    }
+    .cross-icon-mobile {
+        display: flex;
+    }
+    .codingPageNav li:last-child select {
+        display: none;
+    }
+    .dark-mode {
+        display: block;
+    }
+    .logout-desktop {
+        display: none;
+    }
+    .logout-mobile {
+        display: block;
+    }
 }

@@ -14,17 +14,24 @@
     <nav class="codingPageNav">
         <span class="inside-logo-sidebar" onclick="hideNav()"></span>
         <ul>
+            <li class="cross-icon-mobile" onclick="hideNav()"><img src="assets/close-menu.png" alt=""></li>
             <li><a href="#home" class="nav-link current" onclick="showSection('home')">Home</a></li>
             <li><a href="#practice" class="nav-link" onclick="showSection('practice')">Practice</a></li>
             <li><a href="#stats" class="nav-link" onclick="showSection('stats')">Stats</a></li>
-            <li><a href="#help" class="nav-link" onclick="showSection('help')">Ask AI</a></li>
+            <li><a href="#ask-ai" class="nav-link" onclick="showSection('ask-ai')">Ask AI</a></li>
             <li><a href="#contact" class="nav-link" onclick="showSection('contact')">Contact Us</a></li>
             <li>
                 <select name="theme-toggle" id="theme-toggle">
                     <option value="Dark-theme" selected>Dark theme</option>
                     <option value="Light-theme">Light theme</option>
                 </select>
-                <a href="../LandingPage/index.html"><button>Logout</button></a>
+                <svg class="dark-mode" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"
+                    fill="#FFFFFF">
+                    <path
+                        d="M484-80q-84 0-157.5-32t-128-86.5Q144-253 112-326.5T80-484q0-146 93-257.5T410-880q-18 99 11 193.5T521-521q71 71 165.5 100T880-410q-26 144-138 237T484-80Zm0-80q88 0 163-44t118-121q-86-8-163-43.5T464-465q-61-61-97-138t-43-163q-77 43-120.5 118.5T160-484q0 135 94.5 229.5T484-160Zm-20-305Z" />
+                </svg>
+                <a class="logout-desktop" href="../../public/LandingPage/index.html"><button>Logout</button></a>
+                <a href="../../public/LandingPage/index.html"><span class="logout-mobile"></span></a>
             </li>
         </ul>
     </nav>
@@ -126,7 +133,8 @@
             </div>
         </section>
         <section id="contact" class="contact-section section">
-            <h2 class="heading">Contact</h2>
+            <h2 class="contact-heading">Contact</h2>
+            <p class="contact-desc">Ask you query, our team member will try to contact you in 24 hrs</p>
             <form action="" class="contact-form">
                 <input type="text" placeholder="Your Name" class="name" required>
                 <input type="email" placeholder="Email address" class="email" required>
@@ -137,19 +145,19 @@
     </main>
     <script src="script.js"></script>
     <!-- copyright  -->
-<!-- <p>&#169; Vikash & Rajveer & Archis & Rouvik</p> -->
-</section>
-<!-- email js  -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <!-- <p>&#169; Vikash & Rajveer & Archis & Rouvik</p> -->
+    </section>
+    <!-- email js  -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
-<script type="text/javascript">
-(function(){
-  emailjs.init({
-    publicKey: "jS_OjCoYjCk6NEZxd",
-  });
-})();
-</script>
+    <script type="text/javascript">
+        (function () {
+            emailjs.init({
+                publicKey: "jS_OjCoYjCk6NEZxd",
+            });
+        })();
+    </script>
 </body>
 
 </html>
