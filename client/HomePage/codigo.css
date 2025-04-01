@@ -197,6 +197,17 @@ section:not(.home-section){
 #home {
     scroll-margin-top: 0;
 }
+.home-info{
+        background-color: #191923;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        height: 30%;
+        flex-wrap: nowrap;
+}
 
 .home-section {
     display: flex;
@@ -210,7 +221,7 @@ section:not(.home-section){
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    align-items: center;
+    align-items: flex-start;
     width: calc(30% - 40px);
     height: 100%;
 }
@@ -228,17 +239,6 @@ section:not(.home-section){
     list-style-type: none;
 }
 
-
-.home-info {
-    background-color: #191923;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 30%;
-}
 
 .ai-chat {
     width: calc(50% - 10px);
@@ -378,4 +378,15 @@ section:not(.home-section){
     color: #c9d1d9;
     font-size: 1rem;
     margin: 0;
+}
+
+/* Contact Form Styling */
+.contact-form {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem; /* Added padding for clear edges */
+    border: 2px solid #ddd; /* Soft border for visible edges */
+    border-radius: 12px; /* Rounded corners for smoothness */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    background: #fff; /* Clear background */
 }
