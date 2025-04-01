@@ -13,13 +13,8 @@ const app = express();
 app.use(clerk.clerkMiddleware());
 
 // base entry point of server
-app.use('/public', express.static('client'));
 
-app.use('/private', clerk.requireAuth({ signInUrl: process.env.CLERK_SIGN_IN_URL, signUpUrl: process.env.CLERK_SIGN_UP_URL }), (req, res) => {
-    console.log("This is a protected route");
-});
 app.use('/public', express.static('client/public'));
-
 app.use('/private', clerk.requireAuth({ signInUrl: process.env.CLERK_SIGN_IN_URL, signUpUrl: process.env.CLERK_SIGN_UP_URL }), express.static('client/private'));
 
 // main redirect
