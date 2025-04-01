@@ -12,22 +12,17 @@
 <body>
     <span class="outside-logo-sidebar" onclick=showNav()></span>
     <nav class="codingPageNav">
-        <span class="inside-logo-sidebar" onclick=hideNav()></span>
+        <span class="inside-logo-sidebar" onclick="hideNav()"></span>
         <ul>
             <li><a href="#home" class="nav-link current" onclick="showSection('home')">Home</a></li>
             <li><a href="#practice" class="nav-link" onclick="showSection('practice')">Practice</a></li>
-            <li><a href="#c++" class="nav-link" onclick="showSection('')">Stats</a></li>
-            <li><a href="#help" class="nav-link" onclick="showSection('')">Ask AI</a></li>
-            <li><a href="#help" class="nav-link" onclick="showSection('')">Contact Us</a></li>
-            <li>
-                <select name="theme-toggle" id="theme-toggle">
-                    <option value="Dark-theme" selected>Dark theme</option>
-                    <option value="Light-theme">Light theme</option>
-                </select>
-                <a href="../LandingPage/index.html"><button>Logout</button></a>
-            </li>
+            <li><a href="#stats" class="nav-link" onclick="showSection('stats')">Stats</a></li>
+            <li><a href="#help" class="nav-link" onclick="showSection('help')">Ask AI</a></li>
+            <li><a href="#contact" class="nav-link" onclick="showSection('contact')">Contact Us</a></li>
         </ul>
     </nav>
+    
+    
     <main onclick=hideNav()>
         <section id="home" class="home-section section">
             <div class="home-content-left">
@@ -36,7 +31,7 @@
                     <h2>Welcome, <span id="username">username</span></h2>
                 </div>
                 <div class="home-info">
-                    <h2>📊 Quick stats</h2>
+                    <h2 id="stats">📊 Quick stats</h2>
                     <ul>
                         <li>⭐ Current Rank: #1234</li>
                         <li>🏆 Contests Won: 5</li>
@@ -45,7 +40,7 @@
                     </ul>
                 </div>
                 <div class="home-info">
-                    <h2>⚡Quick Actions:</h2>
+                    <h2 id="action">⚡Quick Actions:</h2>
                     <ul>
                         <li>✅ Practice Coding - Continue solving problems from where you left off.</li>
                         <li>✅ Join a Contest - Compete live with other coders!</li>
@@ -54,7 +49,7 @@
                     </ul>
                 </div>
                 <div class="home-info">
-                    <h2>📝 Recommended Challenges:</h2>
+                    <h2 id="challenge">📝 Recommended Challenges:</h2>
                     <ul>
                         <li>1️⃣ Advanced Dynamic Programming - 🔥 Trending</li>
                         <li>2️⃣ Graph Theory Marathon - 🏆 High Score Challenge</li>
@@ -92,6 +87,29 @@
                 </ul>
                 <button class="practice-btn"><a href="../CppPage/Cpp.html">Practice C++ Now</a></button>
             </div>
+
+            <div class="language-box java-box" id="java">
+                <h3>Java Programming</h3>
+                <p style="text-align: left;">A versatile language widely used for:</p>
+                <ul>
+                    <li>Enterprise Applications</li>
+                    <li>Android Development</li>
+                    <li>Backend Systems</li>
+                </ul>
+                <button class="practice-btn"><a href="../JavaPage/Java.html">Practice Java Now</a></button>
+            </div>
+            
+            <div class="language-box python-box" id="python">
+                <h3>Python Programming</h3>
+                <p style="text-align: left;">A powerful language for:</p>
+                <ul>
+                    <li>Data Science</li>
+                    <li>Machine Learning</li>
+                    <li>Web Development</li>
+                </ul>
+                <button class="practice-btn"><a href="../PythonPage/Python.html">Practice Python Now</a></button>
+            </div>
+            
         </div>
         <section class="help-section" id="help">
             <h3>Need Help?</h3>
@@ -99,6 +117,19 @@
                 Get instant solutions to your coding doubts in C and C++ using our free API integration.
                 Ask anything, from syntax errors to complex concepts, and level up your skills!</p>
         </section>
+
+        <section class="contact-section section" id="contact">
+            <h2 class="heading">Contact</h2>
+            <form action="" class="contact-form">
+                <input type="text" placeholder="Your Name" class="name" required>
+                <input type="email" placeholder="Email address" class="email" required>
+                <textarea cols="30" rows="10" placeholder="Enter Your Message" class="message" required></textarea>
+                <input type="submit" value="Send" class="send-btn">
+            </form>
+        </section>
+        
+    
+
     </main>
     <script src="script.js"></script>
 </body>
