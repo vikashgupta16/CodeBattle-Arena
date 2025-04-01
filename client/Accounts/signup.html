@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signin</title>
+    <!-- Poppins font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Jua&family=Noto+Sans+Mono:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Red+Hat+Mono:ital,wght@0,300..700;1,300..700&display=swap"
+        rel="stylesheet">
+
+    <!-- Style sheets -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Clerk auth url -->
+    <script async crossorigin="anonymous"
+        data-clerk-publishable-key="pk_test_YWxsb3dlZC1vc3ByZXktNi5jbGVyay5hY2NvdW50cy5kZXYk"
+        src="https://allowed-osprey-6.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
+        type="text/javascript"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div id="signupDiv"></div>
+    </div>
+</body>
+<script>
+    window.addEventListener('load', async function () {
+        await Clerk.load()
+        Clerk.mountSignUp(document.getElementById("signupDiv"));
+    });
+</script>
+
+</html>
