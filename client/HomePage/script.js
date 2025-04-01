@@ -21,4 +21,5 @@ function showSection(sectionId) {
         section.style.display = 'none';
     });
     document.getElementById(sectionId).style.display = 'flex';
+    hideNav();
 }

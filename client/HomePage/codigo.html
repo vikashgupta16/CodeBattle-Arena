@@ -19,10 +19,17 @@
             <li><a href="#stats" class="nav-link" onclick="showSection('stats')">Stats</a></li>
             <li><a href="#help" class="nav-link" onclick="showSection('help')">Ask AI</a></li>
             <li><a href="#contact" class="nav-link" onclick="showSection('contact')">Contact Us</a></li>
+            <li>
+                <select name="theme-toggle" id="theme-toggle">
+                    <option value="Dark-theme" selected>Dark theme</option>
+                    <option value="Light-theme">Light theme</option>
+                </select>
+                <a href="../LandingPage/index.html"><button>Logout</button></a>
+            </li>
         </ul>
     </nav>
-    
-    
+
+
     <main onclick=hideNav()>
         <section id="home" class="home-section section">
             <div class="home-content-left">
@@ -77,48 +84,48 @@
                     <button class="practice-btn"><a href="../Cpage/c.html">Practice C Now</a></button>
                 </div>
 
-            <div class="language-box cpp-box" id="c++">
-                <h3>C++ Programming</h3>
-                <p style="text-align: left;">An object-oriented extension of C, perfect for:</p>
-                <ul>
-                    <li>Game Development</li>
-                    <li>Desktop Applications</li>
-                    <li>System Software</li>
-                </ul>
-                <button class="practice-btn"><a href="../CppPage/Cpp.html">Practice C++ Now</a></button>
-            </div>
+                <div class="language-box cpp-box" id="c++">
+                    <h3>C++ Programming</h3>
+                    <p style="text-align: left;">An object-oriented extension of C, perfect for:</p>
+                    <ul>
+                        <li>Game Development</li>
+                        <li>Desktop Applications</li>
+                        <li>System Software</li>
+                    </ul>
+                    <button class="practice-btn"><a href="../CppPage/Cpp.html">Practice C++ Now</a></button>
+                </div>
 
-            <div class="language-box java-box" id="java">
-                <h3>Java Programming</h3>
-                <p style="text-align: left;">A versatile language widely used for:</p>
-                <ul>
-                    <li>Enterprise Applications</li>
-                    <li>Android Development</li>
-                    <li>Backend Systems</li>
-                </ul>
-                <button class="practice-btn"><a href="../JavaPage/Java.html">Practice Java Now</a></button>
+                <div class="language-box java-box" id="java">
+                    <h3>Java Programming</h3>
+                    <p style="text-align: left;">A versatile language widely used for:</p>
+                    <ul>
+                        <li>Enterprise Applications</li>
+                        <li>Android Development</li>
+                        <li>Backend Systems</li>
+                    </ul>
+                    <button class="practice-btn"><a href="../JavaPage/Java.html">Practice Java Now</a></button>
+                </div>
+
+                <div class="language-box python-box" id="python">
+                    <h3>Python Programming</h3>
+                    <p style="text-align: left;">A powerful language for:</p>
+                    <ul>
+                        <li>Data Science</li>
+                        <li>Machine Learning</li>
+                        <li>Web Development</li>
+                    </ul>
+                    <button class="practice-btn"><a href="../PythonPage/Python.html">Practice Python Now</a></button>
+                </div>
+                <div class="help-box">
+                    <h3>Need Help?</h3>
+                    <p>Our AI-powered help system, powered by Gemini AI, is here to assist you.
+                        Get instant solutions to your coding doubts in C and C++ using our free API integration.
+                        Ask anything, from syntax errors to complex concepts, and level up your skills!
+                    </p>
+                </div>
             </div>
-            
-            <div class="language-box python-box" id="python">
-                <h3>Python Programming</h3>
-                <p style="text-align: left;">A powerful language for:</p>
-                <ul>
-                    <li>Data Science</li>
-                    <li>Machine Learning</li>
-                    <li>Web Development</li>
-                </ul>
-                <button class="practice-btn"><a href="../PythonPage/Python.html">Practice Python Now</a></button>
-            </div>
-            
-        </div>
-        <section class="help-section" id="help">
-            <h3>Need Help?</h3>
-            <p>Our AI-powered help system, powered by Gemini AI, is here to assist you.
-                Get instant solutions to your coding doubts in C and C++ using our free API integration.
-                Ask anything, from syntax errors to complex concepts, and level up your skills!</p>
         </section>
-
-        <section class="contact-section section" id="contact">
+        <section id="contact" class="contact-section section">
             <h2 class="heading">Contact</h2>
             <form action="" class="contact-form">
                 <input type="text" placeholder="Your Name" class="name" required>
@@ -127,9 +134,6 @@
                 <input type="submit" value="Send" class="send-btn">
             </form>
         </section>
-        
-    
-
     </main>
     <script src="script.js"></script>
 </body>

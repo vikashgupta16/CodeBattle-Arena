@@ -281,12 +281,13 @@ section:not(.home-section){
     display: flex;
     justify-content: center;
     gap: 30px;
-    padding: 40px;
+    padding: 40px 100px;
     flex-wrap: wrap;
 }
 
 .language-box {
-    width: 300px;
+    width: 400px;
+    height: auto;
     padding: 20px;
     background-color: #21262d; 
     border-radius: 10px;
