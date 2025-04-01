@@ -18,6 +18,7 @@
     translate: X(-100%);
 }
 
+
 .codingPageNav.show {
     animation: slideIn 0.1s ease-in-out forwards;
 }
@@ -176,6 +177,7 @@
 }
 
 body {
+    display: flex;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -183,7 +185,79 @@ body {
     color: #e0e0e0; 
 }
 
-p {
+main {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+section:not(.home-section){
+    display: none;
+}
+
+#home {
+    scroll-margin-top: 0;
+}
+
+.home-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100dvh;
+}
+
+.home-content-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: calc(30% - 40px);
+    height: 100%;
+}
+
+.welcome-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    height: auto;
+}
+
+.home-content ul {
+    list-style-type: none;
+}
+
+
+.home-info {
+    background-color: #191923;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 30%;
+}
+
+.ai-chat {
+    width: calc(50% - 10px);
+    height: 100%;
+    background-color: #191923;
+    border-radius: 20px;
+    margin: 20px;
+}
+
+.practice-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: auto;
+}
+
+.practice-section p {
     font-size: 1rem;
     color: #d4d4d4;
     text-align: center;
@@ -196,7 +270,7 @@ p {
     font-family: 'Poppins', sans-serif;
 }
 
-h2 {
+.practice-section h2 {
     font-size: 1.5rem;
     color: #ffffff;
     margin: 20px auto;
@@ -277,9 +351,9 @@ h2 {
 
 
 
-.help-section {
+.help-box {
     max-width: 800px;
-    margin: 40px auto;
+    margin: 20px auto;
     padding: 20px;
     background-color: #21262d;
     border-radius: 10px;
@@ -287,12 +361,12 @@ h2 {
     text-align: center;
 }
 
-.help-section h3 {
+.help-box h3 {
     color: #ffffff;
     margin: 0 0 15px 0;
 }
 
-.help-section p {
+.help-box p {
     color: #c9d1d9;
     font-size: 1rem;
     margin: 0;

@@ -15,3 +15,10 @@ function hideNav() {
     const slideBarOutsideIcon = document.querySelector('.outside-logo-sidebar');
     slideBarOutsideIcon.style.display = 'flex';
 }
+
+function showSection(sectionId) {
+    document.querySelectorAll('.section').forEach(section => {
+        section.style.display = 'none';
+    });
+    document.getElementById(sectionId).style.display = 'flex';
+}
