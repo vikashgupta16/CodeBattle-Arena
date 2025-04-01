@@ -23,3 +23,47 @@ function showSection(sectionId) {
     document.getElementById(sectionId).style.display = 'flex';
     hideNav();
 }
+
+//   email 
+function validate(){
+    let name= document.querySelector(".name");
+    let email= document.querySelector(".email");
+    let msg= document.querySelector(".message");
+    let sendBtn= document.querySelector(".send-btn");
+    sendBtn.addEventListener('click',(e)=>{
+        e.preventDefault();
+        if(name.value == "" || email.value == "" || msg.value== ""){
+            emptyerror();
+        }else{
+            sendmail (name.value, email.value, msg.value);
+            success();
+        }
+    });
+
+}
+validate();
+function sendmail(name,email,msg)
+{
+    emailjs.send("service_vikash__gupta","template_u8mh7fk",{
+        from_name: email,
+        to_name: name,
+        message: msg,
+        });
+}
+function emptyerror()
+{
+    swal({
+        title: "Complete All The Sections",
+        text: "Fields cant be empty",
+        icon: "error",
+      });
+}
+function success()
+{
+    swal({
+        title: "Email Sent Succesfully",
+        text: "We will Try To Rspond In 24 Hours",
+        icon: "success",
+      });
+}
+

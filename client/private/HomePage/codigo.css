@@ -386,8 +386,96 @@ section:not(.home-section){
     max-width: 600px;
     margin: 2rem auto;
     padding: 2rem; /* Added padding for clear edges */
-    border: 2px solid #ddd; /* Soft border for visible edges */
+    border: 2px solid #ffffff; /* Soft border for visible edges */
     border-radius: 12px; /* Rounded corners for smoothness */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
-    background: #fff; /* Clear background */
+    background: #000000; /* Dark background */
+}
+
+/* Input Fields */
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 12px; /* Padding for better visibility */
+    margin-bottom: 1rem; /* Space between inputs */
+    border: 1px solid #444; /* Darker border */
+    border-radius: 8px; /* Rounded input edges */
+    font-size: 16px; /* Larger font for readability */
+    box-sizing: border-box; /* Include padding in width */
+    background: #222; /* Dark background */
+    color: #fff; /* Light text */
+}
+
+/* Placeholder Color */
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+    color: #aaa; /* Light gray for better visibility */
+}
+
+/* Focus Effect */
+.contact-form input:focus,
+.contact-form textarea:focus {
+    outline: none;
+    border: 2px solid #6ef58b; /* Highlight when focused */
+    box-shadow: 0 0 8px rgb(86, 205, 112);
+    background: #333; /* Slightly lighter dark background */
+    color: white;
+}
+
+/* Send Button */
+.send-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #1b6c23; 
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.3s ease;
+}
+
+.send-btn:hover {
+    background: #5ee347; 
+}
+
+/* Responsive Design */
+@media (max-width: 768px) { 
+    /* Tablets and smaller devices */
+    .contact-form {
+        max-width: 90%; /* Reduce width */
+        padding: 1.5rem; /* Adjust padding */
+    }
+
+    .contact-form input, 
+    .contact-form textarea {
+        font-size: 14px; /* Adjust text size */
+        padding: 10px;
+    }
+
+    .send-btn {
+        width: 100%; /* Full-width button */
+        padding: 14px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) { 
+    /* Mobile screens */
+    .contact-form {
+        max-width: 95%; /* Take more screen space */
+        padding: 1rem;
+    }
+
+    .contact-form input, 
+    .contact-form textarea {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .send-btn {
+        width: 100%; /* Full-width button */
+        padding: 12px;
+        font-size: 16px;
+    }
 }
