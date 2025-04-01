@@ -33,11 +33,16 @@
     </main>
 
     <div id="coding-page" class="hidden">
-        <h1>Code Compiler</h1>
+        <h2>Selected Challenge</h2>
+        <div class="challenge-display">
+            <h3 id="selected-challenge-title"></h3>
+            <p id="selected-challenge-description"></p>
+        </div>
+    
         <div class="compiler-container">
             <div class="editor-section">
-                <h3>Write Your Code</h3>
-                <textarea id="code-editor" placeholder="Enter your CPP code here..."></textarea>
+                <h3>Enter Your Code</h3>
+                <textarea id="code-editor" placeholder="Write your Cpp code here..."></textarea>
             </div>
             <div class="input-output-section">
                 <button id="run-btn" class="practice-btn" onclick="runCode()">Run Code</button>
@@ -45,13 +50,10 @@
                     <h3>Output</h3>
                     <div id="output-box" class="output-display"></div>
                 </div>
-                <div id="input-container" class="hidden">
-                    <h3>Input</h3>
-                    <textarea id="input-box" placeholder="Enter input here..."></textarea>
-                </div>
             </div>
         </div>
     </div>
+    <script src="cpp.js"></script>
 
     <script>
         const challenges = {
@@ -83,7 +85,7 @@
     
     expert: [
         { title: "Dynamic Memory Allocation", description: "Write a program that dynamically allocates memory for an array of n integers, fills it with user input, and sorts it in ascending order.", link: "cComp.html?assignment=memory_alloc" },
-        { title: "Multi-threading in C", description: "Implement a program that creates multiple threads, each performing a different mathematical operation on shared data.", link: "cComp.html?assignment=multi_threading" },
+        { title: "Multi-threading in C++", description: "Implement a program that creates multiple threads, each performing a different mathematical operation on shared data.", link: "cComp.html?assignment=multi_threading" },
         { title: "Graph Traversal (BFS & DFS)", description: "Implement breadth-first search (BFS) and depth-first search (DFS) for a graph.", link: "cComp.html?assignment=graph_traversal" },
         { title: "Dijkstra’s Algorithm", description: "Find the shortest path between nodes in a graph using Dijkstra’s algorithm.", link: "cComp.html?assignment=dijkstra" },
         { title: "Merge Sort", description: "Implement merge sort for an array of integers.", link: "cComp.html?assignment=merge_sort" },

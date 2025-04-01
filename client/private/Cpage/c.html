@@ -33,11 +33,16 @@
     </main>
 
     <div id="coding-page" class="hidden">
-        <h1>Code Compiler</h1>
+        <h2>Selected Challenge</h2>
+        <div class="challenge-display">
+            <h3 id="selected-challenge-title"></h3>
+            <p id="selected-challenge-description"></p>
+        </div>
+    
         <div class="compiler-container">
             <div class="editor-section">
-                <h3>Write Your Code</h3>
-                <textarea id="code-editor" placeholder="Enter your C code here..."></textarea>
+                <h3>Enter Your Code</h3>
+                <textarea id="code-editor" placeholder="Write your C code here..."></textarea>
             </div>
             <div class="input-output-section">
                 <button id="run-btn" class="practice-btn" onclick="runCode()">Run Code</button>
@@ -45,13 +50,10 @@
                     <h3>Output</h3>
                     <div id="output-box" class="output-display"></div>
                 </div>
-                <div id="input-container" class="hidden">
-                    <h3>Input</h3>
-                    <textarea id="input-box" placeholder="Enter input here..."></textarea>
-                </div>
             </div>
         </div>
     </div>
+    
 
     <script>
         const challenges = {
@@ -148,7 +150,7 @@
             // });
         }
     </script>
-    
+    <script src="c.js"></script>
     <style>
         .hidden { display: none; }
         .compiler-container { margin-top: 20px; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
