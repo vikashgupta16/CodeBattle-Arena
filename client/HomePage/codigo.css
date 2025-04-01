@@ -306,6 +306,14 @@ section:not(.home-section){
     border-top: 4px solid #f34f29; 
 }
 
+.java-box {
+    border-top: 4px solid #ffaf1b; 
+}
+
+.python-box {
+    border-top: 4px solid #3af329; 
+}
+
 .language-box h3 {
     margin: 0 0 15px 0;
     color: #ffffff;
