@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects Arena - CODIGO</title>
+    <link rel="shortcut icon" href="project-management_1087815.png" type="image/x-icon">
+    <style>
+        /* Dark Theme CSS Variables */
+        :root {
+            --bg-dark: #121212;
+            --card-bg: #1e1e1e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #aaaaaa;
+            --accent-blue: #75f74d;
+            --accent-orange: #ff922b;
+            --accent-yellow: #ffd43b;
+            --accent-python: #3572A5;
+            --accent-c: #5555ff;
+            --accent-cpp: #004482;
+            --accent-java: #f89820;
+            --success: #2b8a3e;
+            --success-hover: #37b24d;
+            --border-color: #333;
+            --highlight: #2d3436;
+            --transition: all 0.3s ease;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background-color: #0a0a0a;
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-blue);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2, h3 {
+            color: var(--text-primary);
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            margin-top: 0;
+        }
+
+        /* Project List Styles */
+        #project-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-box {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .project-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            border-color: var(--accent-blue);
+        }
+
+        .project-box p {
+            color: var(--text-secondary);
+        }
+
+        .project-btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .project-btn:hover {
+            background-color: var(--success-hover);
+            transform: translateY(-2px);
+        }
+
+        .language-selection {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .lang-btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .lang-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .lang-btn.active {
+            color: white;
+        }
+
+        .lang-btn.c { border-color: var(--accent-c); }
+        .lang-btn.c.active { background-color: var(--accent-c); }
+
+        .lang-btn.cpp { border-color: var(--accent-cpp); }
+        .lang-btn.cpp.active { background-color: var(--accent-cpp); }
+
+        .lang-btn.java { border-color: var(--accent-java); }
+        .lang-btn.java.active { background-color: var(--accent-java); }
+
+        .lang-btn.python { border-color: var(--accent-python); }
+        .lang-btn.python.active { background-color: var(--accent-python); }
+
+        /* Coding Page Styles */
+        .hidden {
+            display: none;
+        }
+
+        #coding-page {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            margin-top: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .back-btn {
+            background: rgba(77, 171, 247, 0.1);
+            border: none;
+            color: var(--accent-blue);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(77, 171, 247, 0.2);
+        }
+
+        .compiler-container {
+            margin-top: 1.5rem;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        #code-editor {
+            width: 85%;
+            min-height: 200px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+            background-color: #252525;
+            color: #d4d4d4;
+        }
+
+        .run-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .run-btn:hover {
+            background-color: var(--success-hover);
+            transform: translateY(-2px);
+        }
+
+        #output-container {
+            margin-top: 1.5rem;
+            background-color: #252525;
+            border-radius: 5px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        #output-box {
+            background-color: #1e1e1e;
+            padding: 1rem;
+            border-radius: 5px;
+            min-height: 50px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            white-space: pre-wrap;
+            border: 1px solid #333;
+            margin-top: 0.5rem;
+            color: #d4d4d4;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--card-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Projects Arena</div>
+        <ul class="nav-links">
+            <li><a href="../HomePage/codigo.html">Home</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#leaderboard">Leaderboard</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <section class="projects" id="projects">
+            <h2>Real-world Projects</h2>
+            <p>Apply your skills to practical scenarios:</p>
+            
+            <div class="language-selection">
+                <button class="lang-btn c active" onclick="showProjects('all')">All Languages</button>
+                <button class="lang-btn c" onclick="showProjects('c')">C</button>
+                <button class="lang-btn cpp" onclick="showProjects('cpp')">C++</button>
+                <button class="lang-btn java" onclick="showProjects('java')">Java</button>
+                <button class="lang-btn python" onclick="showProjects('python')">Python</button>
+            </div>
+            
+            <div id="project-container">
+                <!-- Projects will be displayed here automatically -->
+            </div>
+        </section>
+
+        <div id="coding-page" class="hidden">
+            <button class="back-btn" onclick="backToProjects()">← Back to Projects</button>
+            <div class="project-display">
+                <h3 id="selected-project-title"></h3>
+                <p id="selected-project-description"></p>
+            </div>
+        
+            <div class="compiler-container">
+                <div class="code-header">
+                    <h3>Project Code</h3>
+                </div>
+                <textarea id="code-editor" placeholder="Write your project code here..."></textarea>
+                <div class="input-output-section">
+                    <button id="run-btn" class="run-btn" onclick="runCode()">Run Code</button>
+                    <div id="output-container" class="hidden">
+                        <h3>Output</h3>
+                        <div id="output-box" class="output-display"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const projects = {
+            all: [
+                { 
+                    title: "Tic-Tac-Toe Game", 
+                    description: "Create a console-based Tic-Tac-Toe game for two players.", 
+                    languages: ["c", "cpp", "java", "python"],
+                    difficulty: "Intermediate"
+                },
+                { 
+                    title: "Snake Game", 
+                    description: "Implement the classic Snake game with score tracking.", 
+                    languages: ["cpp", "java", "python"],
+                    difficulty: "Intermediate"
+                },
+                { 
+                    title: "To-Do List Manager", 
+                    description: "Build a console application to manage tasks with add, complete, and delete functionality.", 
+                    languages: ["c", "cpp", "java", "python"],
+                    difficulty: "Beginner"
+                },
+                { 
+                    title: "File Encryption Tool", 
+                    description: "Create a program that can encrypt and decrypt files using a simple algorithm.", 
+                    languages: ["c", "cpp", "java"],
+                    difficulty: "Advanced"
+                },
+                { 
+                    title: "Weather App", 
+                    description: "Fetch and display weather data from a public API.", 
+                    languages: ["python", "java"],
+                    difficulty: "Intermediate"
+                },
+                { 
+                    title: "Chat Application", 
+                    description: "Simple client-server chat application using sockets.", 
+                    languages: ["python", "java", "cpp"],
+                    difficulty: "Advanced"
+                }
+            ],
+            c: [
+                { 
+                    title: "Library Management System", 
+                    description: "Console-based system to manage book inventory with file storage.", 
+                    difficulty: "Intermediate"
+                },
+                { 
+                    title: "Student Record System", 
+                    description: "Manage student records with structures and file I/O.", 
+                    difficulty: "Beginner"
+                }
+            ],
+            cpp: [
+                { 
+                    title: "2D Game Engine", 
+                    description: "Simple game engine using SFML or SDL libraries.", 
+                    difficulty: "Advanced"
+                },
+                { 
+                    title: "Banking System", 
+                    description: "OOP-based banking system with accounts and transactions.", 
+                    difficulty: "Intermediate"
+                }
+            ],
+            java: [
+                { 
+                    title: "Android Task Manager", 
+                    description: "Simple Android app to manage daily tasks.", 
+                    difficulty: "Intermediate"
+                },
+                { 
+                    title: "Inventory Management", 
+                    description: "GUI application to track product inventory.", 
+                    difficulty: "Intermediate"
+                }
+            ],
+            python: [
+                { 
+                    title: "Web Scraper", 
+                    description: "Extract data from websites using BeautifulSoup.", 
+                    difficulty: "Intermediate"
+                },
+                { 
+                    title: "Data Visualization Dashboard", 
+                    description: "Create interactive charts from CSV data using Matplotlib.", 
+                    difficulty: "Beginner"
+                }
+            ]
+        };
+
+        // Show all projects by default when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            showProjects('all');
+            setActiveButton('all');
+        });
+
+        function showProjects(lang) {
+            const container = document.getElementById("project-container");
+            container.innerHTML = "";
+            
+            let projectsToShow = [];
+            
+            if (lang === 'all') {
+                projectsToShow = projects.all;
+            } else {
+                projectsToShow = [
+                    ...projects.all.filter(p => p.languages.includes(lang)),
+                    ...projects[lang]
+                ];
+            }
+            
+            projectsToShow.forEach(project => {
+                const projectBox = document.createElement("div");
+                projectBox.classList.add("project-box");
+                
+                // Get language tags
+                let langTags = "";
+                if (project.languages) {
+                    langTags = project.languages.map(l => 
+                        `<span class="lang-tag ${l}">${l.toUpperCase()}</span>`
+                    ).join(" ");
+                } else {
+                    langTags = `<span class="lang-tag ${lang}">${lang.toUpperCase()}</span>`;
+                }
+                
+                projectBox.innerHTML = `
+                    <h3>${project.title}</h3>
+                    <p>${project.description}</p>
+                    <div style="margin: 10px 0;">
+                        ${langTags}
+                        <span style="float: right; color: ${getDifficultyColor(project.difficulty)}">
+                            ${project.difficulty}
+                        </span>
+                    </div>
+                    <button class="project-btn" onclick="selectProject('${project.title}', '${project.description}')">Start Project</button>
+                `;
+                container.appendChild(projectBox);
+            });
+            
+            setActiveButton(lang);
+        }
+
+        function getDifficultyColor(difficulty) {
+            switch(difficulty.toLowerCase()) {
+                case 'beginner': return '#2b8a3e';
+                case 'intermediate': return '#d9480f';
+                case 'advanced': return '#c92a2a';
+                default: return '#868e96';
+            }
+        }
+
+        function setActiveButton(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase() === lang || 
+                    (lang === 'all' && btn.textContent.toLowerCase() === 'all languages')) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function selectProject(title, description) {
+            // Hide the project list
+            document.getElementById("projects").classList.add("hidden");
+            
+            // Show the coding page
+            document.getElementById("coding-page").classList.remove("hidden");
+            
+            // Set the selected project info
+            document.getElementById("selected-project-title").textContent = title;
+            document.getElementById("selected-project-description").textContent = description;
+            
+            // Clear previous code and output
+            document.getElementById("code-editor").value = `// ${title}\n// ${description}\n\n// Start coding your project here...`;
+            document.getElementById("output-container").classList.add("hidden");
+        }
+
+        function backToProjects() {
+            // Show the project list
+            document.getElementById("projects").classList.remove("hidden");
+            
+            // Hide the coding page
+            document.getElementById("coding-page").classList.add("hidden");
+        }
+
+        function runCode() {
+            const code = document.getElementById("code-editor").value;
+            document.getElementById("output-container").classList.remove("hidden");
+            document.getElementById("output-box").innerText = "Running project code... (Simulated output)";
+            
+            // Simulate different outputs based on project type
+            setTimeout(() => {
+                const title = document.getElementById("selected-project-title").textContent;
+                let output = "";
+                
+                if (title.includes("Tic-Tac-Toe")) {
+                    output = `Tic-Tac-Toe Board:\n\n 1 | 2 | 3 \n-----------\n 4 | 5 | 6 \n-----------\n 7 | 8 | 9 \n\nPlayer X's turn:`;
+                } 
+                else if (title.includes("Snake")) {
+                    output = `Snake Game Started!\n\nScore: 0\nUse arrow keys to move\nSnake length: 3`;
+                }
+                else if (title.includes("To-Do")) {
+                    output = `To-Do List:\n1. [ ] Buy groceries\n2. [X] Finish project\n3. [ ] Call mom`;
+                }
+                else {
+                    output = `${title} executed successfully.\n\nSample output would appear here.`;
+                }
+                
+                document.getElementById("output-box").innerText = output;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

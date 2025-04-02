@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Arena - CODIGO</title>
+    <link rel="shortcut icon" href="rating.png" type="image/x-icon">
+    <style>
+        /* Dark Theme CSS Variables */
+        :root {
+            --bg-dark: #121212;
+            --card-bg: #1e1e1e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #aaaaaa;
+            --accent-blue: #75f74d;
+            --accent-orange: #ff922b;
+            --accent-yellow: #ffd43b;
+            --accent-python: #3572A5;
+            --success: #2b8a3e;
+            --success-hover: #37b24d;
+            --border-color: #333;
+            --highlight: #2d3436;
+            --transition: all 0.3s ease;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background-color: #0a0a0a;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-blue);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2, h3 {
+            color: var(--text-primary);
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            margin-top: 0;
+        }
+
+        /* Challenge List Styles */
+        #challenge-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .assignment-box {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .assignment-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            border-color: var(--accent-blue);
+        }
+
+        .assignment-box p {
+            color: var(--text-secondary);
+        }
+
+        .solve-btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .solve-btn:hover {
+            background-color: var(--success-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Coding Page Styles */
+        .hidden {
+            display: none;
+        }
+
+        #coding-page {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            margin-top: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .back-btn {
+            background: rgba(77, 171, 247, 0.1);
+            border: none;
+            color: var(--accent-blue);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(77, 171, 247, 0.2);
+        }
+
+        .compiler-container {
+            margin-top: 1.5rem;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .language-selector {
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        #code-editor {
+            width: 85%;
+            min-height: 200px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+            background-color: #252525;
+            color: #d4d4d4;
+        }
+
+        .practice-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .practice-btn:hover {
+            background-color: var(--success-hover);
+            transform: translateY(-2px);
+        }
+
+        #output-container {
+            margin-top: 1.5rem;
+            background-color: #252525;
+            border-radius: 5px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        #output-box {
+            background-color: #1e1e1e;
+            padding: 1rem;
+            border-radius: 5px;
+            min-height: 50px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            white-space: pre-wrap;
+            border: 1px solid #333;
+            margin-top: 0.5rem;
+            color: #d4d4d4;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--card-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Rest of your HTML remains exactly the same -->
+    <nav class="navbar">
+        <div class="logo">Advanced</div>
+        <ul class="nav-links">
+            <li><a href="../HomePage/codigo.html">Home</a></li>
+            <li><a href="#assignments">Challenges</a></li>
+            <li><a href="#leaderboard">Leaderboard</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <section class="assignments" id="assignments">
+            <h2>Advanced Coding Challenges</h2>
+            
+            <div id="challenge-container">
+                <!-- Challenges will be displayed here automatically -->
+            </div>
+        </section>
+
+        <div id="coding-page" class="hidden">
+            <button class="back-btn" onclick="backToChallenges()">← Back to Challenges</button>
+            <div class="challenge-display">
+                <h3 id="selected-challenge-title"></h3>
+                <p id="selected-challenge-description"></p>
+            </div>
+        
+            <div class="compiler-container">
+                <div class="code-header">
+                    <h3>Enter Your Code</h3>
+                    <select class="language-selector" id="language-selector">
+                        <option value="c">C</option>
+                        <option value="cpp">C++</option>
+                        <option value="java">Java</option>
+                        <option value="python">Python</option>
+                    </select>
+                </div>
+                <textarea id="code-editor" placeholder="Write your code here..."></textarea>
+                <div class="input-output-section">
+                    <button id="run-btn" class="practice-btn" onclick="runCode()">Run Code</button>
+                    <div id="output-container" class="hidden">
+                        <h3>Output</h3>
+                        <div id="output-box" class="output-display"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Your JavaScript remains exactly the same
+        const challenges = {
+            expert: [
+        { title: "Dynamic Memory Allocation", description: "Write a program that dynamically allocates memory for an array of n integers, fills it with user input, and sorts it in ascending order.", link: "cComp.html?assignment=memory_alloc" },
+        { title: "Multi-threading in Python", description: "Implement a program that creates multiple threads, each performing a different mathematical operation on shared data.", link: "cComp.html?assignment=multi_threading" },
+        { title: "Graph Traversal (BFS & DFS)", description: "Implement breadth-first search (BFS) and depth-first search (DFS) for a graph.", link: "cComp.html?assignment=graph_traversal" },
+        { title: "Dijkstra’s Algorithm", description: "Find the shortest path between nodes in a graph using Dijkstra’s algorithm.", link: "cComp.html?assignment=dijkstra" },
+        { title: "Merge Sort", description: "Implement merge sort for an array of integers.", link: "cComp.html?assignment=merge_sort" },
+        { title: "File Handling", description: "Write a program that reads and writes data to a file.", link: "cComp.html?assignment=file_handling" },
+        { title: "Producer-Consumer Problem", description: "Implement the producer-consumer problem using multithreading.", link: "cComp.html?assignment=producer_consumer" },
+        { title: "Memory Leak Detection", description: "Write a program to check for memory leaks using malloc and free.", link: "cComp.html?assignment=memory_leak" },
+        { title: "LRU Cache Implementation", description: "Implement an LRU (Least Recently Used) Cache using linked lists.", link: "cComp.html?assignment=lru_cache" },
+        { title: "Binary Tree Operations", description: "Perform insert, delete, and traversal operations on a binary tree.", link: "cComp.html?assignment=binary_tree" }
+    ]
+        };
+
+        // Show expert challenges by default when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            showChallenges('expert');
+        });
+
+        function showChallenges(level) {
+            const container = document.getElementById("challenge-container");
+            container.innerHTML = "";
+            
+            challenges[level].forEach(challenge => {
+                const challengeBox = document.createElement("div");
+                challengeBox.classList.add("assignment-box");
+                challengeBox.innerHTML = `
+                    <h3>${challenge.title}</h3>
+                    <p>${challenge.description}</p>
+                    <button class="solve-btn" onclick="selectChallenge('${challenge.title}', '${challenge.description}')">Solve Now</button>
+                `;
+                container.appendChild(challengeBox);
+            });
+        }
+
+        function selectChallenge(title, description) {
+            // Hide the challenge list
+            document.getElementById("assignments").classList.add("hidden");
+            
+            // Show the coding page
+            document.getElementById("coding-page").classList.remove("hidden");
+            
+            // Set the selected challenge info
+            document.getElementById("selected-challenge-title").textContent = title;
+            document.getElementById("selected-challenge-description").textContent = description;
+            
+            // Clear previous code and output
+            document.getElementById("code-editor").value = "";
+            document.getElementById("output-container").classList.add("hidden");
+            
+            // Set default code based on selected language
+            updateCodeEditor();
+        }
+
+        function backToChallenges() {
+            // Show the challenge list
+            document.getElementById("assignments").classList.remove("hidden");
+            
+            // Hide the coding page
+            document.getElementById("coding-page").classList.add("hidden");
+        }
+
+        function updateCodeEditor() {
+            const language = document.getElementById("language-selector").value;
+            let defaultCode = "";
+            
+            switch(language) {
+                case "c":
+                    defaultCode = `#include <stdio.h>\n\nint main() {\n    // Your code here\n    printf("Hello, World!\\n");\n    return 0;\n}`;
+                    break;
+                case "cpp":
+                    defaultCode = `#include <iostream>\nusing namespace std;\n\nint main() {\n    // Your code here\n    cout << "Hello, World!" << endl;\n    return 0;\n}`;
+                    break;
+                case "java":
+                    defaultCode = `public class Main {\n    public static void main(String[] args) {\n        // Your code here\n        System.out.println("Hello, World!");\n    }\n}`;
+                    break;
+                case "python":
+                    defaultCode = `# Your code here\nprint("Hello, World!")`;
+                    break;
+            }
+            
+            document.getElementById("code-editor").value = defaultCode;
+        }
+
+        function runCode() {
+            const code = document.getElementById("code-editor").value;
+            const language = document.getElementById("language-selector").value;
+            document.getElementById("output-container").classList.remove("hidden");
+            document.getElementById("output-box").innerText = "Running code... (Simulated output)";
+            
+            // In a real implementation, you would call your API here with the selected language
+            // For now, we'll just simulate a response after a short delay
+            setTimeout(() => {
+                document.getElementById("output-box").innerText = `Language: ${language.toUpperCase()}\n\nHello, World!\nProgram executed successfully.`;
+            }, 1000);
+        }
+
+        // Add event listener for language change
+        document.getElementById("language-selector").addEventListener('change', updateCodeEditor);
+    </script>
+</body>
+</html>

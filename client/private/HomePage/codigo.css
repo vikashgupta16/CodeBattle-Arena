@@ -259,19 +259,19 @@ main {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-.c-box {
+#intermediate {
     border-top: 4px solid var(--accent-blue);
 }
 
-.cpp-box {
+#projects {
     border-top: 4px solid var(--accent-orange);
 }
 
-.java-box {
+#advanced {
     border-top: 4px solid var(--accent-yellow);
 }
 
-.python-box {
+#beginner {
     border-top: 4px solid var(--accent-python);
 }
 
@@ -305,7 +305,7 @@ main {
     background-color: var(--success);
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
