@@ -49,7 +49,12 @@ body.light-theme {
     cursor: pointer;
     border: none;
     background-color: transparent;
-    z-index: 100;
+    z-index: 0;
+}
+
+.inside-logo-sidebar {
+    position: static;
+    margin-bottom: 30px;
 }
 
 .codingPageNav {
@@ -61,12 +66,16 @@ body.light-theme {
     top: 5%;
     left: 0;
     bottom: 5%;
-    z-index: 90;
+    z-index: 1;
     padding: 20px;
     border-radius: 0 30px 30px 0;
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
     visibility: hidden;
+}
+
+.codingPageNav ul {
+    position: relative;
 }
 
 .codingPageNav.show {
@@ -107,11 +116,13 @@ body.light-theme {
 }
 
 .nav-actions {
+    position: absolute;
     margin-top: auto;
     display: flex;
     flex-direction: column;
     gap: 15px;
     width: 100%;
+    top: 70%; /*don't change this and the position, otherwise the nav-action li will broke*/
 }
 
 #theme-toggle {
@@ -181,6 +192,15 @@ main {
     flex-direction: column;
     gap: 30px;
     max-width: 40%;
+}
+
+.welcome-txt {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
 }
 
 .home-info {
