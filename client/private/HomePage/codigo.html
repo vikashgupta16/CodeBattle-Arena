@@ -1,44 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CodeArena-CODIGO - Practice coding challenges">
     <title>CodeArena-CODIGO</title>
     <link rel="stylesheet" href="codigo.css">
     <link rel="shortcut icon" href="assets/web-development.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
-
-<body>
-    <span class="outside-logo-sidebar" onclick=showNav()></span>
-    <nav class="codingPageNav">
-        <span class="inside-logo-sidebar" onclick="hideNav()"></span>
+<body class="dark-theme">
+    <button class="nav-toggle outside-logo-sidebar" aria-label="Open navigation menu"></button>
+    <nav class="codingPageNav" aria-label="Main navigation">
+<button class="nav-close inside-logo-sidebar" aria-label="Close Navigation"></button>
         <ul>
-            <li class="cross-icon-mobile" onclick="hideNav()"><img src="assets/close-menu.png" alt=""></li>
-            <li><a href="#home" class="nav-link current" onclick="showSection('home')">Home</a></li>
-            <li><a href="#practice" class="nav-link" onclick="showSection('practice')">Practice</a></li>
-            <li><a href="#stats" class="nav-link" onclick="showSection('stats')">Stats</a></li>
-            <li><a href="#ask-ai" class="nav-link" onclick="showSection('ask-ai')">Ask AI</a></li>
-            <li><a href="#contact" class="nav-link" onclick="showSection('contact')">Contact Us</a></li>
-            <li>
-                <select name="theme-toggle" id="theme-toggle">
-                    <option value="Dark-theme" selected>Dark theme</option>
-                    <option value="Light-theme">Light theme</option>
+            <li><a href="#home" class="nav-link current" data-section="home">Home</a></li>
+            <li><a href="#practice" class="nav-link" data-section="practice">Practice</a></li>
+            <li><a href="#stats" class="nav-link" data-section="stats">Stats</a></li>
+            <li><a href="#help" class="nav-link" data-section="help">Ask AI</a></li>
+            <li><a href="#contact" class="nav-link" data-section="contact">Contact Us</a></li>
+            <li class="nav-actions">
+                <select name="theme-toggle" id="theme-toggle" aria-label="Select theme">
+                    <option value="dark-theme" selected>Dark theme</option>
+                    <option value="light-theme">Light theme</option>
                 </select>
-                <svg class="dark-mode" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"
-                    fill="#FFFFFF">
-                    <path
-                        d="M484-80q-84 0-157.5-32t-128-86.5Q144-253 112-326.5T80-484q0-146 93-257.5T410-880q-18 99 11 193.5T521-521q71 71 165.5 100T880-410q-26 144-138 237T484-80Zm0-80q88 0 163-44t118-121q-86-8-163-43.5T464-465q-61-61-97-138t-43-163q-77 43-120.5 118.5T160-484q0 135 94.5 229.5T484-160Zm-20-305Z" />
-                </svg>
-                <a class="logout-desktop" href="../../public/LandingPage/index.html"><button>Logout</button></a>
-                <a href="../../public/LandingPage/index.html"><span class="logout-mobile"></span></a>
+                <a href="../LandingPage/index.html" class="logout-btn">Logout</a>
             </li>
         </ul>
     </nav>
-
-
-    <main onclick=hideNav()>
-        <section id="home" class="home-section section">
+    <main>
+        <section id="home" class="section home-section">
             <div class="home-content-left">
                 <div class="welcome-txt">
                     <h1>💻 CodiGo Dashboard</h1>
@@ -74,55 +65,52 @@
             </div>
             <div class="ai-chat"></div>
         </section>
-        <section id="practice" class="practice-section section">
-            <p class="are-you-ready">ARE YOU READY !</p>
+        <section id="practice" class="section practice-section">
+            <p class="are-you-ready">ARE YOU READY!</p>
             <p>Practice Here, Rock Your Future</p>
             <h2>Practice a lot of code here, mainly C & C++</h2>
-
             <div class="coding-boxes">
-                <div class="language-box c-box" id="c">
+                <article class="language-box c-box" id="c">
                     <h3>C Programming</h3>
-                    <p style="text-align: left;">A powerful, structured programming language that's great for:</p>
+                    <p>A powerful, structured programming language that's great for:</p>
                     <ul>
                         <li>Operating Systems</li>
                         <li>Embedded Systems</li>
                         <li>Low-level Programming</li>
                     </ul>
-                    <button class="practice-btn"><a href="../Cpage/c.html">Practice C Now</a></button>
-                </div>
-
-                <div class="language-box cpp-box" id="c++">
+                    <a href="../Cpage/c.html" class="practice-btn">Practice C Now</a>
+                </article>
+                <article class="language-box cpp-box" id="c++">
                     <h3>C++ Programming</h3>
-                    <p style="text-align: left;">An object-oriented extension of C, perfect for:</p>
+                    <p>An object-oriented extension of C, perfect for:</p>
                     <ul>
                         <li>Game Development</li>
                         <li>Desktop Applications</li>
                         <li>System Software</li>
                     </ul>
-                    <button class="practice-btn"><a href="../CppPage/Cpp.html">Practice C++ Now</a></button>
-                </div>
-
-                <div class="language-box java-box" id="java">
+                    <a href="../CppPage/Cpp.html" class="practice-btn">Practice C++ Now</a>
+                </article>
+                <article class="language-box java-box" id="java">
                     <h3>Java Programming</h3>
-                    <p style="text-align: left;">A versatile language widely used for:</p>
+                    <p>A versatile language widely used for:</p>
                     <ul>
                         <li>Enterprise Applications</li>
                         <li>Android Development</li>
                         <li>Backend Systems</li>
                     </ul>
-                    <button class="practice-btn"><a href="../JavaPage/java.html">Practice Java Now</a></button>
-                </div>
-
-                <div class="language-box python-box" id="python">
+                    <a href="../JavaPage/Java.html" class="practice-btn">Practice Java Now</a>
+                </article>
+                <article class="language-box python-box" id="python">
                     <h3>Python Programming</h3>
-                    <p style="text-align: left;">A powerful language for:</p>
+                    <p>A powerful language for:</p>
                     <ul>
                         <li>Data Science</li>
                         <li>Machine Learning</li>
                         <li>Web Development</li>
                     </ul>
-                    <button class="practice-btn"><a href="../PythonPage/python.html">Practice Python Now</a></button>
-                </div>
+                    <a href="../PythonPage/Python.html" class="practice-btn">Practice Python Now</a>
+                </article>
+                
                 <div class="help-box">
                     <h3>Need Help?</h3>
                     <p>Our AI-powered help system, powered by Gemini AI, is here to assist you.
@@ -132,32 +120,16 @@
                 </div>
             </div>
         </section>
-        <section id="contact" class="contact-section section">
-            <h2 class="contact-heading">Contact</h2>
-            <p class="contact-desc">Ask you query, our team member will try to contact you in 24 hrs</p>
-            <form action="" class="contact-form">
+        <section id="contact" class="section contact-section">
+            <h2 class="heading">Contact</h2>
+            <form action="#" class="contact-form">
                 <input type="text" placeholder="Your Name" class="name" required>
                 <input type="email" placeholder="Email address" class="email" required>
                 <textarea cols="30" rows="10" placeholder="Enter Your Message" class="message" required></textarea>
-                <input type="submit" value="Send" class="send-btn">
+                <button type="submit" class="send-btn">Send</button>
             </form>
         </section>
     </main>
     <script src="script.js"></script>
-    <!-- copyright  -->
-    <!-- <p>&#169; Vikash & Rajveer & Archis & Rouvik</p> -->
-    </section>
-    <!-- email js  -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
-    <script type="text/javascript">
-        (function () {
-            emailjs.init({
-                publicKey: "jS_OjCoYjCk6NEZxd",
-            });
-        })();
-    </script>
 </body>
-
 </html>
