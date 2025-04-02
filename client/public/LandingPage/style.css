@@ -30,16 +30,18 @@ main {
 .landingPageNavbar {
     width: 90%;
     height: 60px;
-    background-color: #e9e6e9;
-    opacity: 0.6;
+    /* background-color: #e9e6e9; */
+    /* opacity: 0.6; */
+    background-color: rgba(233, 230, 233, 0.6);
     border-radius: 66px;
     box-shadow: 0px 0px 17.7px 0px rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(40px);
+    backdrop-filter: blur(5px);
     position: fixed;
     top: 20px;
     left: 5%;
     right: 5%;
     padding: 0 5px 0 20px;
+    z-index: 999;
 }
 
 .landingPageNavbar ul {
@@ -203,4 +205,18 @@ main {
 
 .hero-cta a{
     text-decoration: none;
+}
+
+.dashboard-img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: -135px;
+}
+
+.dashboard-img img {
+    width: 80%;
+    box-shadow: 0 0 18.7px 9px rgba(166, 125, 184, 0.54);
+    border-radius: 20px;
 }
