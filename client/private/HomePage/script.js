@@ -113,40 +113,107 @@ function success()
         icon: "success",
       });
 }
-// JavaScript code for chat assistant functionality
 document.addEventListener("DOMContentLoaded", function() {
     const chatInput = document.getElementById("chat-input");
     const sendButton = document.getElementById("send-button");
     const chatBox = document.getElementById("chat-box");
+    const languageButtons = document.querySelectorAll(".lang-btn");
 
-    sendButton.addEventListener("click", function() {
-        const userMessage = chatInput.value.trim();
+    let selectedLanguage = "general"; // Default mode
 
-        if (userMessage) {
-            // Append user message to chat box
-            const userMessageElement = document.createElement("div");
-            userMessageElement.textContent = "User: " + userMessage;
-            userMessageElement.style.marginBottom = "10px";
-            chatBox.appendChild(userMessageElement);
-
-            // Clear chat input field
-            chatInput.value = "";
-
-            // Simulate assistant response (you can replace this logic with your own assistant backend)
-            const assistantMessage = simulateAssistantResponse(userMessage);
-            const assistantMessageElement = document.createElement("div");
-            assistantMessageElement.textContent = "Assistant: " + assistantMessage;
-            assistantMessageElement.style.marginBottom = "10px";
-            assistantMessageElement.style.color = "blue";
-            chatBox.appendChild(assistantMessageElement);
-
-            // Scroll to the bottom of chat box
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+    // Language selection
+    languageButtons.forEach(button => {
+        button.addEventListener("click", function() {
+            selectedLanguage = this.dataset.lang;
+            languageButtons.forEach(btn => btn.classList.remove("active"));
+            this.classList.add("active");
+            addAssistantMessage(`Switched to ${selectedLanguage} mode! How can I help you today?`);
+        });
     });
 
-    function simulateAssistantResponse(userMessage) {
-        // Temporary simulated response logic
-        return "You said: " + userMessage + ". How can I assist further?";
+    // Send message on button click or Enter key
+    sendButton.addEventListener("click", sendMessage);
+    chatInput.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") sendMessage();
+    });
+
+    function sendMessage() {
+        const userMessage = chatInput.value.trim();
+        if (!userMessage) return;
+
+        // Add user message
+        addUserMessage(userMessage);
+        chatInput.value = "";
+
+        // Get and display assistant response
+        const response = getAssistantResponse(userMessage.toLowerCase());
+        addAssistantMessage(response);
+
+        // Auto-scroll to bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function addUserMessage(message) {
+        const msgElement = document.createElement("div");
+        msgElement.className = "message user-message";
+        msgElement.innerHTML = `<strong>You:</strong> ${message}`;
+        chatBox.appendChild(msgElement);
+    }
+
+    function addAssistantMessage(message) {
+        const msgElement = document.createElement("div");
+        msgElement.className = "message assistant-message";
+        msgElement.innerHTML = `<strong>CODI:</strong> ${message}`;
+        chatBox.appendChild(msgElement);
+    }
+
+    function getAssistantResponse(message) {
+        // Greeting responses
+        if (message.includes("hello") || message.includes("hi")) {
+            return "Hey there! 👋 I'm CODI, your coding buddy. How can I assist you with " + 
+                   (selectedLanguage === "general" ? "programming" : selectedLanguage) + " today?";
+        }
+
+        // Language-specific basic questions and answers
+        const knowledgeBase = {
+            c: {
+                "what is a pointer": "A pointer in C is a variable that stores the memory address of another variable. Want a simple example?",
+                "hello world": "Here's a basic C Hello World:\n```c\n#include <stdio.h>\nint main() {\n    printf(\"Hello, World!\\n\");\n    return 0;\n}\n```"
+            },
+            cpp: {
+                "what is oop": "OOP in C++ stands for Object-Oriented Programming! It includes concepts like classes, objects, inheritance, and polymorphism. Need an example?",
+                "hello world": "Here's a C++ Hello World:\n```cpp\n#include <iostream>\nint main() {\n    std::cout << \"Hello, World!\" << std::endl;\n    return 0;\n}\n```"
+            },
+            java: {
+                "what is a class": "In Java, a class is a blueprint for creating objects. It defines properties and behaviors. Want to see one?",
+                "hello world": "Here's a Java Hello World:\n```java\npublic class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}\n```"
+            },
+            python: {
+                "what is a list": "A Python list is a mutable, ordered collection of items. Like this: my_list = [1, 2, 3]. Want more details?",
+                "hello world": "Here's Python's simplest Hello World:\n```python\nprint(\"Hello, World!\")\n```"
+            }
+        };
+
+        // Check knowledge base for specific language
+        if (selectedLanguage !== "general" && knowledgeBase[selectedLanguage]) {
+            for (let [question, answer] of Object.entries(knowledgeBase[selectedLanguage])) {
+                if (message.includes(question)) {
+                    return answer + " 😊 Anything else you'd like to know?";
+                }
+            }
+        }
+
+        // General programming questions
+        if (message.includes("what is programming")) {
+            return "Programming is like giving instructions to a computer to solve problems or perform tasks! It's fun once you get the hang of it. Which language would you like to explore?";
+        }
+
+        // Friendly fallback responses
+        const fallbacks = [
+            "Hmm, I'm not sure about that one! Could you give me more details?",
+            "That's an interesting question! Can you tell me more?",
+            "I'm here to help! Could you rephrase that or pick a language to focus on?"
+        ];
+        return fallbacks[Math.floor(Math.random() * fallbacks.length)];
     }
 });
