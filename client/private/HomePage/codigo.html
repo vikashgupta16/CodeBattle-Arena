@@ -10,59 +10,134 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body class="dark-theme">
-    <button class="nav-toggle outside-logo-sidebar" aria-label="Open navigation menu"></button>
+    <button class="nav-toggle outside-logo-sidebar" onclick="showNav()" aria-label="Open navigation menu">
+        <img src="assets/sidebar-icon.png" alt="Menu" class="nav-icon">
+    </button>
+    
     <nav class="codingPageNav" aria-label="Main navigation">
-<button class="nav-close inside-logo-sidebar" aria-label="Close Navigation"></button>
+        <button class="nav-close inside-logo-sidebar" onclick="hideNav()" aria-label="Close navigation">
+            <img src="assets/sidebar-icon.png" alt="Close" class="nav-icon">
+        </button>
+        
         <ul>
-            <li><a href="#home" class="nav-link current" data-section="home">Home</a></li>
-            <li><a href="#practice" class="nav-link" data-section="practice">Practice</a></li>
-            <li><a href="#stats" class="nav-link" data-section="stats">Stats</a></li>
-            <li><a href="#help" class="nav-link" data-section="help">Ask AI</a></li>
-            <li><a href="#contact" class="nav-link" data-section="contact">Contact Us</a></li>
-            <li class="nav-actions">
-                <select name="theme-toggle" id="theme-toggle" aria-label="Select theme">
-                    <option value="dark-theme" selected>Dark theme</option>
-                    <option value="light-theme">Light theme</option>
+            <li><a href="#home" class="nav-link current" onclick="showSection('home')">Home</a></li>
+            <li><a href="#practice" class="nav-link" onclick="showSection('practice')">Practice</a></li>
+            <li><a href="#stats" class="nav-link" onclick="showSection('stats')">Stats</a></li>
+            <li><a href="#help" class="nav-link" onclick="showSection('help')">Ask AI</a></li>
+            <li><a href="#contact" class="nav-link" onclick="showSection('contact')">Contact Us</a></li>
+            <li>
+                <select name="theme-toggle" id="theme-toggle">
+                    <option value="Dark-theme" selected>Dark theme</option>
+                    <option value="Light-theme">Light theme</option>
                 </select>
                 <a href="../LandingPage/index.html" class="logout-btn">Logout</a>
             </li>
         </ul>
     </nav>
-    <main>
-        <section id="home" class="section home-section">
-            <div class="home-content-left">
-                <div class="welcome-txt">
-                    <h1>💻 CodiGo Dashboard</h1>
-                    <h2>Welcome, <span id="username">username</span></h2>
+
+    <main onclick="hideNav()">
+        <section id="home" class="home-section section">
+            <!-- Combined Dashboard Layout -->
+            <div class="dashboard-grid">
+                <!-- Overview Card with Original Content -->
+                <div class="dashboard-card">
+                    <div class="welcome-txt">
+                        <h1>💻 CodiGo Dashboard</h1>
+                        <h2>Welcome, <span id="username">username</span></h2>
+                    </div>
+                    
+                    <div class="home-info">
+                        <h2 id="stats">📊 Quick stats</h2>
+                        <ul>
+                            <li>⭐ Current Rank: #1234</li>
+                            <li>🏆 Contests Won: 5</li>
+                            <li>🔥 Streak: 7 Days</li>
+                            <li>🎯 Next Contest: Code Sprint in 2h 30m</li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="home-info">
-                    <h2 id="stats">📊 Quick stats</h2>
-                    <ul>
-                        <li>⭐ Current Rank: #1234</li>
-                        <li>🏆 Contests Won: 5</li>
-                        <li>🔥 Streak: 7 Days</li>
-                        <li>🎯 Next Contest: Code Sprint in 2h 30m</li>
-                    </ul>
+
+                <!-- Activity Card -->
+                <div class="dashboard-card">
+                    <h2>Activity</h2>
+                    <div class="graph-container">
+                        <div class="graph-line"></div>
+                        <div class="graph-dots">
+                            <span style="height:80%"></span>
+                            <span style="height:60%"></span>
+                            <span style="height:90%"></span>
+                            <span style="height:40%"></span>
+                            <span style="height:70%"></span>
+                            <span style="height:30%"></span>
+                        </div>
+                    </div>
+                    <div class="activity-metrics">
+                        <div class="metric">
+                            <span class="value">25k</span>
+                            <span class="label">Peak Streak</span>
+                        </div>
+                        <div class="metric">
+                            <span class="value">0</span>
+                            <span class="label">Missed Days</span>
+                        </div>
+                        <div class="metric">
+                            <span class="value">Monthly</span>
+                            <span class="label">Progress</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="home-info">
-                    <h2 id="action">⚡Quick Actions:</h2>
-                    <ul>
-                        <li>✅ Practice Coding - Continue solving problems from where you left off.</li>
-                        <li>✅ Join a Contest - Compete live with other coders!</li>
-                        <li>✅ AI Help Desk - Ask AI for hints, explanations, and debugging.</li>
-                        <li>✅ Leaderboard - See where you stand against global coders.</li>
-                    </ul>
+
+                <!-- Quick Actions Card -->
+                <div class="dashboard-card">
+                    <div class="home-info">
+                        <h2 id="action">⚡Quick Actions:</h2>
+                        <ul>
+                            <li>✅ Practice Coding - Continue solving problems from where you left off.</li>
+                            <li>✅ Join a Contest - Compete live with other coders!</li>
+                            <li>✅ AI Help Desk - Ask AI for hints, explanations, and debugging.</li>
+                            <li>✅ Leaderboard - See where you stand against global coders.</li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="home-info">
-                    <h2 id="challenge">📝 Recommended Challenges:</h2>
-                    <ul>
-                        <li>1️⃣ Advanced Dynamic Programming - 🔥 Trending</li>
-                        <li>2️⃣ Graph Theory Marathon - 🏆 High Score Challenge</li>
-                        <li>3️⃣ System Design Mock Interview - 🎯 Expert Level</li>
-                        <li>📌 View All Challenges →</li>
-                    </ul>
+
+                <!-- Languages Card -->
+                <div class="dashboard-card">
+                    <h2>Popular Languages</h2>
+                    <div class="language-list">
+                        <div class="language-item">
+                            <span>C++</span>
+                            <span>600+ solved</span>
+                        </div>
+                        <div class="language-item">
+                            <span>Python</span>
+                            <span>700+ solved</span>
+                        </div>
+                        <div class="language-item">
+                            <span>Java</span>
+                            <span>400+ solved</span>
+                        </div>
+                        <div class="language-item">
+                            <span>JavaScript</span>
+                            <span>300+ solved</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Challenges Card -->
+                <div class="dashboard-card">
+                    <div class="home-info">
+                        <h2 id="challenge">📝 Recommended Challenges:</h2>
+                        <ul>
+                            <li>⿡ Advanced Dynamic Programming - 🔥 Trending</li>
+                            <li>⿢ Graph Theory Marathon - 🏆 High Score Challenge</li>
+                            <li>⿣ System Design Mock Interview - 🎯 Expert Level</li>
+                            <li>📌 View All Challenges →</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+            
+            <!-- AI Chat (Unchanged) -->
             <div class="ai-chat">
                 <div id="chat-assistant">
                     <div id="header">Advanced Virtual Assistant for Coders</div>
@@ -75,10 +150,11 @@
                         <button id="send-button">Send</button>
                     </div>
                 </div>
-        
             </div>
         </section>
-        <section id="practice" class="section practice-section">
+
+        <!-- Practice Section (Completely Unchanged) -->
+        <section id="practice" class="practice-section section">
             <p class="are-you-ready">ARE YOU READY!</p>
             <p>Practice Here, Rock Your Future</p>
             <h2>Practice a lot of code here, mainly C,C++,Java & Python</h2>
@@ -134,11 +210,12 @@
                         Ask anything and accelerate your learning journey!
                     </p>
                     <a href="#" class="practice-btn">Ask CODi Now</a>
-                </article>
                 </div>
             </div>
         </section>
-        <section id="contact" class="section contact-section">
+
+        <!-- Contact Section (Completely Unchanged) -->
+        <section id="contact" class="contact-section section">
             <h2 class="heading">Contact</h2>
             <form action="#" class="contact-form">
                 <input type="text" placeholder="Your Name" class="name" required>
@@ -148,17 +225,13 @@
             </form>
         </section>
     </main>
-    <!-- email js  -->
+
+    <!-- Scripts (Completely Unchanged) -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
- 
     <script type="text/javascript">
-   (function(){
-      emailjs.init({
-        publicKey: "jS_OjCoYjCk6NEZxd",
-      });
-   })();
-</script>
+        (function(){ emailjs.init({ publicKey: "jS_OjCoYjCk6NEZxd" }); })();
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
