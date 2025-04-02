@@ -113,3 +113,40 @@ function success()
         icon: "success",
       });
 }
+// JavaScript code for chat assistant functionality
+document.addEventListener("DOMContentLoaded", function() {
+    const chatInput = document.getElementById("chat-input");
+    const sendButton = document.getElementById("send-button");
+    const chatBox = document.getElementById("chat-box");
+
+    sendButton.addEventListener("click", function() {
+        const userMessage = chatInput.value.trim();
+
+        if (userMessage) {
+            // Append user message to chat box
+            const userMessageElement = document.createElement("div");
+            userMessageElement.textContent = "User: " + userMessage;
+            userMessageElement.style.marginBottom = "10px";
+            chatBox.appendChild(userMessageElement);
+
+            // Clear chat input field
+            chatInput.value = "";
+
+            // Simulate assistant response (you can replace this logic with your own assistant backend)
+            const assistantMessage = simulateAssistantResponse(userMessage);
+            const assistantMessageElement = document.createElement("div");
+            assistantMessageElement.textContent = "Assistant: " + assistantMessage;
+            assistantMessageElement.style.marginBottom = "10px";
+            assistantMessageElement.style.color = "blue";
+            chatBox.appendChild(assistantMessageElement);
+
+            // Scroll to the bottom of chat box
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    });
+
+    function simulateAssistantResponse(userMessage) {
+        // Temporary simulated response logic
+        return "You said: " + userMessage + ". How can I assist further?";
+    }
+});
