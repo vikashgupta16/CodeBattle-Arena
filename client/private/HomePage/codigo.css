@@ -647,3 +647,215 @@ main {
     from { opacity: 0; }
     to { opacity: 1; }
 }
+/* Add to your codigo.css */
+.dashboard-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.dashboard-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dashboard-card {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-normal);
+}
+
+/* Welcome Card */
+.welcome-card {
+    min-height: 300px;
+}
+
+/* Activity Card */
+.activity-card {
+    flex-grow: 1;
+}
+
+/* Quick Actions Grid */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.action-item {
+    padding: 15px;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 255, 0, 0.05);
+    text-align: center;
+    transition: var(--transition-fast);
+}
+
+.action-item:hover {
+    transform: translateY(-3px);
+    background: rgba(0, 255, 0, 0.1);
+}
+
+.action-icon {
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+.action-text {
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.action-desc {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* Languages Grid */
+.language-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.language-item {
+    padding: 15px;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 150, 255, 0.05);
+    text-align: center;
+}
+
+.lang-icon {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.lang-name {
+    font-weight: 600;
+}
+
+.lang-stats {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* Challenges List */
+.challenge-list {
+    margin-top: 15px;
+}
+
+.challenge-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-sm);
+}
+
+.challenge-difficulty {
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin-right: 12px;
+    text-transform: uppercase;
+}
+
+.challenge-difficulty.beginner {
+    background: rgba(0, 255, 0, 0.2);
+    color: #00ff00;
+}
+
+.challenge-difficulty.intermediate {
+    background: rgba(255, 165, 0, 0.2);
+    color: #ffa500;
+}
+
+.challenge-difficulty.advanced {
+    background: rgba(255, 0, 0, 0.2);
+    color: #ff0000;
+}
+
+.challenge-difficulty.expert {
+    background: rgba(148, 0, 211, 0.2);
+    color: #9400d3;
+}
+
+.challenge-info {
+    flex-grow: 1;
+}
+
+.challenge-title {
+    font-weight: 600;
+}
+
+.challenge-tag {
+    font-size: 0.7rem;
+    display: inline-block;
+    margin-right: 8px;
+    margin-top: 3px;
+}
+
+.view-all {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.view-all a {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+/* AI Card */
+.ai-card {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#chat-assistant {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#chat-box {
+    flex-grow: 1;
+    min-height: 200px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+    
+    .dashboard-column {
+        flex-direction: row;
+    }
+    
+    .dashboard-column > .dashboard-card {
+        flex: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-column {
+        flex-direction: column;
+    }
+    
+.quick-actions-grid,
+.language-grid 
+{
+     grid-template-columns:1fr;
+    }
+}
