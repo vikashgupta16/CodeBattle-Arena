@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,7 +45,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -79,7 +80,8 @@
             margin: 0 auto;
         }
 
-        h2, h3 {
+        h2,
+        h3 {
             color: var(--text-primary);
         }
 
@@ -103,14 +105,14 @@
             background-color: var(--card-bg);
             padding: 1.5rem;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             transition: var(--transition);
             border: 1px solid var(--border-color);
         }
 
         .assignment-box:hover {
             transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
             border-color: var(--accent-blue);
         }
 
@@ -148,7 +150,7 @@
             background-color: var(--card-bg);
             padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             margin-top: 2rem;
             border: 1px solid var(--border-color);
         }
@@ -263,6 +265,7 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <!-- Rest of your HTML remains exactly the same -->
     <nav class="navbar">
@@ -277,7 +280,7 @@
     <main class="container">
         <section class="assignments" id="assignments">
             <h2>Advanced Coding Challenges</h2>
-            
+
             <div id="challenge-container">
                 <!-- Challenges will be displayed here automatically -->
             </div>
@@ -289,7 +292,7 @@
                 <h3 id="selected-challenge-title"></h3>
                 <p id="selected-challenge-description"></p>
             </div>
-        
+
             <div class="compiler-container">
                 <div class="code-header">
                     <h3>Enter Your Code</h3>
@@ -300,7 +303,7 @@
                         <option value="python">Python</option>
                     </select>
                 </div>
-                <textarea id="code-editor" placeholder="Write your code here..."></textarea>
+                <div id="code-editor"></div>
                 <div class="input-output-section">
                     <button id="run-btn" class="practice-btn" onclick="runCode()">Run Code</button>
                     <div id="output-container" class="hidden">
@@ -311,33 +314,47 @@
             </div>
         </div>
     </main>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ace.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ext-language_tools.min.js"></script>
     <script>
+        // ace-editor
+        ace.require("ace/ext/language_tools");
+        ace.config.set("basePath", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/");
+        var editor = ace.edit('code-editor', { enableBasicAutocompletion: true, enableSnippets: true, enableLiveAutocompletion: true });
+        editor.session.setMode("ace/mode/c_cpp"); // Default mode
+        editor.setOptions({
+            fontSize: "14px",
+            showGutter: true,
+            highlightActiveLine: true,
+            highlightGutterLine: false,
+            wrap: false,
+            theme: "ace/theme/monokai"
+        });
         // Your JavaScript remains exactly the same
         const challenges = {
             expert: [
-        { title: "Dynamic Memory Allocation", description: "Write a program that dynamically allocates memory for an array of n integers, fills it with user input, and sorts it in ascending order.", link: "cComp.html?assignment=memory_alloc" },
-        { title: "Multi-threading in Python", description: "Implement a program that creates multiple threads, each performing a different mathematical operation on shared data.", link: "cComp.html?assignment=multi_threading" },
-        { title: "Graph Traversal (BFS & DFS)", description: "Implement breadth-first search (BFS) and depth-first search (DFS) for a graph.", link: "cComp.html?assignment=graph_traversal" },
-        { title: "Dijkstra’s Algorithm", description: "Find the shortest path between nodes in a graph using Dijkstra’s algorithm.", link: "cComp.html?assignment=dijkstra" },
-        { title: "Merge Sort", description: "Implement merge sort for an array of integers.", link: "cComp.html?assignment=merge_sort" },
-        { title: "File Handling", description: "Write a program that reads and writes data to a file.", link: "cComp.html?assignment=file_handling" },
-        { title: "Producer-Consumer Problem", description: "Implement the producer-consumer problem using multithreading.", link: "cComp.html?assignment=producer_consumer" },
-        { title: "Memory Leak Detection", description: "Write a program to check for memory leaks using malloc and free.", link: "cComp.html?assignment=memory_leak" },
-        { title: "LRU Cache Implementation", description: "Implement an LRU (Least Recently Used) Cache using linked lists.", link: "cComp.html?assignment=lru_cache" },
-        { title: "Binary Tree Operations", description: "Perform insert, delete, and traversal operations on a binary tree.", link: "cComp.html?assignment=binary_tree" }
-    ]
+                { title: "Dynamic Memory Allocation", description: "Write a program that dynamically allocates memory for an array of n integers, fills it with user input, and sorts it in ascending order.", link: "cComp.html?assignment=memory_alloc" },
+                { title: "Multi-threading in Python", description: "Implement a program that creates multiple threads, each performing a different mathematical operation on shared data.", link: "cComp.html?assignment=multi_threading" },
+                { title: "Graph Traversal (BFS & DFS)", description: "Implement breadth-first search (BFS) and depth-first search (DFS) for a graph.", link: "cComp.html?assignment=graph_traversal" },
+                { title: "Dijkstra’s Algorithm", description: "Find the shortest path between nodes in a graph using Dijkstra’s algorithm.", link: "cComp.html?assignment=dijkstra" },
+                { title: "Merge Sort", description: "Implement merge sort for an array of integers.", link: "cComp.html?assignment=merge_sort" },
+                { title: "File Handling", description: "Write a program that reads and writes data to a file.", link: "cComp.html?assignment=file_handling" },
+                { title: "Producer-Consumer Problem", description: "Implement the producer-consumer problem using multithreading.", link: "cComp.html?assignment=producer_consumer" },
+                { title: "Memory Leak Detection", description: "Write a program to check for memory leaks using malloc and free.", link: "cComp.html?assignment=memory_leak" },
+                { title: "LRU Cache Implementation", description: "Implement an LRU (Least Recently Used) Cache using linked lists.", link: "cComp.html?assignment=lru_cache" },
+                { title: "Binary Tree Operations", description: "Perform insert, delete, and traversal operations on a binary tree.", link: "cComp.html?assignment=binary_tree" }
+            ]
         };
 
         // Show expert challenges by default when page loads
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             showChallenges('expert');
         });
 
         function showChallenges(level) {
             const container = document.getElementById("challenge-container");
             container.innerHTML = "";
-            
+
             challenges[level].forEach(challenge => {
                 const challengeBox = document.createElement("div");
                 challengeBox.classList.add("assignment-box");
@@ -353,18 +370,18 @@
         function selectChallenge(title, description) {
             // Hide the challenge list
             document.getElementById("assignments").classList.add("hidden");
-            
+
             // Show the coding page
             document.getElementById("coding-page").classList.remove("hidden");
-            
+
             // Set the selected challenge info
             document.getElementById("selected-challenge-title").textContent = title;
             document.getElementById("selected-challenge-description").textContent = description;
-            
+
             // Clear previous code and output
             document.getElementById("code-editor").value = "";
             document.getElementById("output-container").classList.add("hidden");
-            
+
             // Set default code based on selected language
             updateCodeEditor();
         }
@@ -372,7 +389,7 @@
         function backToChallenges() {
             // Show the challenge list
             document.getElementById("assignments").classList.remove("hidden");
-            
+
             // Hide the coding page
             document.getElementById("coding-page").classList.add("hidden");
         }
@@ -380,40 +397,48 @@
         function updateCodeEditor() {
             const language = document.getElementById("language-selector").value;
             let defaultCode = "";
-            
-            switch(language) {
+            let mode = ""; // Add a variable to store the mode
+
+            switch (language) {
                 case "c":
                     defaultCode = `#include <stdio.h>\n\nint main() {\n    // Your code here\n    printf("Hello, World!\\n");\n    return 0;\n}`;
+                    mode = "ace/mode/c_cpp"; // Set mode for C
                     break;
                 case "cpp":
                     defaultCode = `#include <iostream>\nusing namespace std;\n\nint main() {\n    // Your code here\n    cout << "Hello, World!" << endl;\n    return 0;\n}`;
+                    mode = "ace/mode/c_cpp"; // Set mode for C++
                     break;
                 case "java":
                     defaultCode = `public class Main {\n    public static void main(String[] args) {\n        // Your code here\n        System.out.println("Hello, World!");\n    }\n}`;
+                    mode = "ace/mode/java"; // Set mode for Java
                     break;
                 case "python":
                     defaultCode = `# Your code here\nprint("Hello, World!")`;
+                    mode = "ace/mode/python"; // Set mode for Python
                     break;
             }
-            
-            document.getElementById("code-editor").value = defaultCode;
+
+            // Set the default code in the editor
+            editor.setValue(defaultCode, 1); // The second argument moves the cursor to the end of the code
+
+            // Set the mode for syntax highlighting
+            editor.session.setMode(mode);
         }
+        document.getElementById("language-selector").addEventListener('change', updateCodeEditor);
 
         function runCode() {
             const code = document.getElementById("code-editor").value;
             const language = document.getElementById("language-selector").value;
             document.getElementById("output-container").classList.remove("hidden");
             document.getElementById("output-box").innerText = "Running code... (Simulated output)";
-            
+
             // In a real implementation, you would call your API here with the selected language
             // For now, we'll just simulate a response after a short delay
             setTimeout(() => {
                 document.getElementById("output-box").innerText = `Language: ${language.toUpperCase()}\n\nHello, World!\nProgram executed successfully.`;
             }, 1000);
         }
-
-        // Add event listener for language change
-        document.getElementById("language-selector").addEventListener('change', updateCodeEditor);
     </script>
 </body>
+
 </html>
