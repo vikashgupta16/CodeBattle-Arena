@@ -110,8 +110,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         addMessage('user', message);
         chatInput.value = '';
-        
-        // Show typing indicator
         const typing = document.createElement('div');
         typing.className = 'typing-indicator';
         typing.innerHTML = '<span></span><span></span><span></span>';
