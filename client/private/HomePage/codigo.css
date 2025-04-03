@@ -44,7 +44,7 @@ body.light-theme {
     background-repeat: no-repeat;
     background-position: center;
     position: fixed;
-    top: 30px;
+    top: 0px;
     left: 30px;
     cursor: pointer;
     border: none;
@@ -76,6 +76,8 @@ body.light-theme {
 
 .codingPageNav ul {
     position: relative;
+    padding-top: 50px;
+    /*dont change this, otherwise the nav will broke*/
 }
 
 .codingPageNav.show {
@@ -96,14 +98,14 @@ body.light-theme {
     cursor: pointer;
     font-size: 0.94rem;
     padding: 8px 12px;
-    border-radius: 0.2rem;
+    border-radius: 0.3rem;
     color: var(--text-light);
     text-decoration: none;
     transition: var(--transition);
     display: block;
 }
 
-.nav-link:hover, 
+.nav-link:hover,
 .nav-link:focus {
     color: var(--accent-green);
     background: rgba(255, 255, 255, 0.1);
@@ -116,13 +118,13 @@ body.light-theme {
 }
 
 .nav-actions {
-    position: absolute;
     margin-top: auto;
     display: flex;
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    top: 70%; /*don't change this and the position, otherwise the nav-action li will broke*/
+    top: 70%;
+    /*don't change this and the position, otherwise the nav-action li will broke*/
 }
 
 #theme-toggle {
@@ -167,7 +169,7 @@ main {
     transition: margin-left 0.3s ease;
 }
 
-.codingPageNav.show + main {
+.codingPageNav.show+main {
     margin-left: 280px;
 }
 
@@ -198,9 +200,18 @@ main {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
-    margin-top: 10px;
+    /* margin-top: 10px; */
+    background-color: #191923;
+    border-radius: 20px;
+    padding: 20px 0;
+}
+
+.profile-icon-svg {
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: 6px;
 }
 
 .home-info {
@@ -212,7 +223,7 @@ main {
 
 .home-info h2 {
     margin-bottom: 15px;
-    color: var(--accent-green);
+    color: #e0e0e0;
 }
 
 .home-info ul {
@@ -221,16 +232,16 @@ main {
 
 .home-info li {
     margin: 10px 0;
-    position: relative;
-    padding-left: 25px;
+    /* position: relative; */
+    /* padding-left: 25px; */
 }
 
-.home-info li::before {
+/* .home-info li::before {
     content: "•";
     position: absolute;
     left: 0;
     color: var(--accent-green);
-}
+} */
 
 .ai-chat {
     flex: 1;
@@ -241,7 +252,10 @@ main {
 
 /* Practice Section */
 .practice-section {
+    display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     padding: 40px 0;
 }
 
@@ -261,6 +275,7 @@ main {
 .coding-boxes {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    place-items: center;
     gap: 30px;
     padding: 0 20px;
     max-width: 1200px;
@@ -271,7 +286,8 @@ main {
     background-color: var(--card-bg);
     border-radius: 10px;
     padding: 25px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease, box-shadow 0.3s ease;
+    border-top: 4px solid transparent;
 }
 
 .language-box:hover {
@@ -279,19 +295,19 @@ main {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-#intermediate {
+#intermediate:hover {
     border-top: 4px solid var(--accent-blue);
 }
 
-#projects {
+#projects:hover {
     border-top: 4px solid var(--accent-orange);
 }
 
-#advanced {
+#advanced:hover {
     border-top: 4px solid var(--accent-yellow);
 }
 
-#beginner {
+#beginner:hover {
     border-top: 4px solid var(--accent-python);
 }
 
@@ -321,7 +337,7 @@ main {
 .practice-btn {
     display: inline-block;
     width: 100%;
-    padding: 12px;
+    padding: 12px 30px;
     background-color: var(--success);
     color: white;
     border: none;
@@ -344,11 +360,19 @@ main {
     border-radius: 10px;
     padding: 30px;
     margin-top: 20px;
+    place-items: center;
+    text-align: center;
+}
+
+.help-box p {
+    margin: 10px auto 20px auto;
 }
 
 /* Contact Section */
 .contact-section {
+    display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     padding: 40px 20px;
 }
@@ -361,14 +385,16 @@ main {
     border-radius: 10px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 20px;
+    margin-top: 20px;
 }
 
 .contact-form input,
 .contact-form textarea {
     width: 100%;
     padding: 12px;
-    border-radius: 5px;
+    border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     background-color: rgba(255, 255, 255, 0.05);
     color: inherit;
@@ -381,16 +407,16 @@ main {
 }
 
 .send-btn {
-    padding: 12px 24px;
+    padding: 12px 80px;
     background-color: var(--success);
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
     transition: var(--transition);
-    align-self: flex-start;
+    align-self: center;
 }
 
 .send-btn:hover {
@@ -403,11 +429,11 @@ main {
     .home-section {
         flex-direction: column;
     }
-    
+
     .home-content-left {
         max-width: 100%;
     }
-    
+
     .ai-chat {
         min-height: 300px;
     }
@@ -421,11 +447,11 @@ main {
         bottom: 0;
         border-radius: 0;
     }
-    
-    .codingPageNav.show + main {
+
+    .codingPageNav.show+main {
         margin-left: 0;
     }
-    
+
     .coding-boxes {
         grid-template-columns: 1fr;
     }
@@ -436,64 +462,75 @@ main {
         top: 15px;
         left: 15px;
     }
-    
-    .home-section, 
+
+    .home-section,
     .practice-section,
     .contact-section {
         padding: 20px 10px;
     }
 }
- #chat-assistant {
-            width: 100%;
-            height: 100%;
-            background-color: #000000;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
-        #header {
-            text-align: center;
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #1a237e;
-        }
-        #coding-info {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 1em;
-            color: #282727;
-        }
-        #chat-box {
-            flex: 1;
-            background-color: #0e0c0cb9;
-            border-radius: 5px;
-            padding: 10px;
-            overflow-y: auto;
-            margin: 20px 0;
-        }
-        #input-section {
-            display: flex;
-            gap: 10px;
-        }
-        #chat-input {
-            flex: 1;
-            padding: 10px;
-            border-radius: 25px;
-            border: 1px solid #3cff00;
-        }
-        #send-button {
-            background-color: #20ff07;
-            color: rgb(255, 255, 255);
-            padding: 10px;
-            border-radius: 20px;
-            border: none;
-            cursor: pointer;
-        }
-        #send-button:hover {
-            background-color: #154519da;
-        }
+
+#chat-assistant {
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    border-radius: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+#header {
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #1a237e;
+}
+
+#coding-info {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 1em;
+    color: #282727;
+}
+
+#chat-box {
+    flex: 1;
+    background-color: #0e0c0cb9;
+    border-radius: 20px;
+    padding: 10px;
+    overflow-y: auto;
+    margin: 20px 0;
+}
+
+#input-section {
+    display: flex;
+    gap: 10px;
+}
+
+#chat-input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 25px;
+    border: 1px solid #3cff00;
+}
+
+#send-button {
+    background-color: #24b414;
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: poppins;
+}
+
+#send-button:hover {
+    background-color: #154519da;
+}
+
 /* ===== New Dashboard Styles ===== */
 .dashboard-grid {
     display: grid;
@@ -505,10 +542,10 @@ main {
 
 .dashboard-card {
     background-color: #191923;
-    border-radius: 10px;
+    border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    border-top: 3px solid #00ff00;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    /* border-top: 3px solid #00ff00; */
 }
 
 /* Activity Graph */
@@ -536,9 +573,9 @@ main {
 }
 
 .graph-dots span {
-    width: 12px;
+    width: 16px;
     background-color: #00ff00;
-    border-radius: 6px 6px 0 0;
+    border-radius: 10px 10px 0 0;
 }
 
 /* Metrics */
@@ -566,16 +603,17 @@ main {
 }
 
 /* Language List */
-.language-list {
+/*I have commented out this class as it doesn't exist in html*/
+/* .language-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-}
+} */
 
 .language-item {
     background-color: #21262d;
     padding: 12px;
-    border-radius: 5px;
+    border-radius: 20px;
     display: flex;
     justify-content: space-between;
 }
@@ -583,9 +621,9 @@ main {
 /* ===== Navigation Updates ===== */
 .nav-toggle {
     position: fixed;
-    top: 20px;
+    top: 27px;
     left: 20px;
-    z-index: 1000;
+    z-index: 0;
     background: none;
     border: none;
     cursor: pointer;
@@ -595,12 +633,18 @@ main {
 .nav-close {
     position: absolute;
     top: 20px;
-    right: 20px;
+    left: 20px;
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
-    z-index: 1001;
+    z-index: 2;
+    background-image: url(assets/sidebar-icon.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 30px;
+    height: 30px;
 }
 
 .nav-icon {
@@ -620,18 +664,17 @@ main {
 }
 
 /* Responsive Adjustments */
-@media (max-width: 768px) 
-{
-.dashboard-grid 
-{
+@media (max-width: 768px) {
+    .dashboard-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .language-list,
     .activity-metrics {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr;
     }
 }
+
 /* Add to your codigo.css */
 .section {
     display: none;
@@ -639,14 +682,19 @@ main {
 }
 
 .section.active {
-    display: block;
     animation: fadeIn 0.5s ease;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
+
 /* Add to your codigo.css */
 .dashboard-container {
     display: flex;
@@ -665,10 +713,16 @@ main {
 
 .dashboard-card {
     background-color: var(--card-bg);
-    border-radius: var(--radius-md);
+    border-radius: 20px;
     padding: 20px;
     box-shadow: var(--shadow-md);
-    transition: var(--transition-normal);
+    transition: all 0.2s ease;
+    border-top: 3px solid transparent;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-3px);
+    border-top: 3px solid #00ff00;
 }
 
 /* Welcome Card */
@@ -691,10 +745,11 @@ main {
 
 .action-item {
     padding: 15px;
-    border-radius: var(--radius-sm);
+    border-radius: 20px;
     background: rgba(0, 255, 0, 0.05);
     text-align: center;
     transition: var(--transition-fast);
+    cursor: pointer;
 }
 
 .action-item:hover {
@@ -718,6 +773,12 @@ main {
 }
 
 /* Languages Grid */
+
+.languages-card {
+    /* display: flex; */
+    height: 100%;
+}
+
 .language-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -727,9 +788,9 @@ main {
 
 .language-item {
     padding: 15px;
-    border-radius: var(--radius-sm);
+    border-radius: 10px;
     background: rgba(0, 150, 255, 0.05);
-    text-align: center;
+    /* text-align: center; */
 }
 
 .lang-icon {
@@ -744,6 +805,7 @@ main {
 .lang-stats {
     font-size: 0.8rem;
     opacity: 0.8;
+    text-align: right;
 }
 
 /* Challenges List */
@@ -757,7 +819,13 @@ main {
     padding: 12px;
     margin-bottom: 10px;
     background: rgba(255, 255, 255, 0.03);
-    border-radius: var(--radius-sm);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.challenge-item:hover {
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .challenge-difficulty {
@@ -815,6 +883,10 @@ main {
     font-size: 0.9rem;
 }
 
+.view-all a:hover {
+    color: rgba(0, 255, 0, 0.8);
+}
+
 /* AI Card */
 .ai-card {
     flex-grow: 1;
@@ -838,12 +910,12 @@ main {
     .dashboard-container {
         flex-direction: column;
     }
-    
+
     .dashboard-column {
         flex-direction: row;
     }
-    
-    .dashboard-column > .dashboard-card {
+
+    .dashboard-column>.dashboard-card {
         flex: 1;
     }
 }
@@ -852,10 +924,9 @@ main {
     .dashboard-column {
         flex-direction: column;
     }
-    
-.quick-actions-grid,
-.language-grid 
-{
-     grid-template-columns:1fr;
+
+    .quick-actions-grid,
+    .language-grid {
+        grid-template-columns: 1fr;
     }
 }
