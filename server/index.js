@@ -36,9 +36,11 @@ app.use('/private', clerk.requireAuth({ signInUrl: process.env.CLERK_SIGN_IN_URL
 
 
 // api endpoints -----------------
-app.get('/private/api/incrank/:value/:set', uDBHandler.endpoint_incrementUserRank.bind(uDBHandler));
-app.get('/private/api/incstreak/:value/:set', uDBHandler.endpoint_incrementStreakCount.bind(uDBHandler));
-app.get('/private/api/inccontest/:value/:set', uDBHandler.endpoint_incrementContestsCount.bind(uDBHandler));
+
+// disabled endpoints to control user status
+// app.get('/private/api/incrank/:value/:set', uDBHandler.endpoint_incrementUserRank.bind(uDBHandler));
+// app.get('/private/api/incstreak/:value/:set', uDBHandler.endpoint_incrementStreakCount.bind(uDBHandler));
+// app.get('/private/api/inccontest/:value/:set', uDBHandler.endpoint_incrementContestsCount.bind(uDBHandler));
 
 // main redirect
 app.get('/', (req, res) => {

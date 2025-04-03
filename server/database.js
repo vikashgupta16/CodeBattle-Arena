@@ -69,13 +69,15 @@ class UserDBHandler {
         if (req.params.value) {
             try {
                 this.incrementUserRank(req.auth.userId, req.params.value, req.params.set === "true");
+                res.json({ message: 'ok' });
             } catch (err) {
                 res.json({ error: err.toString() });
                 return;
             }
         }
-
-        res.json({ message: 'ok' });
+        else {
+            res.json({ error: "Request parameter value missing" });
+        }
     }
 
     async incrementUserRank(_userId, value, set = false) {
@@ -96,13 +98,15 @@ class UserDBHandler {
         if (req.params.value) {
             try {
                 this.incrementStreakCount(req.auth.userId, req.params.value, req.params.set === "true");
+                res.json({ message: 'ok' });
             } catch (err) {
                 res.json({ error: err.toString() });
                 return;
             }
         }
-
-        res.json({ message: 'ok' });
+        else {
+            res.json({ error: "Request parameter value missing" });
+        }
     }
 
     async incrementStreakCount(_userId, value, set = false) {
@@ -120,16 +124,18 @@ class UserDBHandler {
      * @param {Response} res The response object
      */
     async endpoint_incrementContestsCount(req, res) {
-        if (req.params.value) {
+        if (this.checkAdminUser(req.auth.userId) && req.params.value) {
             try {
                 this.incrementContestsCount(req.auth.userId, req.params.value, req.params.set === "true");
+                res.json({ message: 'ok' });
             } catch (err) {
                 res.json({ error: err.toString() });
                 return;
             }
         }
-
-        res.json({ message: 'ok' });
+        else {
+            res.json({ error: "Request parameter value missing" });
+        }
     }
 
     async incrementContestsCount(_userId, value, set = false) {
