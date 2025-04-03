@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,7 +45,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -79,7 +80,8 @@
             margin: 0 auto;
         }
 
-        h2, h3 {
+        h2,
+        h3 {
             color: var(--text-primary);
         }
 
@@ -103,14 +105,14 @@
             background-color: var(--card-bg);
             padding: 1.5rem;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             transition: var(--transition);
             border: 1px solid var(--border-color);
         }
 
         .assignment-box:hover {
             transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
             border-color: var(--accent-blue);
         }
 
@@ -148,7 +150,7 @@
             background-color: var(--card-bg);
             padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             margin-top: 2rem;
             border: 1px solid var(--border-color);
         }
@@ -263,6 +265,7 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <!-- Rest of your HTML remains exactly the same -->
     <nav class="navbar">
@@ -277,7 +280,7 @@
     <main class="container">
         <section class="assignments" id="assignments">
             <h2>Beginner Coding Challenges</h2>
-            
+
             <div id="challenge-container">
                 <!-- Challenges will be displayed here automatically -->
             </div>
@@ -289,7 +292,7 @@
                 <h3 id="selected-challenge-title"></h3>
                 <p id="selected-challenge-description"></p>
             </div>
-        
+
             <div class="compiler-container">
                 <div class="code-header">
                     <h3>Enter Your Code</h3>
@@ -330,14 +333,14 @@
         };
 
         // Show beginner challenges by default when page loads
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             showChallenges('beginner');
         });
 
         function showChallenges(level) {
             const container = document.getElementById("challenge-container");
             container.innerHTML = "";
-            
+
             challenges[level].forEach(challenge => {
                 const challengeBox = document.createElement("div");
                 challengeBox.classList.add("assignment-box");
@@ -353,18 +356,18 @@
         function selectChallenge(title, description) {
             // Hide the challenge list
             document.getElementById("assignments").classList.add("hidden");
-            
+
             // Show the coding page
             document.getElementById("coding-page").classList.remove("hidden");
-            
+
             // Set the selected challenge info
             document.getElementById("selected-challenge-title").textContent = title;
             document.getElementById("selected-challenge-description").textContent = description;
-            
+
             // Clear previous code and output
             document.getElementById("code-editor").value = "";
             document.getElementById("output-container").classList.add("hidden");
-            
+
             // Set default code based on selected language
             updateCodeEditor();
         }
@@ -372,7 +375,7 @@
         function backToChallenges() {
             // Show the challenge list
             document.getElementById("assignments").classList.remove("hidden");
-            
+
             // Hide the coding page
             document.getElementById("coding-page").classList.add("hidden");
         }
@@ -380,8 +383,8 @@
         function updateCodeEditor() {
             const language = document.getElementById("language-selector").value;
             let defaultCode = "";
-            
-            switch(language) {
+
+            switch (language) {
                 case "c":
                     defaultCode = `#include <stdio.h>\n\nint main() {\n    // Your code here\n    printf("Hello, World!\\n");\n    return 0;\n}`;
                     break;
@@ -395,7 +398,7 @@
                     defaultCode = `# Your code here\nprint("Hello, World!")`;
                     break;
             }
-            
+
             document.getElementById("code-editor").value = defaultCode;
         }
 
@@ -404,24 +407,30 @@
             const language = document.getElementById("language-selector").value;
             document.getElementById("output-container").classList.remove("hidden");
             document.getElementById("output-box").innerText = "Running code... (Simulated output)";
-            
-            const req = await fetch(window.location.origin + '/api/run/' + language, {
-                method: 'POST',
-                headers: {
-                    "content-type": "application/json"
-                },
-                body: JSON.stringify({
-                    code,
-                    input: ""
-                })
-            });
 
-            const data = await req.json();
-            document.getElementById("output-box").textContent = data.out + '\nSignal: ' + data.signal;
+            try {
+                const req = await fetch(window.location.origin + '/api/run/' + language, {
+                    method: 'POST',
+                    headers: {
+                        "content-type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        code,
+                        input: ""
+                    })
+                });
+
+                const data = await req.json();
+                document.getElementById("output-box").textContent = data.out + '\nSignal: ' + data.signal;
+            } catch (err) {
+                console.error(err);
+                alert("Error: " + err.toString() + " please refresh the page and try again");
+            }
         }
 
         // Add event listener for language change
         document.getElementById("language-selector").addEventListener('change', updateCodeEditor);
     </script>
 </body>
+
 </html>
