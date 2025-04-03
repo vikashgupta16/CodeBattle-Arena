@@ -1,4 +1,21 @@
-document.addEventListener('DOMContentLoaded', function () {
+// @author Rouvik Maji
+async function updateUserDetails()
+{
+    const username = document.getElementById("dashboard_username");
+    const currRank = document.getElementById("dashboard_currRank");
+    const contestCount = document.getElementById("dashboard_contestCount");
+    const streakCount = document.getElementById("dashboard_streakCount");
+
+    const res = await fetch(window.location.origin + '/api/userdata');
+    const data = await res.json();
+    
+    username.textContent = data.name;
+    currRank.textContent = data.rank;
+    contestCount.textContent = data.contests_count;
+    streakCount.textContent = data.streak_count;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
     // 1. Navigation Toggle
     const nav = document.querySelector('.codingPageNav');
     const navToggle = document.querySelector('.outside-logo-sidebar');
@@ -149,4 +166,6 @@ document.addEventListener('DOMContentLoaded', function () {
     chatInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') sendMessage();
     });
+
+    updateUserDetails(); // update the user details once all listeners have been added
 });

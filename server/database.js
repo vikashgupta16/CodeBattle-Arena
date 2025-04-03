@@ -60,6 +60,15 @@ class UserDBHandler {
         next();
     }
 
+    async endpoint_userData(req, res) {
+        if (req?.auth?.userId) {
+            res.json(await UserDBHandler.Users.findOne({ userID: req.auth.userId }, { contests_count: 1, name: 1, rank: 1, streak_count: 1, _id: 0 }));
+        }
+        else {
+            res.json({ error: "Failed to get user details" });
+        }
+    }
+
     /**
      * Requires the req object to contain the param[optional] set to make sure the rank is set and not incremented
      * @param {Request} req The request object

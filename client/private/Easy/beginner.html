@@ -295,7 +295,7 @@
                     <h3>Enter Your Code</h3>
                     <select class="language-selector" id="language-selector">
                         <option value="c">C</option>
-                        <option value="cpp">C++</option>
+                        <option value="c++">C++</option>
                         <option value="java">Java</option>
                         <option value="python">Python</option>
                     </select>
@@ -385,7 +385,7 @@
                 case "c":
                     defaultCode = `#include <stdio.h>\n\nint main() {\n    // Your code here\n    printf("Hello, World!\\n");\n    return 0;\n}`;
                     break;
-                case "cpp":
+                case "c++":
                     defaultCode = `#include <iostream>\nusing namespace std;\n\nint main() {\n    // Your code here\n    cout << "Hello, World!" << endl;\n    return 0;\n}`;
                     break;
                 case "java":
@@ -399,17 +399,25 @@
             document.getElementById("code-editor").value = defaultCode;
         }
 
-        function runCode() {
+        async function runCode() {
             const code = document.getElementById("code-editor").value;
             const language = document.getElementById("language-selector").value;
             document.getElementById("output-container").classList.remove("hidden");
             document.getElementById("output-box").innerText = "Running code... (Simulated output)";
             
-            // In a real implementation, you would call your API here with the selected language
-            // For now, we'll just simulate a response after a short delay
-            setTimeout(() => {
-                document.getElementById("output-box").innerText = `Language: ${language.toUpperCase()}\n\nHello, World!\nProgram executed successfully.`;
-            }, 1000);
+            const req = await fetch(window.location.origin + '/api/run/' + language, {
+                method: 'POST',
+                headers: {
+                    "content-type": "application/json"
+                },
+                body: JSON.stringify({
+                    code,
+                    input: ""
+                })
+            });
+
+            const data = await req.json();
+            document.getElementById("output-box").textContent = data.out + '\nSignal: ' + data.signal;
         }
 
         // Add event listener for language change
