@@ -24,19 +24,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 2. Show Section Functionality
     function showSection(sectionId) {
-        // Hide all sections
+        // Hide all sections, previously not done correctly
         document.querySelectorAll('.section').forEach(section => {
             section.classList.remove('active');
         });
 
-        // Show the selected section
+        // Show the selected section, previously not done correctly
         const section = document.getElementById(sectionId);
         if (section) {
             section.classList.add('active');
             history.replaceState(null, null, `#${sectionId}`);
         }
 
-        // Update active link
+        // Update active link, previously not done correctly
         document.querySelectorAll('.nav-link').forEach(link => {
             link.classList.toggle('current', link.getAttribute('href') === `#${sectionId}`);
         });
