@@ -39,7 +39,7 @@
             <div class="compiler-container">
                 <div class="code-header">
                     <h3>Enter Your Code</h3>
-                    <select class="language-selector" id="language-selector">
+                    <select class="language-selector" id="language-selector" oninput="changeLang(this)">
                         <option value="c">C</option>
                         <option value="c++">C++</option>
                         <option value="java">Java</option>
@@ -48,7 +48,7 @@
                 </div>
                 <div id="code-editor"></div>
                 <div class="input-output-section">
-                    <button id="run-btn" class="practice-btn" onclick="runCode()">Run Code</button>
+                    <button id="run-btn" class="practice-btn" onclick="runCode(this)">Run Code</button>
                     <div id="output-container" class="hidden">
                         <h3>Output</h3>
                         <div id="output-box" class="output-display"></div>
@@ -57,9 +57,15 @@
             </div>
         </div>
     </main>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ace.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/mode-c_cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/mode-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/mode-python.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/theme-monokai.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ext-language_tools.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/ext-prompt.min.js"></script>
     <script src="coder.js"></script>
 </body>
 </html>

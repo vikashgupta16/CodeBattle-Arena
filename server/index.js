@@ -41,14 +41,14 @@ app.use('/private', clerk.requireAuth({ signInUrl: process.env.CLERK_SIGN_IN_URL
 
 // api endpoints -----------------
 
-app.use('/api', clerk.requireAuth());
+// app.use('/api', clerk.requireAuth());
 
 // disabled endpoints to control user status
 // app.get('/api/incrank/:value/:set', uDBHandler.endpoint_incrementUserRank.bind(uDBHandler));
 // app.get('/api/incstreak/:value/:set', uDBHandler.endpoint_incrementStreakCount.bind(uDBHandler));
 // app.get('/api/inccontest/:value/:set', uDBHandler.endpoint_incrementContestsCount.bind(uDBHandler));
 
-app.get('/api/userdata', uDBHandler.endpoint_userData.bind(uDBHandler));
+app.get('/api/userdata', clerk.requireAuth(), uDBHandler.endpoint_userData.bind(uDBHandler));
 app.post('/api/run/:lang', express.json(), codeRunnerHandler.endpoint.bind(codeRunnerHandler));
 
 // main redirect
