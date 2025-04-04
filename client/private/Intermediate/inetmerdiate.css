@@ -195,7 +195,7 @@
 
         .solve-btn {
             display: block;
-            width: 80%; /* optional: slightly smaller for better visuals */
+            width: 100%;
             padding: 0.75rem;
             background-color: var(--success);
             color: white;
@@ -204,11 +204,10 @@
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
-            margin: 1rem auto 0; /* This centers the button */
+            margin-top: 1rem;
             text-align: center;
             text-decoration: none;
         }
-        
 
         .solve-btn:hover {
             background-color: var(--success-hover);

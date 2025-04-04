@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beginner Arena - CODIGO</title>
-    <link rel="shortcut icon" href="convenient.png" type="image/x-icon">
+    <title>Beginer Arena - CODIGO</title>
+    <link rel="shortcut icon" href="hotel.png" type="image/x-icon">
     <link rel="stylesheet" href="begin.css">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 </head>
-
 <body>
-    <!-- Rest of your HTML remains exactly the same -->
     <nav class="navbar">
         <div class="logo">Beginner</div>
         <ul class="nav-links">
@@ -30,48 +25,58 @@
             <li><a href="#leaderboard">Leaderboard</a></li>
         </ul>
     </aside>
-
+    
     <main class="container">
         <section class="assignments" id="assignments">
-            <h2>Beginner Coding Challenges</h2>
-
+            <h2>Beginner</h2>
+            
             <div id="challenge-container">
-                <!-- Challenges will be displayed here automatically -->
+                                
+                <div class="assignment-box">
+                    <h3>Hello World</h3>
+                    <p>Write a program to print Hello World.</p>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box">
+                    <h3>Sum of Two Numbers</h3>
+                    <p>Write a program to take two integers and print their sum.</p>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box">
+                    <h3>Even or Odd</h3>
+                    <p>Write a program to check if a number is even or odd.</p>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box">
+                    <h3>Find Maximum</h3>
+                    <p>Write a program to find the maximum of two numbers.</p>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box">
+                    <h3>Multiplication Table</h3>
+                    <p>Write a program to print the multiplication table of a number.</p>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box">
+                    <h3>Simple Interest Calculator</h3>
+                    <p>Write a program to calculate simple interest.</p>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box">
+                    <h3>Swap Two Numbers</h3>
+                    <p>Write a program to swap two numbers using a temporary variable.</p>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
             </div>
         </section>
-
-         <div id="coding-page" class="hidden">
-            <button class="back-btn" onclick="backToChallenges()">← Back to Challenges</button>
-            <div class="challenge-display">
-                <h3 id="selected-challenge-title"></h3>
-                <p id="selected-challenge-description"></p>
-            </div>
-
-           <div class="compiler-container">
-                <div class="code-header">
-                    <h3>Enter Your Code</h3>
-                    <select class="language-selector" id="language-selector">
-                        <option value="c">C</option>
-                        <option value="c++">C++</option>
-                        <option value="java">Java</option>
-                        <option value="python">Python</option>
-                    </select>
-                </div>
-                <textarea id="code-editor" placeholder="Write your code here..."></textarea>
-                <div class="input-output-section">
-                    <button id="run-btn" class="practice-btn" onclick="runCode()">Run Code</button>
-                    <div id="output-container" class="hidden">
-                        <h3>Output</h3>
-                        <div id="output-box" class="output-display"></div>
-                    </div>
-                </div>
-            </div>
-        </div> 
     </main>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ace.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ext-language_tools.min.js"></script>
     <script src="beginer.js"></script>
 </body>
-
 </html>
