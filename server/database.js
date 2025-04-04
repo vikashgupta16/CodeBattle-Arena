@@ -50,7 +50,6 @@ class UserDBHandler {
                     });
 
                     await userStore.save();
-                    console.log('No user');
                 }
             } catch (error) {
                 console.log("[UserDBHandler Error] userAuthMiddleWare failed to authenticate user", error);
