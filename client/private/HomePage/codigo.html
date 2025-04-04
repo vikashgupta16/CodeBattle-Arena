@@ -77,9 +77,9 @@
                         <div class="home-info">
                             <h2 id="stats">📊 Quick stats</h2>
                             <ul>
-                                <li>⭐ Current Rank: #<span id="dashboard_currRank">****</span></li>
-                                <li>🏆 Contests Won: <span id="dashboard_contestCount">***</span></li>
-                                <li>🔥 Streak: <span id="dashboard_streakCount">***</span> Days</li>
+                                <li>⭐ Current Rank: #<span id="dashboard_currRank">001</span></li>
+                                <li>🏆 Contests Won: <span id="dashboard_contestCount">777</span></li>
+                                <li>🔥 Streak: <span id="dashboard_streakCount">04</span> Days</li>
                                 <li>🎯 Next Contest: Code Sprint in 2h 30m</li>
                             </ul>
                         </div>
@@ -409,9 +409,17 @@
             </form>
         </section>
     </main>
-
+    <!-- email js  -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+ 
+    <script type="text/javascript">
+   (function(){
+      emailjs.init({
+        publicKey: "jS_OjCoYjCk6NEZxd",
+      });
+   })();
+</script>
     <script src="script.js"></script>
 </body>
 

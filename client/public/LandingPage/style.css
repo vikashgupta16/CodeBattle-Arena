@@ -220,3 +220,32 @@ main {
     box-shadow: 0 0 18.7px 9px rgba(166, 125, 184, 0.54);
     border-radius: 20px;
 }
+
+.footer {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    row-gap: 1.4rem;
+    padding: 30px 0;
+}
+
+.footer p {
+    font-size: 0.9rem;
+}
+
+.footer-links {
+    display: flex;
+    align-items: center;
+    column-gap: 1rem;
+}
+
+.footer-links a {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--bg-color);
+}
+
+.footer-links a:hover {
+    color: var(--main-color);
+    transition: 0.3s all linear;
+}

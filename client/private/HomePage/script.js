@@ -92,28 +92,49 @@ document.addEventListener('DOMContentLoaded', function() {
     themeToggle.value = savedTheme;
 
     // 4. Email Form
-    document.querySelector('.send-btn').addEventListener('click', function (e) {
+    // Email Validation and Sending
+//   email 
+function validate(){
+    let name= document.querySelector(".name");
+    let email= document.querySelector(".email");
+    let msg= document.querySelector(".message");
+    let sendBtn= document.querySelector(".send-btn");
+    sendBtn.addEventListener('click',(e)=>{
         e.preventDefault();
-        const name = document.querySelector('.name').value;
-        const email = document.querySelector('.email').value;
-        const message = document.querySelector('.message').value;
-
-        if (!name || !email || !message) {
-            swal("Error", "Please fill all fields", "error");
-            return;
+        if(name.value == "" || email.value == "" || msg.value== ""){
+            emptyerror();
+        }else{
+            sendmail (name.value, email.value, msg.value);
+            success();
         }
-
-        emailjs.send("service_vikash__gupta", "template_u8mh7fk", {
-            from_name: email,
-            to_name: name,
-            message: message
-        }).then(function () {
-            swal("Success", "Message sent!", "success");
-        }, function (error) {
-            swal("Error", "Failed to send message", "error");
-            console.error('Email error:', error);
-        });
     });
+
+}
+validate();
+function sendmail(name,email,msg)
+{
+    emailjs.send("service_vikash__gupta","template_u8mh7fk",{
+        from_name: email,
+        to_name: name,
+        message: msg,
+        });
+}
+function emptyerror()
+{
+    swal({
+        title: "Complete All The Sections",
+        text: "Fields cant be empty",
+        icon: "error",
+      });
+}
+function success()
+{
+    swal({
+        title: "Email Sent Succesfully",
+        text: "We will Try To Rspond In 24 Hours",
+        icon: "success",
+      });
+}
 
     // 5. Chat System
     const chatInput = document.getElementById('chat-input');
