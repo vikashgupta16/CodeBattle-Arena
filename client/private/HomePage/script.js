@@ -151,15 +151,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const lowerMsg = message.toLowerCase();
 
         // Simple responses
-        if (lowerMsg.includes('hello') || lowerMsg.includes('hi')) {
-            return "Hello! How can I help you with coding today?";
+        if (/(hello|hi|hey|hola|yo|what's up)/.test(lowerMsg)) {
+            return "👋 Hey there, Code Warrior! Ready to crush some bugs or crack some problems?";
         }
-        if (lowerMsg.includes('help')) {
-            return "I can help with coding problems in C, C++, Java, and Python!";
-
-            // Default response
-            return "I'm your coding assistant. Ask me anything about programming!";
+    
+        // Help-related handler
+        if (/(help|assist|support|guide|how to|what can you do)/.test(lowerMsg)) {
+            return "🧠 I'm your coding buddy! I can assist with:\n\n💻 Languages: C, C++, Java, Python\n🛠️ Debugging help\n📘 Concepts explanation\n⚔️ Coding challenges\n\nJust type your question or drop your code!";
         }
+    
+        // Default response
+        return "🤖 I'm your AI coding assistant. Ask me anything related to programming, and let's level up together!";
     }
 
     sendButton.addEventListener('click', sendMessage);

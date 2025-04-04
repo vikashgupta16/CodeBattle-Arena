@@ -34,32 +34,36 @@
         }
 
         .navbar {
-            background-color: #0a0a0a;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            color: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            border-bottom: 1px solid var(--border-color);
+                    background-color: #0a0a0a;
+                    top: 0;
+                    position: fixed;
+                    width: 100%;
+                    z-index: 1000;
+                    color: white;
+                    padding: 0.8rem 2rem; /* Reduced vertical padding */
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+                    border-bottom: 1px solid var(--border-color);
+                    height: 60px; /* Fixed height */
+                    box-sizing: border-box; /* Include padding in height calculation */
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--accent-blue);
-        }
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    color: var(--accent-blue);
+                    margin-right: auto; /* Pushes logo to left */
+        }       
 
         .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 1.5rem;
-            margin: 0;
-            padding: 0;
+                    list-style: none;
+                    display: flex;
+                    gap: 1.8rem; /* Increased gap */
+                    margin: 0;
+                    padding: 0;
+                    align-items: center;
         }
 
         .nav-links a {
@@ -67,11 +71,93 @@
             text-decoration: none;
             transition: var(--transition);
             font-weight: 500;
-        }
+            font-size: 1rem; /* Explicit font size */
+            padding: 0.5rem 0; /* Vertical padding */
+            display: inline-block; /* Better spacing control */
+            position: relative;
+        }       
 
         .nav-links a:hover {
             color: var(--accent-blue);
         }
+        
+        /* Mobile menu toggle button */
+.menu-toggle {
+    display: none; /* Hidden by default on desktop */
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+/* Sidebar styles */
+.sidebar {
+    position: fixed;
+    top: 60px; /* Below navbar */
+    right: -250px; /* Hidden by default */
+    height: calc(100vh - 60px);
+    width: 250px;
+    z-index: 998;
+    background-color: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: -10px 0 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 1rem 0;
+    transition: var(--transition);
+}
+
+.sidebar.active {
+    right: 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    width: 100%;
+}
+
+.sidebar a {
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 1rem 2rem;
+    display: block;
+    width: 100%;
+    transition: var(--transition);
+}
+
+.sidebar a:hover {
+    background-color: rgba(117, 247, 77, 0.1);
+    color: var(--accent-blue);
+}
+.no-scroll {
+    overflow: hidden;
+}
+
+/* Media query for mobile */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block; /* Show toggle button on mobile */
+    }
+    
+    .nav-links {
+        display: none; /* Hide regular nav links on mobile */
+    }
+    
+    .sidebar.active ~ main {
+        transform: translateX(-100px);
+        filter: blur(2px);
+    }
+}
 
         .container {
             padding: 2rem;
@@ -271,9 +357,16 @@
             <li><a href="../HomePage/codigo.html">Home</a></li>
             <li><a href="#assignments">Challenges</a></li>
             <li><a href="#leaderboard">Leaderboard</a></li>
-        </ul>
+        </ul> <button class="menu-toggle" id="menu-toggle">☰</button>
     </nav>
-
+    
+    <aside class="sidebar" id="sidebar">
+        <ul>
+            <li><a href="../HomePage/codigo.html">Home</a></li>
+            <li><a href="#assignments">Challenges</a></li>
+            <li><a href="#leaderboard">Leaderboard</a></li>
+        </ul>
+    </aside>
     <main class="container">
         <section class="assignments" id="assignments">
             <h2>Intermediate Coding Challenges</h2>
@@ -436,6 +529,30 @@
                 document.getElementById("output-box").innerText = `Language: ${language.toUpperCase()}\n\nHello, World!\nProgram executed successfully.`;
             }, 1000);
         }
+        // Mobile menu toggle functionality
+// Mobile menu toggle functionality
+const menuToggle = document.getElementById('menu-toggle');
+const sidebar = document.getElementById('sidebar');
+
+menuToggle.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevent this click from triggering the document click handler
+    sidebar.classList.toggle('active');
+    document.body.classList.toggle('no-scroll');
+});
+
+// Close sidebar when clicking anywhere except the sidebar itself
+document.addEventListener('click', (e) => {
+    // Check if the click is outside the sidebar and the menu toggle button
+    if (!sidebar.contains(e.target) && e.target !== menuToggle) {
+        sidebar.classList.remove('active');
+        document.body.classList.remove('no-scroll');
+    }
+});
+
+// Prevent clicks inside the sidebar from closing it
+sidebar.addEventListener('click', (e) => {
+    e.stopPropagation();
+});
     </script>
 </body>
 </html>

@@ -1,23 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beginner Arena - CODIGO</title>
+    <title>Challenge - CODIGO</title>
     <link rel="shortcut icon" href="convenient.png" type="image/x-icon">
-    <link rel="stylesheet" href="begin.css">
+    <link rel="stylesheet" href="coder.css">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <!-- Rest of your HTML remains exactly the same -->
     <nav class="navbar">
-        <div class="logo">Beginner</div>
+        <div class="logo">CODIGO</div>
         <ul class="nav-links">
             <li><a href="../HomePage/codigo.html">Home</a></li>
-            <li><a href="#assignments">Challenges</a></li>
+            <li><a href="../Beginner/beginner.html">Challenges</a></li>
             <li><a href="#leaderboard">Leaderboard</a></li>
         </ul>
         <button class="menu-toggle" id="menu-toggle">☰</button>
@@ -26,28 +23,20 @@
     <aside class="sidebar" id="sidebar">
         <ul>
             <li><a href="../HomePage/codigo.html">Home</a></li>
-            <li><a href="#assignments">Challenges</a></li>
+            <li><a href="../Beginner/beginner.html">Challenges</a></li>
             <li><a href="#leaderboard">Leaderboard</a></li>
         </ul>
     </aside>
 
     <main class="container">
-        <section class="assignments" id="assignments">
-            <h2>Beginner Coding Challenges</h2>
-
-            <div id="challenge-container">
-                <!-- Challenges will be displayed here automatically -->
-            </div>
-        </section>
-
-         <div id="coding-page" class="hidden">
-            <button class="back-btn" onclick="backToChallenges()">← Back to Challenges</button>
+        <div id="coding-page">
+            <button class="back-btn" onclick="window.location.href='beginner.html'">← Back to Challenges</button>
             <div class="challenge-display">
                 <h3 id="selected-challenge-title"></h3>
                 <p id="selected-challenge-description"></p>
             </div>
 
-           <div class="compiler-container">
+            <div class="compiler-container">
                 <div class="code-header">
                     <h3>Enter Your Code</h3>
                     <select class="language-selector" id="language-selector">
@@ -57,7 +46,7 @@
                         <option value="python">Python</option>
                     </select>
                 </div>
-                <textarea id="code-editor" placeholder="Write your code here..."></textarea>
+                <div id="code-editor"></div>
                 <div class="input-output-section">
                     <button id="run-btn" class="practice-btn" onclick="runCode()">Run Code</button>
                     <div id="output-container" class="hidden">
@@ -66,12 +55,11 @@
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
     </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ace.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ext-language_tools.min.js"></script>
-    <script src="beginer.js"></script>
+    <script src="coder.js"></script>
 </body>
-
 </html>
