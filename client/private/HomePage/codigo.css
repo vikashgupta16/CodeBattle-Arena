@@ -772,6 +772,14 @@ main {
     opacity: 0.8;
 }
 
+.quick-action-link {
+    text-decoration: none;
+    color: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: block;
+}
+
 /* Languages Grid */
 
 .languages-card {
