@@ -130,13 +130,14 @@ main {
 
 .cover-globe {
     width: 100%;
-    height: 441px;
+    height: 400px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    /* align-items: center; */
     position: relative;
     top: -60px;
     overflow-y: hidden;
+    z-index: 0;
 }
 
 .cover-globe img {
@@ -213,6 +214,7 @@ main {
     align-items: center;
     width: 100%;
     margin-top: -135px;
+    z-index: 999;
 }
 
 .dashboard-img img {
@@ -248,4 +250,16 @@ main {
 .footer-links a:hover {
     color: var(--main-color);
     transition: 0.3s all linear;
+}
+
+.bento-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.bento-grid img {
+    margin-top: 100px;
+    width: 70%;
 }
