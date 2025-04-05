@@ -217,6 +217,7 @@ h3 {
     background-color: var(--card-bg);
     color: var(--text-primary);
     font-family: inherit;
+    cursor: pointer;
 }
 
 #code-editor {
