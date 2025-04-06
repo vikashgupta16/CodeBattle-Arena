@@ -229,10 +229,12 @@ main {
     flex-direction: column;
     row-gap: 1.4rem;
     padding: 30px 0;
+    background-color: black;
 }
 
 .footer p {
     font-size: 0.9rem;
+    color: #e6e6e9;
 }
 
 .footer-links {
@@ -244,11 +246,12 @@ main {
 .footer-links a {
     font-size: 1rem;
     font-weight: 400;
-    color: var(--bg-color);
+    color: #e9e6e9;
+    text-decoration: none;
 }
 
 .footer-links a:hover {
-    color: var(--main-color);
+    text-decoration: underline wavy #e6e6e9;
     transition: 0.3s all linear;
 }
 
@@ -262,4 +265,16 @@ main {
 .bento-grid img {
     margin-top: 100px;
     width: 70%;
+}
+
+.meet-ai {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; 
+}
+
+.meet-ai img {
+    margin-top: 100px;
+    width: 60%;
 }
