@@ -14,3 +14,8 @@ function updateLoginButtonText() {
 
 updateLoginButtonText();
 window.addEventListener("resize", updateLoginButtonText);
+
+function toggleFAQ(element) {
+    const faq = element.parentElement;
+    faq.classList.toggle("open");
+}
