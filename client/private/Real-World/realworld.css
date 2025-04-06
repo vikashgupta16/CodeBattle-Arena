@@ -1,0 +1,420 @@
+/* Dark Theme CSS Variables */
+:root {
+    --bg-dark: #121212;
+    --card-bg: #1e1e1e;
+    --text-primary: #e0e0e0;
+    --text-secondary: #aaaaaa;
+    --accent-blue: #75f74d;
+    --accent-orange: #ff922b;
+    --accent-yellow: #ffd43b;
+    --accent-python: #3572A5;
+    --success: #2b8a3e;
+    --success-hover: #37b24d;
+    --border-color: #333;
+    --highlight: #2d3436;
+    --transition: all 0.3s ease;
+    --category-games: #ff6b6b;
+    --category-web: #4dabf7;
+    --category-ai: #da77f2;
+    --category-algo: #fcc419;
+    --category-iot: #20c997;
+}
+
+/* Base Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.navbar {
+    background-color: #0a0a0a;
+    top: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    color: white;
+    padding: 0.8rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid var(--border-color);
+    height: 60px;
+    box-sizing: border-box;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent-blue);
+    margin-right: auto;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.8rem;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+
+.nav-links a {
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: var(--transition);
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+    display: inline-block;
+    position: relative;
+}
+
+.nav-links a:hover {
+    color: var(--accent-blue);
+}
+
+/* Mobile menu toggle button */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+/* Sidebar styles */
+.sidebar {
+    position: fixed;
+    top: 60px;
+    right: -250px;
+    height: calc(100vh - 60px);
+    width: 250px;
+    z-index: 998;
+    background-color: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: -10px 0 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 1rem 0;
+    transition: var(--transition);
+}
+
+.sidebar.active {
+    right: 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    width: 100%;
+}
+
+.sidebar a {
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 1rem 2rem;
+    display: block;
+    width: 100%;
+    transition: var(--transition);
+}
+
+.sidebar a:hover {
+    background-color: rgba(117, 247, 77, 0.1);
+    color: var(--accent-blue);
+}
+
+.sidebar-category {
+    color: var(--text-secondary);
+    padding: 1rem 2rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 1rem;
+}
+
+.filter-btn {
+    padding-left: 3rem !important;
+    position: relative;
+}
+
+.filter-btn::before {
+    content: "";
+    position: absolute;
+    left: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.filter-btn[data-category="games"]::before {
+    background-color: var(--category-games);
+}
+
+.filter-btn[data-category="web"]::before {
+    background-color: var(--category-web);
+}
+
+.filter-btn[data-category="ai"]::before {
+    background-color: var(--category-ai);
+}
+
+.filter-btn[data-category="algo"]::before {
+    background-color: var(--category-algo);
+}
+
+.filter-btn[data-category="iot"]::before {
+    background-color: var(--category-iot);
+}
+
+.filter-btn.active {
+    color: var(--accent-blue);
+    background-color: rgba(117, 247, 77, 0.1);
+}
+
+.no-scroll {
+    overflow: hidden;
+}
+
+.container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 80px auto 2rem;
+}
+
+h2, h3 {
+    color: var(--text-primary);
+}
+
+h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+h3 {
+    margin-top: 0;
+}
+
+/* Category Header */
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.category-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.category-tab {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: none;
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+    border: 1px solid var(--border-color);
+}
+
+.category-tab:hover {
+    background-color: var(--highlight);
+}
+
+.category-tab.active {
+    background-color: var(--accent-blue);
+    color: #121212;
+    border-color: var(--accent-blue);
+    font-weight: 600;
+}
+
+.category-tab[data-category="games"]:hover {
+    border-color: var(--category-games);
+}
+
+.category-tab[data-category="web"]:hover {
+    border-color: var(--category-web);
+}
+
+.category-tab[data-category="ai"]:hover {
+    border-color: var(--category-ai);
+}
+
+.category-tab[data-category="algo"]:hover {
+    border-color: var(--category-algo);
+}
+
+.category-tab[data-category="iot"]:hover {
+    border-color: var(--category-iot);
+}
+
+/* Challenge List Styles */
+#challenge-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.assignment-box {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.assignment-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    border-color: var(--accent-blue);
+}
+
+.assignment-box p {
+    color: var(--text-secondary);
+    margin: 0.5rem 0 1rem;
+}
+
+.project-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.difficulty {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.difficulty.easy {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+}
+
+.difficulty.medium {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+}
+
+.difficulty.hard {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+}
+
+.solve-btn {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--success);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 1rem;
+    text-align: center;
+    text-decoration: none;
+}
+
+.solve-btn:hover {
+    background-color: var(--success-hover);
+    transform: translateY(-2px);
+}
+
+/* Category color indicators */
+.assignment-box[data-category="games"] {
+    border-top: 4px solid var(--category-games);
+}
+
+.assignment-box[data-category="web"] {
+    border-top: 4px solid var(--category-web);
+}
+
+.assignment-box[data-category="ai"] {
+    border-top: 4px solid var(--category-ai);
+}
+
+.assignment-box[data-category="algo"] {
+    border-top: 4px solid var(--category-algo);
+}
+
+.assignment-box[data-category="iot"] {
+    border-top: 4px solid var(--category-iot);
+}
+
+/* Hidden state for filtered items */
+.assignment-box.hidden {
+    display: none;
+}
+
+/* Media query for mobile */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+    
+    .category-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .category-tabs {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
+    
+    #challenge-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--card-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

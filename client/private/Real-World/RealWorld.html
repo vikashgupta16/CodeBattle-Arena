@@ -4,389 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projects Arena - CODIGO</title>
-    <link rel="shortcut icon" href="project-management_1087815.png" type="image/x-icon">
-    <style>
-        /* Dark Theme CSS Variables */
-        :root {
-            --bg-dark: #121212;
-            --card-bg: #1e1e1e;
-            --text-primary: #e0e0e0;
-            --text-secondary: #aaaaaa;
-            --accent-blue: #75f74d;
-            --accent-orange: #ff922b;
-            --accent-yellow: #ffd43b;
-            --accent-python: #3572A5;
-            --accent-c: #5555ff;
-            --accent-cpp: #004482;
-            --accent-java: #f89820;
-            --success: #2b8a3e;
-            --success-hover: #37b24d;
-            --border-color: #333;
-            --highlight: #2d3436;
-            --transition: all 0.3s ease;
-        }
-
-        /* Base Styles */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-dark);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        .navbar {
-                    background-color: #0a0a0a;
-                    top: 0;
-                    position: fixed;
-                    width: 100%;
-                    z-index: 1000;
-                    color: white;
-                    padding: 0.8rem 2rem; /* Reduced vertical padding */
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-                    border-bottom: 1px solid var(--border-color);
-                    height: 60px; /* Fixed height */
-                    box-sizing: border-box; /* Include padding in height calculation */
-        }
-
-        .logo {
-                    font-size: 1.5rem;
-                    font-weight: bold;
-                    color: var(--accent-blue);
-                    margin-right: auto; /* Pushes logo to left */
-        }       
-
-        .nav-links {
-                    list-style: none;
-                    display: flex;
-                    gap: 1.8rem; /* Increased gap */
-                    margin: 0;
-                    padding: 0;
-                    align-items: center;
-        }
-
-        .nav-links a {
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: var(--transition);
-            font-weight: 500;
-            font-size: 1rem; /* Explicit font size */
-            padding: 0.5rem 0; /* Vertical padding */
-            display: inline-block; /* Better spacing control */
-            position: relative;
-        }       
-
-        .nav-links a:hover {
-            color: var(--accent-blue);
-        }
-        
-        /* Mobile menu toggle button */
-.menu-toggle {
-    display: none; /* Hidden by default on desktop */
-    background: none;
-    border: none;
-    color: var(--text-primary);
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0.5rem;
-}
-
-/* Sidebar styles */
-.sidebar {
-    position: fixed;
-    top: 60px; /* Below navbar */
-    right: -250px; /* Hidden by default */
-    height: calc(100vh - 60px);
-    width: 250px;
-    z-index: 998;
-    background-color: rgba(10, 10, 10, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: -10px 0 10px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    padding: 1rem 0;
-    transition: var(--transition);
-}
-
-.sidebar.active {
-    right: 0;
-}
-
-.sidebar ul {
-    list-style: none;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-}
-
-.sidebar li {
-    width: 100%;
-}
-
-.sidebar a {
-    color: var(--text-primary);
-    text-decoration: none;
-    padding: 1rem 2rem;
-    display: block;
-    width: 100%;
-    transition: var(--transition);
-}
-
-.sidebar a:hover {
-    background-color: rgba(117, 247, 77, 0.1);
-    color: var(--accent-blue);
-}
-.no-scroll {
-    overflow: hidden;
-}
-
-/* Media query for mobile */
-@media (max-width: 768px) {
-    .menu-toggle {
-        display: block; /* Show toggle button on mobile */
-    }
-    
-    .nav-links {
-        display: none; /* Hide regular nav links on mobile */
-    }
-    
-    .sidebar.active ~ main {
-        transform: translateX(-100px);
-        filter: blur(2px);
-    }
-}
-
-
-        .container {
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        h2, h3 {
-            color: var(--text-primary);
-        }
-
-        h2 {
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-        }
-
-        h3 {
-            margin-top: 0;
-        }
-
-        /* Project List Styles */
-        #project-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .project-box {
-            background-color: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: var(--transition);
-            border: 1px solid var(--border-color);
-        }
-
-        .project-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-            border-color: var(--accent-blue);
-        }
-
-        .project-box p {
-            color: var(--text-secondary);
-        }
-
-        .project-btn {
-            display: block;
-            width: 100%;
-            padding: 0.75rem;
-            background-color: var(--success);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            margin-top: 1rem;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .project-btn:hover {
-            background-color: var(--success-hover);
-            transform: translateY(-2px);
-        }
-
-        .language-selection {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .lang-btn {
-            padding: 0.5rem 1rem;
-            background-color: var(--card-bg);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .lang-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .lang-btn.active {
-            color: white;
-        }
-
-        .lang-btn.c { border-color: var(--accent-c); }
-        .lang-btn.c.active { background-color: var(--accent-c); }
-
-        .lang-btn.cpp { border-color: var(--accent-cpp); }
-        .lang-btn.cpp.active { background-color: var(--accent-cpp); }
-
-        .lang-btn.java { border-color: var(--accent-java); }
-        .lang-btn.java.active { background-color: var(--accent-java); }
-
-        .lang-btn.python { border-color: var(--accent-python); }
-        .lang-btn.python.active { background-color: var(--accent-python); }
-
-        /* Coding Page Styles */
-        .hidden {
-            display: none;
-        }
-
-        #coding-page {
-            background-color: var(--card-bg);
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            margin-top: 2rem;
-            border: 1px solid var(--border-color);
-        }
-
-        .back-btn {
-            background: rgba(77, 171, 247, 0.1);
-            border: none;
-            color: var(--accent-blue);
-            cursor: pointer;
-            font-size: 1rem;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: var(--transition);
-            margin-bottom: 1.5rem;
-        }
-
-        .back-btn:hover {
-            background: rgba(77, 171, 247, 0.2);
-        }
-
-        .compiler-container {
-            margin-top: 1.5rem;
-        }
-
-        .code-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        #code-editor {
-            width: 85%;
-            min-height: 200px;
-            padding: 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            font-family: 'Fira Code', 'Courier New', monospace;
-            font-size: 0.9rem;
-            resize: vertical;
-            margin-bottom: 1rem;
-            background-color: #252525;
-            color: #d4d4d4;
-        }
-
-        .run-btn {
-            padding: 0.75rem 1.5rem;
-            background-color: var(--success);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .run-btn:hover {
-            background-color: var(--success-hover);
-            transform: translateY(-2px);
-        }
-
-        #output-container {
-            margin-top: 1.5rem;
-            background-color: #252525;
-            border-radius: 5px;
-            padding: 1rem;
-            border: 1px solid var(--border-color);
-        }
-
-        #output-box {
-            background-color: #1e1e1e;
-            padding: 1rem;
-            border-radius: 5px;
-            min-height: 50px;
-            font-family: 'Fira Code', 'Courier New', monospace;
-            white-space: pre-wrap;
-            border: 1px solid #333;
-            margin-top: 0.5rem;
-            color: #d4d4d4;
-        }
-
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--card-bg);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #444;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="../privasset/web-development.png" type="image/x-icon">
+    <link rel="stylesheet" href="realworld.css">
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">Projects Arena</div>
+        <div class="logo">Real-World</div>
         <ul class="nav-links">
             <li><a href="../HomePage/codigo.html">Home</a></li>
-            <li><a href="#projects">Projects</a></li>
+            <li><a href="#assignments">Challenges</a></li>
             <li><a href="#leaderboard">Leaderboard</a></li>
         </ul>
         <button class="menu-toggle" id="menu-toggle">☰</button>
@@ -397,300 +23,419 @@
             <li><a href="../HomePage/codigo.html">Home</a></li>
             <li><a href="#assignments">Challenges</a></li>
             <li><a href="#leaderboard">Leaderboard</a></li>
+            <li class="sidebar-category">Filter Projects</li>
+            <li><a href="#games" class="filter-btn" data-category="games">🎮 Games</a></li>
+            <li><a href="#web" class="filter-btn" data-category="web">🌐 Web Apps</a></li>
+            <li><a href="#ai" class="filter-btn" data-category="ai">🤖 AI/ML</a></li>
+            <li><a href="#algo" class="filter-btn" data-category="algo">🧠 Algorithms</a></li>
+            <li><a href="#iot" class="filter-btn" data-category="iot">🔌 IoT/Hardware</a></li>
+            <li><a href="#all" class="filter-btn active" data-category="all">✨ All Projects</a></li>
         </ul>
     </aside>
-
+    
     <main class="container">
-        <section class="projects" id="projects">
-            <h2>Real-world Projects</h2>
-            <p>Apply your skills to practical scenarios:</p>
-            
-            <div class="language-selection">
-                <button class="lang-btn c active" onclick="showProjects('all')">All Languages</button>
-                <button class="lang-btn c" onclick="showProjects('c')">C</button>
-                <button class="lang-btn cpp" onclick="showProjects('cpp')">C++</button>
-                <button class="lang-btn java" onclick="showProjects('java')">Java</button>
-                <button class="lang-btn python" onclick="showProjects('python')">Python</button>
+        <section class="assignments" id="assignments">
+            <div class="category-header">
+                <h2>Projects Arena</h2>
+                <div class="category-tabs">
+                    <button class="category-tab active" data-category="all">All</button>
+                    <button class="category-tab" data-category="games">Games</button>
+                    <button class="category-tab" data-category="web">Web Apps</button>
+                    <button class="category-tab" data-category="ai">AI/ML</button>
+                    <button class="category-tab" data-category="algo">Algorithms</button>
+                    <button class="category-tab" data-category="iot">IoT</button>
+                </div>
             </div>
             
-            <div id="project-container">
-                <!-- Projects will be displayed here automatically -->
+            <div id="challenge-container">
+                <!-- Game Development Projects -->
+                <div class="assignment-box" data-category="games">
+                    <div class="project-icon">🎮</div>
+                    <h3>Tic Tac Toe Game</h3>
+                    <p>Implement a two-player Tic Tac Toe game with a console or GUI interface.</p>
+                    <div class="difficulty easy">Beginner</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="games">
+                    <div class="project-icon">🕹️</div>
+                    <h3>Hangman Game</h3>
+                    <p>Create a word-guessing game where players try to guess a hidden word letter by letter.</p>
+                    <div class="difficulty easy">Beginner</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="games">
+                    <div class="project-icon">🐍</div>
+                    <h3>Snake Game</h3>
+                    <p>Build the classic Snake game where the player controls a growing snake to collect food.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+
+                <div class="assignment-box" data-category="games">
+                    <div class="project-icon">🧠</div>
+                    <h3>Memory Card Game</h3>
+                    <p>Create a flip card game where players match pairs of cards based on memory.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="games">
+                    <div class="project-icon">🔢</div>
+                    <h3>Number Guessing Game</h3>
+                    <p>Develop a game where the player guesses a randomly generated number within a limited range.</p>
+                    <div class="difficulty easy">Beginner</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="games">
+                    <div class="project-icon">🏁</div>
+                    <h3>Racing Game</h3>
+                    <p>Build a simple car racing game using keyboard controls and increasing difficulty.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="games">
+                    <div class="project-icon">🧱</div>
+                    <h3>Brick Breaker Game</h3>
+                    <p>Design a game where a ball bounces off a paddle to break bricks at the top of the screen.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="games">
+                    <div class="project-icon">🚀</div>
+                    <h3>Space Shooter Game</h3>
+                    <p>Make a space shooter where the player controls a spaceship and shoots incoming enemies.</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="games">
+                    <div class="project-icon">💣</div>
+                    <h3>Minesweeper Game</h3>
+                    <p>Recreate the classic Minesweeper logic puzzle game with cells and hidden mines.</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                
+                <!-- Web & Mobile App Projects -->
+                <div class="assignment-box" data-category="web">
+                    <div class="project-icon">📝</div>
+                    <h3>To-Do List Application</h3>
+                    <p>Develop a to-do list app with features to add, delete, and mark tasks as complete.</p>
+                    <div class="difficulty easy">Beginner</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="web">
+                    <div class="project-icon">⛅</div>
+                    <h3>Weather App</h3>
+                    <p>Create an application that fetches and displays weather data from a public API.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="web">
+                    <div class="project-icon">📅</div>
+                    <h3>Event Planner</h3>
+                    <p>Design a web app that allows users to create, edit, and manage events or schedules.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="web">
+                    <div class="project-icon">📊</div>
+                    <h3>Expense Tracker</h3>
+                    <p>Build an app where users can log expenses, view charts, and manage their budget.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="web">
+                    <div class="project-icon">🗂️</div>
+                    <h3>Portfolio Website</h3>
+                    <p>Create a personal portfolio to showcase your projects, resume, and skills using HTML/CSS/JS.</p>
+                    <div class="difficulty easy">Beginner</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="mobile">
+                    <div class="project-icon">📱</div>
+                    <h3>Quotes App</h3>
+                    <p>Make a mobile app that displays random motivational quotes using an API or local data.</p>
+                    <div class="difficulty easy">Beginner</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="mobile">
+                    <div class="project-icon">💬</div>
+                    <h3>Chat Application</h3>
+                    <p>Develop a real-time chat app using WebSockets or Firebase for backend communication.</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="mobile">
+                    <div class="project-icon">🔐</div>
+                    <h3>Authentication System</h3>
+                    <p>Create a mobile login/register system with password validation and session handling.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="web">
+                    <div class="project-icon">🛍️</div>
+                    <h3>E-commerce Product Page</h3>
+                    <p>Design a shopping product page with add-to-cart, price filters, and image preview features.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="web">
+                    <div class="project-icon">🎧</div>
+                    <h3>Music Player</h3>
+                    <p>Build a web-based music player with play, pause, skip, and playlist functionality.</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <!-- AI & Data Science Mini-Projects -->
+                <div class="assignment-box" data-category="ai">
+                    <div class="project-icon">😊</div>
+                    <h3>Sentiment Analysis Tool</h3>
+                    <p>Analyze text (e.g., tweets) to detect positive/negative mood (using Python + NLTK).</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="ai">
+                    <div class="project-icon">🔢</div>
+                    <h3>Handwritten Digit Recognizer</h3>
+                    <p>Train a basic MNIST model to classify digits (intro to ML).</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="ai">
+                    <div class="project-icon">🗣️</div>
+                    <h3>Voice Assistant</h3>
+                    <p>Build a simple voice assistant using Python that can respond to basic voice commands.</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="ai">
+                    <div class="project-icon">🎯</div>
+                    <h3>Spam Message Classifier</h3>
+                    <p>Train a model to classify messages as spam or not using Naive Bayes and sklearn.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="ai">
+                    <div class="project-icon">📷</div>
+                    <h3>Face Detection App</h3>
+                    <p>Use OpenCV and Haar cascades to detect human faces from webcam or images.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="ai">
+                    <div class="project-icon">🧠</div>
+                    <h3>Neural Network From Scratch</h3>
+                    <p>Implement a basic neural network using just NumPy to understand backpropagation.</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="data-science">
+                    <div class="project-icon">📈</div>
+                    <h3>Covid-19 Data Dashboard</h3>
+                    <p>Visualize COVID-19 trends using pandas, Plotly, and real-time data APIs.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="data-science">
+                    <div class="project-icon">🛒</div>
+                    <h3>Sales Forecasting Model</h3>
+                    <p>Build a model to predict future sales using time series forecasting techniques.</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="data-science">
+                    <div class="project-icon">📊</div>
+                    <h3>Data Cleaning Challenge</h3>
+                    <p>Take messy data and clean it using pandas and data wrangling techniques.</p>
+                    <div class="difficulty easy">Beginner</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="data-science">
+                    <div class="project-icon">🎓</div>
+                    <h3>Student Performance Analyzer</h3>
+                    <p>Analyze student scores data to identify trends and predictions using regression models.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <!-- Algorithms & Creative Coding -->
+                <div class="assignment-box" data-category="algo">
+                    <div class="project-icon">🌳</div>
+                    <h3>Fractal Tree Generator</h3>
+                    <p>Use recursion to draw fractal patterns (e.g., with Python Turtle or p5.js).</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+
+                <div class="assignment-box" data-category="algo">
+                    <div class="project-icon">🌈</div>
+                    <h3>Color Gradient Generator</h3>
+                    <p>Use nested loops and interpolation to create dynamic color gradients with HTML Canvas or p5.js.</p>
+                    <div class="difficulty easy">Beginner</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="algo">
+                    <div class="project-icon">💫</div>
+                    <h3>Spiral Pattern Generator</h3>
+                    <p>Write a program to create animated spiral patterns using trigonometric functions.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="algo">
+                    <div class="project-icon">✨</div>
+                    <h3>Starfield Simulation</h3>
+                    <p>Simulate a galaxy-like starfield using object arrays and motion logic (JS or Python).</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="algo">
+                    <div class="project-icon">🔲</div>
+                    <h3>Maze Generator</h3>
+                    <p>Use DFS or Prim's algorithm to generate mazes, then visualize pathfinding (BFS, A*).</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="algo">
+                    <div class="project-icon">🌀</div>
+                    <h3>Recursive Snowflake</h3>
+                    <p>Draw a Koch snowflake using recursive functions and turtle graphics or canvas.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="algo">
+                    <div class="project-icon">🎵</div>
+                    <h3>Music Visualizer</h3>
+                    <p>Capture microphone or audio input and create real-time animated visuals with FFT.</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="algo">
+                    <div class="project-icon">🏗️</div>
+                    <h3>L-System Plant Simulator</h3>
+                    <p>Use Lindenmayer systems to draw algorithmically generated plants and trees.</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="algo">
+                    <div class="project-icon">🌊</div>
+                    <h3>Wave Simulation</h3>
+                    <p>Create a water ripple or sine wave animation using math functions and array buffers.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                
+                <!-- Hardware/IoT Projects -->
+                <div class="assignment-box" data-category="iot">
+                    <div class="project-icon">💡</div>
+                    <h3>Smart Light Controller</h3>
+                    <p>Simulate an IoT app to toggle lights remotely (use a mock API).</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+
+                <div class="assignment-box" data-category="iot">
+                    <div class="project-icon">🌡️</div>
+                    <h3>Temperature Monitor</h3>
+                    <p>Create a simulated IoT dashboard that fetches temperature data from a mock API and shows alerts.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="iot">
+                    <div class="project-icon">🔐</div>
+                    <h3>Smart Door Lock</h3>
+                    <p>Design a UI/UX for locking/unlocking doors remotely (simulate the logic with JS and API calls).</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="iot">
+                    <div class="project-icon">📷</div>
+                    <h3>Motion Detection Camera</h3>
+                    <p>Simulate a security camera system that triggers alerts when motion is detected (basic JS + camera API).</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="iot">
+                    <div class="project-icon">🚗</div>
+                    <h3>Smart Parking System</h3>
+                    <p>Simulate a parking space availability tracker using sensors data (mock or real API).</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="iot">
+                    <div class="project-icon">🌱</div>
+                    <h3>Smart Irrigation System</h3>
+                    <p>Build a dashboard that waters plants automatically based on soil moisture (simulate with dummy data).</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="iot">
+                    <div class="project-icon">🏠</div>
+                    <h3>Home Automation Dashboard</h3>
+                    <p>Create a full web interface to control multiple smart devices (lights, AC, fans) with toggle states.</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="iot">
+                    <div class="project-icon">📦</div>
+                    <h3>IoT Parcel Tracker</h3>
+                    <p>Design a system to simulate GPS-based real-time tracking of a parcel delivery.</p>
+                    <div class="difficulty medium">Intermediate</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                <div class="assignment-box" data-category="iot">
+                    <div class="project-icon">🧯</div>
+                    <h3>Fire Alert System</h3>
+                    <p>Simulate a smoke detector that sends alerts to a dashboard when threshold is breached.</p>
+                    <div class="difficulty hard">Advanced</div>
+                    <a href="../CoderPage/coder.html" class="solve-btn">Solve Now</a>
+                </div>
+                
+                
+                <!-- More projects would follow the same pattern -->
             </div>
         </section>
-
-        <div id="coding-page" class="hidden">
-            <button class="back-btn" onclick="backToProjects()">← Back to Projects</button>
-            <div class="project-display">
-                <h3 id="selected-project-title"></h3>
-                <p id="selected-project-description"></p>
-            </div>
-        
-            <div class="compiler-container">
-                <div class="code-header">
-                    <h3>Project Code</h3>
-                </div>
-                <textarea id="code-editor" placeholder="Write your project code here..."></textarea>
-                <div class="input-output-section">
-                    <button id="run-btn" class="run-btn" onclick="runCode()">Run Code</button>
-                    <div id="output-container" class="hidden">
-                        <h3>Output</h3>
-                        <div id="output-box" class="output-display"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </main>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ace.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ext-language_tools.min.js"></script>
-    <script>
-        // ace-editor
-        ace.require("ace/ext/language_tools");
-        ace.config.set("basePath", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/");
-        var editor = ace.edit('code-editor', { enableBasicAutocompletion: true, enableSnippets: true, enableLiveAutocompletion: true });
-        editor.session.setMode("ace/mode/c_cpp"); // Default mode
-        editor.setOptions({
-            fontSize: "14px",
-            showGutter: true,
-            highlightActiveLine: true,
-            highlightGutterLine: false,
-            wrap: false,
-            theme: "ace/theme/monokai"
-        });
-        const projects = {
-            all: [
-                { 
-                    title: "Tic-Tac-Toe Game", 
-                    description: "Create a console-based Tic-Tac-Toe game for two players.", 
-                    languages: ["c", "cpp", "java", "python"],
-                    difficulty: "Intermediate"
-                },
-                { 
-                    title: "Snake Game", 
-                    description: "Implement the classic Snake game with score tracking.", 
-                    languages: ["cpp", "java", "python"],
-                    difficulty: "Intermediate"
-                },
-                { 
-                    title: "To-Do List Manager", 
-                    description: "Build a console application to manage tasks with add, complete, and delete functionality.", 
-                    languages: ["c", "cpp", "java", "python"],
-                    difficulty: "Beginner"
-                },
-                { 
-                    title: "File Encryption Tool", 
-                    description: "Create a program that can encrypt and decrypt files using a simple algorithm.", 
-                    languages: ["c", "cpp", "java"],
-                    difficulty: "Advanced"
-                },
-                { 
-                    title: "Weather App", 
-                    description: "Fetch and display weather data from a public API.", 
-                    languages: ["python", "java"],
-                    difficulty: "Intermediate"
-                },
-                { 
-                    title: "Chat Application", 
-                    description: "Simple client-server chat application using sockets.", 
-                    languages: ["python", "java", "cpp"],
-                    difficulty: "Advanced"
-                }
-            ],
-            c: [
-                { 
-                    title: "Library Management System", 
-                    description: "Console-based system to manage book inventory with file storage.", 
-                    difficulty: "Intermediate"
-                },
-                { 
-                    title: "Student Record System", 
-                    description: "Manage student records with structures and file I/O.", 
-                    difficulty: "Beginner"
-                }
-            ],
-            cpp: [
-                { 
-                    title: "2D Game Engine", 
-                    description: "Simple game engine using SFML or SDL libraries.", 
-                    difficulty: "Advanced"
-                },
-                { 
-                    title: "Banking System", 
-                    description: "OOP-based banking system with accounts and transactions.", 
-                    difficulty: "Intermediate"
-                }
-            ],
-            java: [
-                { 
-                    title: "Android Task Manager", 
-                    description: "Simple Android app to manage daily tasks.", 
-                    difficulty: "Intermediate"
-                },
-                { 
-                    title: "Inventory Management", 
-                    description: "GUI application to track product inventory.", 
-                    difficulty: "Intermediate"
-                }
-            ],
-            python: [
-                { 
-                    title: "Web Scraper", 
-                    description: "Extract data from websites using BeautifulSoup.", 
-                    difficulty: "Intermediate"
-                },
-                { 
-                    title: "Data Visualization Dashboard", 
-                    description: "Create interactive charts from CSV data using Matplotlib.", 
-                    difficulty: "Beginner"
-                }
-            ]
-        };
-
-        // Show all projects by default when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            showProjects('all');
-            setActiveButton('all');
-        });
-
-        function showProjects(lang) {
-            const container = document.getElementById("project-container");
-            container.innerHTML = "";
-            
-            let projectsToShow = [];
-            
-            if (lang === 'all') {
-                projectsToShow = projects.all;
-            } else {
-                projectsToShow = [
-                    ...projects.all.filter(p => p.languages.includes(lang)),
-                    ...projects[lang]
-                ];
-            }
-            
-            projectsToShow.forEach(project => {
-                const projectBox = document.createElement("div");
-                projectBox.classList.add("project-box");
-                
-                // Get language tags
-                let langTags = "";
-                if (project.languages) {
-                    langTags = project.languages.map(l => 
-                        `<span class="lang-tag ${l}">${l.toUpperCase()}</span>`
-                    ).join(" ");
-                } else {
-                    langTags = `<span class="lang-tag ${lang}">${lang.toUpperCase()}</span>`;
-                }
-                
-                projectBox.innerHTML = `
-                    <h3>${project.title}</h3>
-                    <p>${project.description}</p>
-                    <div style="margin: 10px 0;">
-                        ${langTags}
-                        <span style="float: right; color: ${getDifficultyColor(project.difficulty)}">
-                            ${project.difficulty}
-                        </span>
-                    </div>
-                    <button class="project-btn" onclick="selectProject('${project.title}', '${project.description}')">Start Project</button>
-                `;
-                container.appendChild(projectBox);
-            });
-            
-            setActiveButton(lang);
-        }
-
-        function getDifficultyColor(difficulty) {
-            switch(difficulty.toLowerCase()) {
-                case 'beginner': return '#2b8a3e';
-                case 'intermediate': return '#d9480f';
-                case 'advanced': return '#c92a2a';
-                default: return '#868e96';
-            }
-        }
-
-        function setActiveButton(lang) {
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent.toLowerCase() === lang || 
-                    (lang === 'all' && btn.textContent.toLowerCase() === 'all languages')) {
-                    btn.classList.add('active');
-                }
-            });
-        }
-
-        function selectProject(title, description) {
-            // Hide the project list
-            document.getElementById("projects").classList.add("hidden");
-            
-            // Show the coding page
-            document.getElementById("coding-page").classList.remove("hidden");
-            
-            // Set the selected project info
-            document.getElementById("selected-project-title").textContent = title;
-            document.getElementById("selected-project-description").textContent = description;
-            
-            // Clear previous code and output
-            document.getElementById("code-editor").value = `// ${title}\n// ${description}\n\n// Start coding your project here...`;
-            document.getElementById("output-container").classList.add("hidden");
-        }
-
-        function backToProjects() {
-            // Show the project list
-            document.getElementById("projects").classList.remove("hidden");
-            
-            // Hide the coding page
-            document.getElementById("coding-page").classList.add("hidden");
-        }
-
-        function runCode() {
-            const code = document.getElementById("code-editor").value;
-            document.getElementById("output-container").classList.remove("hidden");
-            document.getElementById("output-box").innerText = "Running project code... (Simulated output)";
-            
-            // Simulate different outputs based on project type
-            setTimeout(() => {
-                const title = document.getElementById("selected-project-title").textContent;
-                let output = "";
-                
-                if (title.includes("Tic-Tac-Toe")) {
-                    output = `Tic-Tac-Toe Board:\n\n 1 | 2 | 3 \n-----------\n 4 | 5 | 6 \n-----------\n 7 | 8 | 9 \n\nPlayer X's turn:`;
-                } 
-                else if (title.includes("Snake")) {
-                    output = `Snake Game Started!\n\nScore: 0\nUse arrow keys to move\nSnake length: 3`;
-                }
-                else if (title.includes("To-Do")) {
-                    output = `To-Do List:\n1. [ ] Buy groceries\n2. [X] Finish project\n3. [ ] Call mom`;
-                }
-                else {
-                    output = `${title} executed successfully.\n\nSample output would appear here.`;
-                }
-                
-                document.getElementById("output-box").innerText = output;
-            }, 1000);
-        }
-        // Mobile menu toggle functionality
-// Mobile menu toggle functionality
-const menuToggle = document.getElementById('menu-toggle');
-const sidebar = document.getElementById('sidebar');
-
-menuToggle.addEventListener('click', (e) => {
-    e.stopPropagation(); // Prevent this click from triggering the document click handler
-    sidebar.classList.toggle('active');
-    document.body.classList.toggle('no-scroll');
-});
-
-// Close sidebar when clicking anywhere except the sidebar itself
-document.addEventListener('click', (e) => {
-    // Check if the click is outside the sidebar and the menu toggle button
-    if (!sidebar.contains(e.target) && e.target !== menuToggle) {
-        sidebar.classList.remove('active');
-        document.body.classList.remove('no-scroll');
-    }
-});
-
-// Prevent clicks inside the sidebar from closing it
-sidebar.addEventListener('click', (e) => {
-    e.stopPropagation();
-});
-    </script>
+    <script src="realworld.js"></script>
 </body>
 </html>
