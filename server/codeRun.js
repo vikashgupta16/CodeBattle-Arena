@@ -1,12 +1,7 @@
 class CodeRunner
 {
     async endpoint(req, res)
-    {        
-        if (!req.auth.sessionId) {
-            res.json({ error: "Unauthorized access" });
-            return;
-        }
-
+    {
         if (!req.params.lang) {
             res.json({ error: "Missing required :lang param" });
             return;

@@ -30,7 +30,9 @@
 <script>
     window.addEventListener('load', async function () {
         await Clerk.load()
-        Clerk.mountSignIn(document.getElementById("signinDiv"));
+        Clerk.mountSignIn(document.getElementById("signinDiv"), {
+            redirectUrl: window.location.origin + "/private/HomePage/codigo.html"
+        });
     });
 </script>
 

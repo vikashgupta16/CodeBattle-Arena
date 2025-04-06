@@ -26,7 +26,6 @@
     "cookie-session": "^2.1.0",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
-    "mongoose": "^8.13.1",
-    "ws": "^8.18.1"
+    "mongoose": "^8.13.1"
   }
 }

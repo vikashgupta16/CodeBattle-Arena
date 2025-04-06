@@ -6,6 +6,9 @@ const sidebar = document.getElementById('sidebar');
 const outputBox = document.getElementById('output-box');
 const langSelector = document.getElementById('language-selector');
 
+const challengeTitle = document.getElementById('selected-challenge-title');
+const challengeDesc = document.getElementById('selected-challenge-description');
+
 menuToggle.addEventListener('click', (e) => {
     e.stopPropagation(); // Prevent this click from triggering the document click handler
     sidebar.classList.toggle('active');
@@ -67,3 +70,6 @@ function changeLang(list) {
         editor.session.setMode('ace/mode/' + list.value);
     }
 }
+
+challengeTitle.textContent = localStorage.getItem('problemTitle');
+challengeDesc.textContent = localStorage.getItem('problemDescription');
