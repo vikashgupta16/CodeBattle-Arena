@@ -40,7 +40,8 @@ body {
 
 .back-to-top {
     position: fixed;
-    left: calc(50% - 25px);
+    /* left: calc(50% - 25px); */
+    right: 30px;
     bottom: 30px;
     display: flex;
     justify-content: center;
@@ -75,7 +76,8 @@ body {
     min-height: 40px;
     padding: 10px 20px;
     border-radius: 30px;
-    left: calc(50% - 60px);
+    /* left: calc(50% - 60px); */
+    right: 30px;
     border-radius: 30px;
     white-space: nowrap;
 }
