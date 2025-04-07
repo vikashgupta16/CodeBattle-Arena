@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODi-CodiGo</title>
+    <!-- Link to Material Symbols font (use only one version) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" />
+    <link rel="stylesheet" href="CODi.css">
+</head>
+<body>
+    <div class="container">
+        <!-- App Header -->
+        <header class="app-header">
+            <h1 class="heading">Hello, there</h1>
+            <h2 class="sub-heading">How Can I help you?</h2>
+        </header>
+
+        <!-- sugestion box -->
+        <ul class="suggestions">
+            <li class="suggestion-item">
+                <p>What is Java?</p>
+                <span class="material-symbols-outlined">draw</span>
+            </li>
+            <li class="suggestion-item">
+                <p>What is Python?</p>
+                <span class="material-symbols-outlined">explore</span>
+            </li>
+            <li class="suggestion-item">
+                <p>What is C?</p>
+                <span class="material-symbols-outlined">lightbulb</span>
+            </li>
+            <li class="suggestion-item">
+                <p>What is C++?</p>
+                <span class="material-symbols-outlined">code_blocks</span>
+            </li>
+        </ul>
+        
+        <div class="chats-container"></div>
+
+        <!-- prompt container -->
+        <div class="prompt-container">
+            <div class="prompt-wrapper">
+                <form action="#" class="prompt-form">
+                    <input type="text" placeholder="Ask CODi" class="prompt-input" required>
+                    <div class="prompt-actions">
+                        <button type="button" id="stop-response-btn" class="material-symbols-outlined">stop_circle</button>
+                        <button id="send-prompt-btn" class="material-symbols-outlined">arrow_upward</button>
+                    </div>
+                </form>
+                <!-- Additional buttons -->
+                <button id="theme-toggle-btn" class="material-symbols-outlined">light_mode</button>
+                <button id="delete-chats-btn" class="material-symbols-outlined">delete</button>
+            </div>
+
+            <p class="disclaimer-text">CODi can make mistakes, So recheck code.</p>
+        </div>
+    </div>
+    <script src="CODi.js"></script>
+</body>
+</html>
