@@ -45,20 +45,49 @@ const editor = ace.edit("code-editor", {
 
 async function runCode(btn) {
     btn.textContent = 'Running...';
-    const out = await fetch(window.location.origin + "/api/run/" + langSelector.value, {
-        method: 'POST',
-        headers: {
-            "content-type": "application/json"
-        },
-        body: JSON.stringify({
-            code: editor.getValue(),
-            input: ""
-        })
-    });
+    btn.disabled = true;
+    
+    try {
+        const response = await fetch(window.location.origin + "/api/run/" + langSelector.value, {
+            method: 'POST',
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({
+                code: editor.getValue(),
+                input: document.getElementById('input-area')?.value || ""
+            })
+        });
 
-    const data = await out.json();
-    outputBox.textContent = data.out + "\n\nSignal: " + data.signal;
-    btn.textContent = 'Run Code';
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.success) {
+            let output = data.output || 'No output';
+            if (data.error && data.error.trim()) {
+                output += '\n\n--- Errors/Warnings ---\n' + data.error;
+            }
+            if (data.executionTime) {
+                output += '\n\n--- Execution Time ---\n' + data.executionTime;
+            }
+            outputBox.textContent = output;
+            outputBox.className = 'output-success';
+        } else {
+            outputBox.textContent = 'Error: ' + (data.error || 'Unknown error occurred');
+            outputBox.className = 'output-error';
+        }
+        
+    } catch (error) {
+        console.error('Code execution failed:', error);
+        outputBox.textContent = 'Failed to execute code: ' + error.message;
+        outputBox.className = 'output-error';
+    } finally {
+        btn.textContent = 'Run Code';
+        btn.disabled = false;
+    }
 }
 
 function changeLang(list) {

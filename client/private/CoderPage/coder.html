@@ -46,12 +46,15 @@
                         <option value="python">Python</option>
                     </select>
                 </div>
-                <div id="code-editor"></div>
-                <div class="input-output-section">
+                <div id="code-editor"></div>                <div class="input-output-section">
+                    <div class="input-section">
+                        <h3>Input (optional)</h3>
+                        <textarea id="input-area" placeholder="Enter input for your program here..." rows="3"></textarea>
+                    </div>
                     <button id="run-btn" class="practice-btn" onclick="runCode(this)">Run Code</button>
-                    <div id="output-container" class="hidden">
+                    <div id="output-container">
                         <h3>Output</h3>
-                        <div id="output-box" class="output-display"></div>
+                        <div id="output-box" class="output-display">Run your code to see the output here...</div>
                     </div>
                 </div>
             </div>

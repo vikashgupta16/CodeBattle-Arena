@@ -154,6 +154,55 @@ class UserDBHandler {
             await UserDBHandler.Users.updateOne({ userID: _userId }, { $inc: { contests_count: value } });
         }
     }
+
+    /**
+     * Check if user is admin
+     * @param {string} userId User ID to check
+     * @returns {boolean} True if user is admin
+     */
+    async checkAdminUser(userId) {
+        try {
+            const user = await UserDBHandler.Users.findOne({ userID: userId });
+            return user?.admin || false;
+        } catch (error) {
+            console.error('[UserDBHandler Error] checkAdminUser failed:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Get leaderboard data
+     * @param {number} limit Number of users to return (default: 50)
+     * @returns {Array} Array of user objects sorted by rank
+     */
+    async getLeaderboard(limit = 50) {
+        try {
+            return await UserDBHandler.Users
+                .find({}, { name: 1, rank: 1, contests_count: 1, streak_count: 1, _id: 0 })
+                .sort({ rank: -1, contests_count: -1 })
+                .limit(limit);
+        } catch (error) {
+            console.error('[UserDBHandler Error] getLeaderboard failed:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get user statistics
+     * @param {string} userId User ID
+     * @returns {Object} User stats
+     */
+    async getUserStats(userId) {
+        try {
+            return await UserDBHandler.Users.findOne(
+                { userID: userId }, 
+                { rank: 1, contests_count: 1, streak_count: 1, name: 1, _id: 0 }
+            );
+        } catch (error) {
+            console.error('[UserDBHandler Error] getUserStats failed:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = {
