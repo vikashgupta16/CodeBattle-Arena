@@ -131,13 +131,13 @@ class ProblemLoader {
             // Fetch full problem details
             const problem = await this.fetchProblem(problemId);
             
-            // Store in localStorage for the coder page
+            // Store in localStorage for backward compatibility
             localStorage.setItem('selectedProblem', JSON.stringify(problem));
             localStorage.setItem('problemTitle', problem.title);
             localStorage.setItem('problemDescription', problem.description);
             
-            // Navigate to coder page
-            window.location.href = '/private/CoderPage/coder.html';
+            // Navigate to coder page with problem ID in URL
+            window.location.href = `/private/CoderPage/coder.html?problemId=${problemId}`;
             
         } catch (error) {
             console.error('Error selecting problem:', error);

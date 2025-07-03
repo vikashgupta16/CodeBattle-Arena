@@ -123,6 +123,54 @@ class RealWorldProjectLoader extends ProblemLoader {
         `;
     }
 
+    // Add click handlers to problem elements
+    addProblemClickHandlers() {
+        const problemBoxes = document.querySelectorAll('.assignment-box');
+        problemBoxes.forEach(box => {
+            const problemId = box.dataset.problemId;
+            const solveBtn = box.querySelector('.solve-btn');
+            
+            if (solveBtn) {
+                solveBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.selectProblem(problemId);
+                });
+            }
+        });
+    }
+
+    // Handle problem selection (same as base loader)
+    async selectProblem(problemId) {
+        try {
+            console.log('Selecting project:', problemId);
+            
+            // Fetch full problem details
+            const response = await fetch(`/api/problems/${problemId}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch problem: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            if (!data.success) {
+                throw new Error(data.error || 'Failed to load problem');
+            }
+            
+            const problem = data.problem;
+            
+            // Store in localStorage for backward compatibility
+            localStorage.setItem('selectedProblem', JSON.stringify(problem));
+            localStorage.setItem('problemTitle', problem.title);
+            localStorage.setItem('problemDescription', problem.description);
+            
+            // Navigate to coder page with problem ID in URL
+            window.location.href = `/private/CoderPage/coder.html?problemId=${problemId}`;
+            
+        } catch (error) {
+            console.error('Error selecting project:', error);
+            alert('Failed to load project. Please try again.');
+        }
+    }
+
     // Setup category tab functionality
     setupCategoryTabs() {
         const tabs = document.querySelectorAll('.category-tab');
