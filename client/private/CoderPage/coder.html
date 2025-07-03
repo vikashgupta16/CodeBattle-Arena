@@ -31,57 +31,78 @@
     <main class="container">
         <div id="coding-page">
             <button class="back-btn" onclick="window.location.href='../HomePage/codigo.html#practice'">← Back to Challenges</button>
-            <div class="challenge-display">
-                <div class="problem-header">
-                    <h3 id="selected-challenge-title">Loading...</h3>
-                    <span id="problem-difficulty" class="difficulty-badge"></span>
+            
+            <!-- Main Split Layout -->
+            <div class="split-layout">
+                <!-- Left Side: Problem Description -->
+                <div class="problem-panel">
+                    <div class="problem-header">
+                        <h3 id="selected-challenge-title">Loading...</h3>
+                        <span id="problem-difficulty" class="difficulty-badge"></span>
+                    </div>
+                    
+                    <div class="problem-content">
+                        <div class="problem-description">
+                            <h4>Description</h4>
+                            <p id="selected-challenge-description">Loading problem details...</p>
+                        </div>
+                        
+                        <div class="problem-constraints" id="problem-constraints" style="display: none;">
+                            <h4>Constraints</h4>
+                            <p id="constraints-text"></p>
+                        </div>
+                        
+                        <div class="problem-examples" id="problem-examples" style="display: none;">
+                            <h4>Examples</h4>
+                            <div id="examples-container"></div>
+                        </div>
+                        
+                        <div class="problem-hints" id="problem-hints" style="display: none;">
+                            <h4>💡 Hints</h4>
+                            <ul id="hints-list"></ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="problem-content">
-                    <div class="problem-description">
-                        <h4>Description</h4>
-                        <p id="selected-challenge-description">Loading problem details...</p>
+
+                <!-- Right Side: Code Editor and Controls -->
+                <div class="editor-panel">
+                    <div class="code-header">
+                        <h3>Solution</h3>
+                        <select class="language-selector" id="language-selector" oninput="changeLang(this)">
+                            <option value="c">C</option>
+                            <option value="c++">C++</option>
+                            <option value="java">Java</option>
+                            <option value="python">Python</option>
+                        </select>
                     </div>
                     
-                    <div class="problem-constraints" id="problem-constraints" style="display: none;">
-                        <h4>Constraints</h4>
-                        <p id="constraints-text"></p>
-                    </div>
+                    <div id="code-editor"></div>
                     
-                    <div class="problem-examples" id="problem-examples" style="display: none;">
-                        <h4>Examples</h4>
-                        <div id="examples-container"></div>
-                    </div>
-                    
-                    <div class="problem-hints" id="problem-hints" style="display: none;">
-                        <h4>💡 Hints</h4>
-                        <ul id="hints-list"></ul>
+                    <div class="editor-controls">
+                        <div class="input-section">
+                            <label for="input-area">Custom Input (optional)</label>
+                            <textarea id="input-area" placeholder="Enter test input..." rows="2"></textarea>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button id="run-btn" class="action-btn run-btn" onclick="runCode(this)">
+                                <span>▶</span> Run Code
+                            </button>
+                            <button id="submit-btn" class="action-btn submit-btn" onclick="submitSolution(this)">
+                                <span>✓</span> Submit Solution
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="compiler-container">
-                <div class="code-header">
-                    <h3>Enter Your Code</h3>
-                    <select class="language-selector" id="language-selector" oninput="changeLang(this)">
-                        <option value="c">C</option>
-                        <option value="c++">C++</option>
-                        <option value="java">Java</option>
-                        <option value="python">Python</option>
-                    </select>
+            
+            <!-- Bottom: Output and Test Results -->
+            <div class="output-section">
+                <div class="output-header">
+                    <h4>Output & Test Results</h4>
                 </div>
-                <div id="code-editor"></div>                <div class="input-output-section">
-                    <div class="input-section">
-                        <h3>Input (optional)</h3>
-                        <textarea id="input-area" placeholder="Enter input for your program here..." rows="3"></textarea>
-                    </div>
-                    <div class="action-buttons">
-                        <button id="run-btn" class="practice-btn" onclick="runCode(this)">Run Code</button>
-                        <button id="submit-btn" class="submit-btn" onclick="submitSolution(this)">Submit Solution</button>
-                    </div>
-                    <div id="output-container">
-                        <h3>Output</h3>
-                        <div id="output-box" class="output-display">Run your code to see the output here...</div>
-                    </div>
+                <div id="output-container">
+                    <div id="output-box" class="output-display">Run your code to see the output here...</div>
                 </div>
             </div>
         </div>

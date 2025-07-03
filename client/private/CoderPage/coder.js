@@ -181,7 +181,7 @@ async function submitSolution(btn) {
     btn.disabled = true;
     
     try {
-        const response = await fetch(`/api/problems/${currentProblem.problemId}/submit`, {
+        const response = await fetch(`/api/problems/${currentProblem._id}/submit`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -199,16 +199,7 @@ async function submitSolution(btn) {
         const data = await response.json();
         
         if (data.success) {
-            outputBox.innerHTML = `
-                <div class="submission-result success">
-                    <h4>✅ Solution Submitted Successfully!</h4>
-                    <p><strong>Status:</strong> ${data.submission.status}</p>
-                    <p><strong>Score:</strong> ${data.submission.score}/${data.submission.totalTestCases}</p>
-                    <p><strong>Execution Time:</strong> ${data.submission.executionTime || 'N/A'}</p>
-                    ${data.submission.feedback ? `<p><strong>Feedback:</strong> ${data.submission.feedback}</p>` : ''}
-                </div>
-            `;
-            outputBox.className = 'output-success';
+            displaySubmissionResults(data.submission);
         } else {
             outputBox.innerHTML = `
                 <div class="submission-result error">
@@ -232,6 +223,123 @@ async function submitSolution(btn) {
         btn.textContent = 'Submit Solution';
         btn.disabled = false;
     }
+}
+
+// Display detailed submission results
+function displaySubmissionResults(submission) {
+    const isAccepted = submission.status === 'accepted';
+    const statusIcon = isAccepted ? '✅' : '❌';
+    const statusText = submission.status.replace(/_/g, ' ').toUpperCase();
+    
+    let resultHTML = `
+        <div class="submission-result ${isAccepted ? 'success' : 'error'}">
+            <div class="submission-header">
+                <h4>${statusIcon} ${statusText}</h4>
+                <div class="submission-score">
+                    <span class="score-badge ${isAccepted ? 'success' : 'partial'}">${submission.score}%</span>
+                </div>
+            </div>
+            
+            <div class="submission-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Test Cases:</span>
+                    <span class="stat-value">${submission.testCasesPassed}/${submission.totalTestCases}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Avg Execution Time:</span>
+                    <span class="stat-value">${(submission.executionTime || 0).toFixed(3)}ms</span>
+                </div>
+            </div>
+            
+            <div class="submission-feedback">
+                <p><strong>Feedback:</strong> ${submission.feedback}</p>
+            </div>
+    `;
+    
+    // Add detailed test case results if available
+    if (submission.testResults && submission.testResults.length > 0) {
+        resultHTML += `
+            <div class="test-results">
+                <h5>📊 Test Case Details</h5>
+                <div class="test-cases-container">
+        `;
+        
+        submission.testResults.forEach((testResult, index) => {
+            if (!testResult.isHidden) {  // Only show non-hidden test cases
+                const testIcon = testResult.passed ? '✅' : '❌';
+                const testStatus = testResult.passed ? 'passed' : 'failed';
+                
+                resultHTML += `
+                    <div class="test-case ${testStatus}">
+                        <div class="test-case-header">
+                            <span>${testIcon} Test Case ${index + 1}</span>
+                            <span class="execution-time">${(testResult.executionTime || 0).toFixed(3)}ms</span>
+                        </div>
+                `;
+                
+                if (!testResult.passed) {
+                    resultHTML += `
+                        <div class="test-case-details">
+                            <div class="test-input">
+                                <strong>Input:</strong>
+                                <code>${testResult.input || 'No input'}</code>
+                            </div>
+                            <div class="test-expected">
+                                <strong>Expected Output:</strong>
+                                <code>${testResult.expectedOutput}</code>
+                            </div>
+                            <div class="test-actual">
+                                <strong>Your Output:</strong>
+                                <code>${testResult.actualOutput || 'No output'}</code>
+                            </div>
+                            ${testResult.errorMessage ? `
+                                <div class="test-error">
+                                    <strong>Error:</strong>
+                                    <code>${testResult.errorMessage}</code>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                } else {
+                    resultHTML += `
+                        <div class="test-case-details">
+                            <div class="test-input">
+                                <strong>Input:</strong>
+                                <code>${testResult.input || 'No input'}</code>
+                            </div>
+                            <div class="test-output">
+                                <strong>Output:</strong>
+                                <code>${testResult.actualOutput}</code>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                resultHTML += `</div>`;
+            }
+        });
+        
+        // Show summary for hidden test cases
+        const hiddenTests = submission.testResults.filter(t => t.isHidden);
+        if (hiddenTests.length > 0) {
+            const hiddenPassed = hiddenTests.filter(t => t.passed).length;
+            resultHTML += `
+                <div class="hidden-tests-summary">
+                    <span>🔒 Hidden Test Cases: ${hiddenPassed}/${hiddenTests.length} passed</span>
+                </div>
+            `;
+        }
+        
+        resultHTML += `
+                </div>
+            </div>
+        `;
+    }
+    
+    resultHTML += `</div>`;
+    
+    outputBox.innerHTML = resultHTML;
+    outputBox.className = isAccepted ? 'output-success' : 'output-error';
 }
 
 function changeLang(list) {

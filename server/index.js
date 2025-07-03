@@ -52,9 +52,7 @@ app.use(clerk.clerkMiddleware());
 app.use('/public', express.static('client/public'));
 
 
-app.use('/private', clerk.requireAuth({ signInUrl: process.env.CLERK_SIGN_IN_URL, signUpUrl: process.env.CLERK_SIGN_UP_URL }),
-                    uDBHandler.middleware_userAuth.bind(uDBHandler),
-                    express.static('client/private'));
+app.use('/private', express.static('client/private'));
 
 
 // api endpoints -----------------
@@ -89,7 +87,7 @@ app.get('/api/leaderboard', async (req, res) => {
 // Problem endpoints
 app.get('/api/problems', problemDBHandler.endpoint_getProblems.bind(problemDBHandler));
 app.get('/api/problems/:problemId', problemDBHandler.endpoint_getProblem.bind(problemDBHandler));
-app.post('/api/problems/:problemId/submit', clerk.requireAuth(), problemDBHandler.endpoint_submitSolution.bind(problemDBHandler));
+app.post('/api/problems/:problemId/submit', problemDBHandler.endpoint_submitSolution.bind(problemDBHandler));
 
 app.get('/api/userdata', clerk.requireAuth(), uDBHandler.endpoint_userData.bind(uDBHandler));
 app.post('/api/run/:lang', express.json(), codeRunnerHandler.endpoint.bind(codeRunnerHandler));
