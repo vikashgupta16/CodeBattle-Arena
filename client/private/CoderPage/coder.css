@@ -5,13 +5,10 @@
     --text-primary: #e0e0e0;
     --text-secondary: #aaaaaa;
     --accent-blue: #75f74d;
-    --accent-orange: #ff922b;
     --accent-yellow: #ffd43b;
-    --accent-python: #3572A5;
     --success: #2b8a3e;
     --success-hover: #37b24d;
     --border-color: #333;
-    --highlight: #2d3436;
     --transition: all 0.3s ease;
 }
 
@@ -199,10 +196,6 @@ h3 {
     background: rgba(77, 171, 247, 0.2);
 }
 
-.compiler-container {
-    margin-top: 1.5rem;
-}
-
 .code-header {
     display: flex;
     justify-content: space-between;
@@ -229,34 +222,6 @@ h3 {
     font-size: 0.9rem;
     background-color: #252525;
     color: #d4d4d4;
-}
-
-.practice-btn {
-    padding: 0.75rem 1.5rem;
-    background-color: var(--success);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    margin-top: 1rem;
-}
-
-.practice-btn:hover {
-    background-color: var(--success-hover);
-    transform: translateY(-2px);
-}
-
-.practice-btn:disabled {
-    background-color: #666;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.practice-btn:disabled:hover {
-    background-color: #666;
-    transform: none;
 }
 
 #output-container {
@@ -322,11 +287,6 @@ h3 {
     color: #ffa8a8 !important;
 }
 
-/* Input-output section layout */
-.input-output-section {
-    margin-top: 1.5rem;
-}
-
 /* Scrollbar styling */
 ::-webkit-scrollbar {
     width: 8px;
@@ -344,25 +304,6 @@ h3 {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
-}
-
-/* Challenge display specific styles */
-.challenge-display {
-    background-color: #252525;
-    padding: 1.5rem;
-    border-radius: 5px;
-    margin-bottom: 1.5rem;
-    border: 1px solid var(--border-color);
-}
-
-.challenge-display h3 {
-    color: var(--accent-blue);
-    margin-bottom: 0.5rem;
-}
-
-.challenge-display p {
-    color: var(--text-secondary);
-    margin: 0;
 }
 
 /* Enhanced Problem Display Styles */
@@ -653,51 +594,6 @@ h3 {
     color: var(--text-secondary);
 }
 
-/* Progress Indicators */
-.test-progress {
-    margin-bottom: 1rem;
-}
-
-.progress-bar {
-    width: 100%;
-    height: 20px;
-    background-color: #333;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #28a745, #20c997);
-    transition: width 0.3s ease;
-    border-radius: 10px;
-}
-
-.progress-text {
-    text-align: center;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-/* Status Icons and Colors */
-.status-accepted {
-    color: #28a745;
-}
-
-.status-wrong-answer {
-    color: #ffc107;
-}
-
-.status-time-limit-exceeded {
-    color: #ff922b;
-}
-
-.status-runtime-error,
-.status-compile-error {
-    color: #dc3545;
-}
-
 /* Mobile Responsive for Test Results */
 @media (max-width: 768px) {
     .submission-header {
@@ -980,13 +876,6 @@ h3 {
     .editor-panel {
         padding: 1rem;
     }
-}
-
-/* Legacy styles cleanup */
-.challenge-display,
-.compiler-container,
-.input-output-section {
-    display: none;
 }
 
 /* Update existing difficulty badge styling */
