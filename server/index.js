@@ -8,9 +8,10 @@ const path = require("path");
 
 const { MongooseConnect, UserDBHandler } = require("./database.js");
 const { CodeRunner } = require("./codeRun.js");
+const { ProblemDBHandler } = require("./problemDatabase.js");
 
 // configure the environment variables
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, '../.env') });
 process.env.PORT = process.env.PORT || '8080';
 
 // the main app instance
@@ -36,6 +37,9 @@ app.use(session({
 
 // code runner handler ------------
 const codeRunnerHandler = new CodeRunner();
+
+// problem database handler -------
+const problemDBHandler = new ProblemDBHandler();
 
 // user database handler -------------
 MongooseConnect.connect(process.env.MONGO_DB_URL);
@@ -82,12 +86,22 @@ app.get('/api/leaderboard', async (req, res) => {
     }
 });
 
+// Problem endpoints
+app.get('/api/problems', problemDBHandler.endpoint_getProblems.bind(problemDBHandler));
+app.get('/api/problems/:problemId', problemDBHandler.endpoint_getProblem.bind(problemDBHandler));
+app.post('/api/problems/:problemId/submit', clerk.requireAuth(), problemDBHandler.endpoint_submitSolution.bind(problemDBHandler));
+
 app.get('/api/userdata', clerk.requireAuth(), uDBHandler.endpoint_userData.bind(uDBHandler));
 app.post('/api/run/:lang', express.json(), codeRunnerHandler.endpoint.bind(codeRunnerHandler));
 
 // main redirect
 app.get('/', (req, res) => {
-    res.redirect('/public/LandingPage');
+    res.redirect('/public/LandingPage/');
+});
+
+// Landing page direct access
+app.get('/LandingPage', (req, res) => {
+    res.redirect('/public/LandingPage/');
 });
 
 // http listen on PORT

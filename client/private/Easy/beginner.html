@@ -6,6 +6,7 @@
     <title>Beginer Arena - CODIGO</title>
     <link rel="shortcut icon" href="../privasset/web-development.png" type="image/x-icon">
     <link rel="stylesheet" href="begin.css">
+    <link rel="stylesheet" href="../common/problemStyles.css">
 </head>
 <body>
     <nav class="navbar">
@@ -28,55 +29,14 @@
     
     <main class="container">
         <section class="assignments" id="assignments">
-            <h2>Beginner</h2>
+            <h2>Beginner Problems</h2>
             
             <div id="challenge-container">
-                                
-                <div class="assignment-box">
-                    <h3>Hello World</h3>
-                    <p>Write a program to print Hello World.</p>
-                    <a onclick="transferProblem(this);" class="solve-btn">Solve Now</a>
-                </div>
-                
-                <div class="assignment-box">
-                    <h3>Sum of Two Numbers</h3>
-                    <p>Write a program to take two integers and print their sum.</p>
-                    <a onclick="transferProblem(this);" class="solve-btn">Solve Now</a>
-                </div>
-                
-                <div class="assignment-box">
-                    <h3>Even or Odd</h3>
-                    <p>Write a program to check if a number is even or odd.</p>
-                    <a onclick="transferProblem(this);" class="solve-btn">Solve Now</a>
-                </div>
-                
-                <div class="assignment-box">
-                    <h3>Find Maximum</h3>
-                    <p>Write a program to find the maximum of two numbers.</p>
-                    <a onclick="transferProblem(this);" class="solve-btn">Solve Now</a>
-                </div>
-                
-                <div class="assignment-box">
-                    <h3>Multiplication Table</h3>
-                    <p>Write a program to print the multiplication table of a number.</p>
-                    <a onclick="transferProblem(this);" class="solve-btn">Solve Now</a>
-                </div>
-                
-                <div class="assignment-box">
-                    <h3>Simple Interest Calculator</h3>
-                    <p>Write a program to calculate simple interest.</p>
-                    <a onclick="transferProblem(this);" class="solve-btn">Solve Now</a>
-                </div>
-                
-                <div class="assignment-box">
-                    <h3>Swap Two Numbers</h3>
-                    <p>Write a program to swap two numbers using a temporary variable.</p>
-                    <a onclick="transferProblem(this);" class="solve-btn">Solve Now</a>
-                </div>
-                
+                <!-- Problems will be loaded dynamically -->
             </div>
         </section>
     </main>
+    <script src="../common/problemLoader.js"></script>
     <script src="beginer.js"></script>
 </body>
 </html>
