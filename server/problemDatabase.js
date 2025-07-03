@@ -185,7 +185,11 @@ class ProblemDBHandler {
         try {
             const { problemId } = req.params;
             const { code, language } = req.body;
-            const userId = req.auth?.userId || 'anonymous_user'; // Allow anonymous submissions for testing
+            const userId = req.auth?.userId;
+
+            if (!userId) {
+                return res.status(401).json({ success: false, error: 'Authentication required' });
+            }
 
             if (!code || !language) {
                 return res.status(400).json({ success: false, error: 'Code and language are required' });

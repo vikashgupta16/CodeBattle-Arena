@@ -1,3 +1,15 @@
+// Initialize Clerk
+window.addEventListener('load', async () => {
+    if (typeof Clerk !== 'undefined') {
+        try {
+            await Clerk.load();
+            console.log('Clerk initialized successfully');
+        } catch (error) {
+            console.error('Failed to initialize Clerk:', error);
+        }
+    }
+});
+
 // Mobile menu toggle functionality
 const menuToggle = document.getElementById('menu-toggle');
 const closeBtn = document.getElementById('close-btn');
@@ -52,7 +64,9 @@ function getUrlParameter(name) {
 // Load problem from API
 async function loadProblem(problemId) {
     try {
-        const response = await fetch(`/api/problems/${problemId}`);
+        const response = await fetch(`/api/problems/${problemId}`, {
+            credentials: 'include'
+        });
         if (!response.ok) {
             throw new Error(`Failed to fetch problem: ${response.status}`);
         }
@@ -127,6 +141,7 @@ async function runCode(btn) {
             headers: {
                 "content-type": "application/json"
             },
+            credentials: 'include',
             body: JSON.stringify({
                 code: editor.getValue(),
                 input: document.getElementById('input-area')?.value || ""
@@ -186,6 +201,7 @@ async function submitSolution(btn) {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify({
                 code: code,
                 language: langSelector.value
