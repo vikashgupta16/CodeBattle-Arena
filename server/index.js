@@ -1,14 +1,18 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const clerk = require("@clerk/express");
-const session = require("cookie-session");
-const crypto = require("node:crypto");
-const cors = require("cors");
-const path = require("path");
+import express from "express";
+import dotenv from "dotenv";
+import * as clerk from "@clerk/express";
+import session from "cookie-session";
+import crypto from "node:crypto";
+import cors from "cors";
+import path from "path";
 
-const { MongooseConnect, UserDBHandler } = require("./database.js");
-const { CodeRunner } = require("./codeRun.js");
-const { ProblemDBHandler } = require("./problemDatabase.js");
+import { MongooseConnect, UserDBHandler } from "./database.js";
+import { CodeRunner } from "./codeRun.js";
+import { ProblemDBHandler } from "./problemDatabase.js";
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // configure the environment variables
 dotenv.config({ path: path.join(__dirname, '../.env') });
@@ -45,11 +49,17 @@ const problemDBHandler = new ProblemDBHandler();
 MongooseConnect.connect(process.env.MONGO_DB_URL);
 const uDBHandler = new UserDBHandler();
 
+// Run migration for existing users
+uDBHandler.migrateUsersStats().catch(console.error);
+
 // authentication -----------------
 app.use(clerk.clerkMiddleware());
 
 // base entry point of server
 app.use('/public', express.static('client/public'));
+
+// Serve test file (remove in production)
+app.use('/test-stats.html', express.static('test-stats.html'));
 
 app.use('/private', clerk.requireAuth({ signInUrl: process.env.CLERK_SIGN_IN_URL, signUpUrl: process.env.CLERK_SIGN_UP_URL }),
                     uDBHandler.middleware_userAuth.bind(uDBHandler),
@@ -94,7 +104,19 @@ app.post('/api/problems/:problemId/submit',
     problemDBHandler.endpoint_submitSolution.bind(problemDBHandler)
 );
 
+// User solved problems endpoint
+app.get('/api/user/solved-problems', 
+    clerk.requireAuth(), 
+    problemDBHandler.endpoint_getUserSolvedProblems.bind(problemDBHandler)
+);
+
+// User stats endpoints
 app.get('/api/userdata', clerk.requireAuth(), uDBHandler.endpoint_userData.bind(uDBHandler));
+app.post('/api/user/problem-solved', 
+    express.json(), 
+    clerk.requireAuth(), 
+    uDBHandler.endpoint_updateOnProblemSolved.bind(uDBHandler)
+);
 app.post('/api/run/:lang', express.json(), codeRunnerHandler.endpoint.bind(codeRunnerHandler));
 
 // main redirect

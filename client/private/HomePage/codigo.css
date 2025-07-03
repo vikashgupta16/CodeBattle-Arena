@@ -663,6 +663,117 @@ main {
     position: relative;
 }
 
+/* Problems Solved Card Styles */
+.problems-card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.problems-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.total-problems {
+    text-align: center;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+    border-radius: 10px;
+    color: white;
+}
+
+.total-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.total-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.difficulty-breakdown {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+}
+
+.difficulty-stat {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.difficulty-stat.easy {
+    border-left: 4px solid #28a745;
+}
+
+.difficulty-stat.medium {
+    border-left: 4px solid #ffc107;
+}
+
+.difficulty-stat.hard {
+    border-left: 4px solid #dc3545;
+}
+
+.diff-icon {
+    font-size: 1.2rem;
+}
+
+.diff-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.diff-count {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--text-light);
+}
+
+.diff-label {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    opacity: 0.7;
+}
+
+/* Light theme adjustments */
+.light-theme .problems-card {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .difficulty-stat {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .diff-count,
+.light-theme .diff-label {
+    color: var(--text-dark);
+}
+
+/* Responsive design for problems card */
+@media (max-width: 768px) {
+    .difficulty-breakdown {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .total-number {
+        font-size: 2rem;
+    }
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .dashboard-grid {
