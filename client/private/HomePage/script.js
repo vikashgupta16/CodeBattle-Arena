@@ -5,14 +5,148 @@ async function updateUserDetails()
     const currRank = document.getElementById("dashboard_currRank");
     const contestCount = document.getElementById("dashboard_contestCount");
     const streakCount = document.getElementById("dashboard_streakCount");
-
-    const res = await fetch(window.location.origin + '/api/userdata');
-    const data = await res.json();
     
-    username.textContent = data.name;
-    currRank.textContent = data.rank;
-    contestCount.textContent = data.contests_count;
-    streakCount.textContent = data.streak_count;
+    // New detailed stats elements
+    const totalProblems = document.getElementById("dashboard_totalProblems");
+    const easyCount = document.getElementById("dashboard_easyCount");
+    const mediumCount = document.getElementById("dashboard_mediumCount");
+    const hardCount = document.getElementById("dashboard_hardCount");
+
+    try {
+        // Check if stats were updated from localStorage first
+        if (localStorage.getItem('statsUpdated') === 'true') {
+            const updatedStats = JSON.parse(localStorage.getItem('updatedStats'));
+            if (updatedStats) {
+                updateStatsDisplay(updatedStats);
+                
+                // Clear the localStorage flags
+                localStorage.removeItem('statsUpdated');
+                localStorage.removeItem('updatedStats');
+                
+                // Show brief success message
+                showStatsUpdateNotification(updatedStats);
+                return;
+            }
+        }
+
+        // Otherwise fetch from server
+        const res = await fetch(window.location.origin + '/api/userdata');
+        const data = await res.json();
+        
+        updateStatsDisplay(data);
+    } catch (error) {
+        console.error('Failed to update user details:', error);
+        // Set default values if fetch fails
+        updateStatsDisplay({
+            name: 'User',
+            rank: 0,
+            contests_count: 0,
+            streak_count: 0,
+            problemsSolved: 0,
+            easyCount: 0,
+            mediumCount: 0,
+            hardCount: 0
+        });
+    }
+}
+
+// Helper function to update stats display
+function updateStatsDisplay(data) {
+    const username = document.getElementById("dashboard_username");
+    const currRank = document.getElementById("dashboard_currRank");
+    const contestCount = document.getElementById("dashboard_contestCount");
+    const streakCount = document.getElementById("dashboard_streakCount");
+    const totalProblems = document.getElementById("dashboard_totalProblems");
+    const easyCount = document.getElementById("dashboard_easyCount");
+    const mediumCount = document.getElementById("dashboard_mediumCount");
+    const hardCount = document.getElementById("dashboard_hardCount");
+
+    username.textContent = data.name || 'User';
+    currRank.textContent = data.rank || '0';
+    contestCount.textContent = data.contests_count || '0';
+    streakCount.textContent = data.streak_count || '0';
+    
+    // Update detailed problem stats
+    if (totalProblems) totalProblems.textContent = data.problemsSolved || '0';
+    if (easyCount) easyCount.textContent = data.easyCount || '0';
+    if (mediumCount) mediumCount.textContent = data.mediumCount || '0';
+    if (hardCount) hardCount.textContent = data.hardCount || '0';
+}
+
+// Show brief notification when stats are updated
+function showStatsUpdateNotification(stats) {
+    const notification = document.createElement('div');
+    notification.className = 'stats-update-notification';
+    notification.innerHTML = `
+        <div class="notification-banner">
+            <span class="notification-icon">📈</span>
+            <span class="notification-text">Stats updated! You're doing great!</span>
+            <button class="close-notification" onclick="this.closest('.stats-update-notification').remove()">×</button>
+        </div>
+    `;
+
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .stats-update-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        .notification-banner {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+            min-width: 300px;
+        }
+        
+        .notification-icon {
+            font-size: 1.2rem;
+        }
+        
+        .notification-text {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .close-notification {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    `;
+    
+    document.head.appendChild(style);
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 3 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+            style.remove();
+        }
+    }, 3000);
 }
 
 document.addEventListener('DOMContentLoaded', function() {

@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+import { UserDBHandler } from "./database.js";
 
 // Problem Schema
 const problemSchema = new mongoose.Schema({
@@ -43,9 +44,25 @@ const submissionSchema = new mongoose.Schema({
     submittedAt: { type: Date, default: Date.now }
 });
 
+// User Problem Solved Schema - tracks first-time solves
+const userProblemSolvedSchema = new mongoose.Schema({
+    userId: { type: String, required: true },
+    problemId: { type: String, required: true },
+    difficulty: { type: String, required: true },
+    category: { type: String, required: true },
+    firstSolvedAt: { type: Date, default: Date.now },
+    totalAttempts: { type: Number, default: 1 },
+    bestSubmissionId: { type: String, required: true }
+});
+
+// Create compound index to ensure one record per user-problem pair
+userProblemSolvedSchema.index({ userId: 1, problemId: 1 }, { unique: true });
+
 class ProblemDBHandler {
     static Problems = mongoose.model("Problems", problemSchema);
     static Submissions = mongoose.model("Submissions", submissionSchema);
+    static UserProblemSolved = mongoose.model("UserProblemSolved", userProblemSolvedSchema);
+    static UserProblemSolved = mongoose.model("UserProblemSolved", userProblemSolvedSchema);
 
     // Get all problems with filtering
     async getProblems(filters = {}) {
@@ -147,6 +164,78 @@ class ProblemDBHandler {
         }
     }
 
+    // Check if user has already solved this problem
+    async hasUserSolvedProblem(userId, problemId) {
+        try {
+            const solvedRecord = await ProblemDBHandler.UserProblemSolved.findOne({
+                userId: userId,
+                problemId: problemId
+            });
+            return !!solvedRecord;
+        } catch (error) {
+            console.error('[ProblemDBHandler Error] hasUserSolvedProblem failed:', error);
+            return false;
+        }
+    }
+
+    // Mark problem as solved for the first time
+    async markProblemAsSolved(userId, problemId, difficulty, category, submissionId) {
+        try {
+            const solvedRecord = new ProblemDBHandler.UserProblemSolved({
+                userId: userId,
+                problemId: problemId,
+                difficulty: difficulty,
+                category: category,
+                bestSubmissionId: submissionId,
+                firstSolvedAt: new Date(),
+                totalAttempts: 1
+            });
+
+            await solvedRecord.save();
+            return true;
+        } catch (error) {
+            if (error.code === 11000) {
+                // Duplicate key error - user already solved this problem
+                // Update attempt count instead
+                await ProblemDBHandler.UserProblemSolved.updateOne(
+                    { userId: userId, problemId: problemId },
+                    { $inc: { totalAttempts: 1 } }
+                );
+                return false; // Not a first-time solve
+            }
+            console.error('[ProblemDBHandler Error] markProblemAsSolved failed:', error);
+            throw error;
+        }
+    }
+
+    // Get user's solved problems statistics
+    async getUserSolvedStats(userId) {
+        try {
+            const solvedProblems = await ProblemDBHandler.UserProblemSolved.find({ userId: userId });
+            
+            const stats = {
+                total: solvedProblems.length,
+                easy: solvedProblems.filter(p => p.difficulty === 'easy').length,
+                medium: solvedProblems.filter(p => p.difficulty === 'medium').length,
+                hard: solvedProblems.filter(p => p.difficulty === 'hard').length,
+                categories: {}
+            };
+
+            // Count by category
+            solvedProblems.forEach(problem => {
+                if (!stats.categories[problem.category]) {
+                    stats.categories[problem.category] = 0;
+                }
+                stats.categories[problem.category]++;
+            });
+
+            return stats;
+        } catch (error) {
+            console.error('[ProblemDBHandler Error] getUserSolvedStats failed:', error);
+            throw error;
+        }
+    }
+
     // API Endpoints
     async endpoint_getProblems(req, res) {
         try {
@@ -201,6 +290,9 @@ class ProblemDBHandler {
                 return res.status(404).json({ success: false, error: 'Problem not found' });
             }
 
+            // Check if user has already solved this problem
+            const alreadySolved = await this.hasUserSolvedProblem(userId, problemId);
+
             // Validate solution against test cases
             const validationResult = await this.validateSolution(code, language, problem);
             
@@ -213,10 +305,45 @@ class ProblemDBHandler {
                 ...validationResult
             });
 
+            // If solution is accepted and this is the first time solving
+            let updatedStats = null;
+            let isFirstSolve = false;
+            
+            if (validationResult.status === 'accepted') {
+                if (!alreadySolved) {
+                    // Mark as solved and update stats only for first-time solve
+                    isFirstSolve = await this.markProblemAsSolved(
+                        userId, 
+                        problemId, 
+                        problem.difficulty, 
+                        problem.category, 
+                        submission.submissionId
+                    );
+
+                    if (isFirstSolve) {
+                        try {
+                            // Update user stats for first-time solve
+                            const userDBHandler = new UserDBHandler();
+                            updatedStats = await userDBHandler.updateUserOnProblemSolved(
+                                userId, 
+                                problem.difficulty, 
+                                problem.category
+                            );
+                        } catch (statsError) {
+                            console.error('Failed to update user stats:', statsError);
+                            // Don't fail the submission if stats update fails
+                        }
+                    }
+                }
+            }
+
             res.json({ 
                 success: true, 
                 submission: validationResult,
-                submissionId: submission.submissionId
+                submissionId: submission.submissionId,
+                updatedStats: updatedStats,
+                isFirstSolve: isFirstSolve,
+                alreadySolved: alreadySolved
             });
             
         } catch (error) {
@@ -309,7 +436,7 @@ class ProblemDBHandler {
                     language: language,
                     version: langInfo.version,
                     files: [{ content: code }],
-                    input: testCase.input || "",
+                    stdin: testCase.input || "",
                     run_timeout: timeLimit
                 })
             });
@@ -408,12 +535,55 @@ class ProblemDBHandler {
                 }
             );
 
+            // If solution is accepted, track in userProblemSolved
+            if (submissionData.status === 'accepted') {
+                await ProblemDBHandler.UserProblemSolved.updateOne(
+                    { userId: submissionData.userId, problemId: submissionData.problemId },
+                    { 
+                        $setOnInsert: { 
+                            difficulty: submissionData.difficulty,
+                            category: submissionData.category,
+                            firstSolvedAt: new Date(),
+                            bestSubmissionId: submissionId 
+                        },
+                        $inc: { totalAttempts: 1 }
+                    },
+                    { upsert: true }
+                );
+            }
+
             return submission;
         } catch (error) {
             console.error('Create submission error:', error);
             throw error;
         }
     }
+
+    // API endpoint to get user's solved problems
+    async endpoint_getUserSolvedProblems(req, res) {
+        try {
+            const userId = req.auth?.userId;
+
+            if (!userId) {
+                return res.status(401).json({ success: false, error: 'Authentication required' });
+            }
+
+            const solvedStats = await this.getUserSolvedStats(userId);
+            const solvedProblems = await ProblemDBHandler.UserProblemSolved.find({ userId })
+                .sort({ firstSolvedAt: -1 })
+                .limit(50);
+
+            res.json({
+                success: true,
+                stats: solvedStats,
+                recentlySolved: solvedProblems
+            });
+            
+        } catch (error) {
+            console.error('Get user solved problems error:', error);
+            res.status(500).json({ success: false, error: 'Failed to fetch solved problems' });
+        }
+    }
 }
 
-module.exports = { ProblemDBHandler };
+export { ProblemDBHandler };

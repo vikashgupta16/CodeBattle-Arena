@@ -41,7 +41,7 @@ class CodeRunner
                     files: [
                         { content: req.body.code }
                     ],
-                    input: req.body.input || "",
+                    stdin: req.body.input || "",
                     run_timeout: 10000
                 })
             });
@@ -68,6 +68,6 @@ class CodeRunner
     }
 }
 
-module.exports = {
+export {
     CodeRunner
 };

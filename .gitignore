@@ -6,3 +6,33 @@ node_modules/
 
 # Ignore configs
 .vscode/
+
+# Ignore temporary and test files
+test-*.js
+test-*.html
+fix-*.js
+check-*.js
+debug-*.js
+temp-*.js
+*.temp
+*.tmp
+*.backup
+*.old
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Ignore IDE files
+*.swp
+*.swo
+*~

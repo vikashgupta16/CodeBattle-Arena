@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CodeArena-CODIGO Leaderboard">
+    <title>Leaderboard - CodeArena-CODIGO</title>
+    <link rel="stylesheet" href="../HomePage/codigo.css">
+    <link rel="stylesheet" href="leaderboard.css">
+    <link rel="shortcut icon" href="../HomePage/assets/web-development.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body class="dark-theme">
+    <button class="nav-toggle outside-logo-sidebar" onclick="showNav()" aria-label="Open navigation menu">
+        <img src="../HomePage/assets/sidebar-icon.png" alt="Menu" class="nav-icon">
+    </button>
+
+    <nav class="codingPageNav" aria-label="Main navigation">
+        <button class="nav-close inside-logo-sidebar" onclick="hideNav()" aria-label="Close Navigation"></button>
+        <ul>
+            <li><a href="../HomePage/codigo.html" class="nav-link">Home</a></li>
+            <li><a href="#practice" class="nav-link" onclick="showSection('practice')">Practice</a></li>
+            <li><a href="#stats" class="nav-link" onclick="showSection('stats')">Stats</a></li>
+            <li><a href="#help" class="nav-link" onclick="showSection('help')">Ask AI</a></li>
+            <li><a href="#contact" class="nav-link" onclick="showSection('contact')">Contact Us</a></li>
+            <li class="nav-actions">
+                <select name="theme-toggle" id="theme-toggle">
+                    <option value="dark-theme" selected>Dark theme</option>
+                    <option value="light-theme">Light theme</option>
+                </select>
+                <a href="../../public/LandingPage/index.html" class="logout-btn">Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+    <main onclick="hideNav()">
+        <div class="leaderboard-container">
+            <header class="leaderboard-header">
+                <h1>🏆 Leaderboard</h1>
+                <p>Top coders ranked by problems solved</p>
+            </header>
+
+            <div class="leaderboard-content">
+                <div class="leaderboard-filters">
+                    <button class="filter-btn active" data-filter="all">All Time</button>
+                    <button class="filter-btn" data-filter="month">This Month</button>
+                    <button class="filter-btn" data-filter="week">This Week</button>
+                </div>
+
+                <div class="leaderboard-table-container">
+                    <div class="loading" id="loadingSpinner">
+                        <div class="spinner"></div>
+                        <p>Loading leaderboard...</p>
+                    </div>
+
+                    <div class="leaderboard-table" id="leaderboardTable" style="display: none;">
+                        <div class="table-header">
+                            <div class="rank-col">Rank</div>
+                            <div class="user-col">User</div>
+                            <div class="problems-col">Problems</div>
+                            <div class="easy-col">Easy</div>
+                            <div class="medium-col">Medium</div>
+                            <div class="hard-col">Hard</div>
+                            <div class="last-solve-col">Last Solve</div>
+                        </div>
+                        <div class="table-body" id="leaderboardBody">
+                            <!-- Leaderboard entries will be inserted here -->
+                        </div>
+                    </div>
+
+                    <div class="error-message" id="errorMessage" style="display: none;">
+                        <p>Failed to load leaderboard. Please try again later.</p>
+                        <button onclick="loadLeaderboard()">Retry</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../common/auth.js"></script>
+    <script src="leaderboard.js"></script>
+</body>
+
+</html>

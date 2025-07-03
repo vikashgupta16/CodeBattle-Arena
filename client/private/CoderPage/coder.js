@@ -216,6 +216,22 @@ async function submitSolution(btn) {
         
         if (data.success) {
             displaySubmissionResults(data.submission);
+            
+            // Handle different solve scenarios
+            if (data.submission.status === 'accepted') {
+                if (data.isFirstSolve && data.updatedStats) {
+                    // First time solving this problem - full celebration
+                    showSuccessNotification(data.updatedStats, true);
+                    localStorage.setItem('statsUpdated', 'true');
+                    localStorage.setItem('updatedStats', JSON.stringify(data.updatedStats));
+                } else if (data.alreadySolved) {
+                    // Already solved before - show different message
+                    showAlreadySolvedNotification();
+                } else {
+                    // Solved but stats didn't update (edge case)
+                    showSuccessNotification(null, false);
+                }
+            }
         } else {
             outputBox.innerHTML = `
                 <div class="submission-result error">
@@ -239,6 +255,306 @@ async function submitSolution(btn) {
         btn.textContent = 'Submit Solution';
         btn.disabled = false;
     }
+}
+
+// Show success notification when problem is solved
+function showSuccessNotification(updatedStats, isFirstSolve = true) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'success-notification';
+    
+    let content = '';
+    if (isFirstSolve && updatedStats) {
+        content = `
+            <div class="notification-content">
+                <div class="success-icon">🎉</div>
+                <div class="success-message">
+                    <h3>Problem Solved Successfully!</h3>
+                    <p class="first-solve-badge">🌟 First Time Solve - Stats Updated! 🌟</p>
+                    <div class="stats-update">
+                        <div class="stat-item">
+                            <span class="stat-label">Rank:</span>
+                            <span class="stat-value">#${updatedStats.rank}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Streak:</span>
+                            <span class="stat-value">${updatedStats.streak_count} days</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Problems Solved:</span>
+                            <span class="stat-value">${updatedStats.problemsSolved}</span>
+                        </div>
+                    </div>
+                    <button class="continue-btn" onclick="this.closest('.success-notification').remove()">
+                        Continue Coding! 🚀
+                    </button>
+                </div>
+            </div>
+        `;
+    } else {
+        content = `
+            <div class="notification-content">
+                <div class="success-icon">✅</div>
+                <div class="success-message">
+                    <h3>Solution Accepted!</h3>
+                    <p>Great job! Your solution passed all test cases.</p>
+                    <button class="continue-btn" onclick="this.closest('.success-notification').remove()">
+                        Continue! 👍
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+    
+    notification.innerHTML = content;
+
+    // Add styles for the notification
+    const style = document.createElement('style');
+    style.textContent = `
+        .success-notification {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        .notification-content {
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            border: 2px solid #48bb78;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        .success-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .success-message h3 {
+            color: #48bb78;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .first-solve-badge {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #2d3748;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+        
+        .stats-update {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #a0aec0;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #48bb78;
+            font-size: 1.1rem;
+        }
+        
+        .continue-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: transform 0.2s ease;
+        }
+        
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    `;
+    
+    document.head.appendChild(style);
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 8 seconds for first solve, 4 for repeat
+    const timeout = isFirstSolve ? 8000 : 4000;
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+            style.remove();
+        }
+    }, timeout);
+}
+
+// Show notification for already solved problems
+function showAlreadySolvedNotification() {
+    const notification = document.createElement('div');
+    notification.className = 'already-solved-notification';
+    notification.innerHTML = `
+        <div class="notification-content already-solved">
+            <div class="info-icon">💡</div>
+            <div class="info-message">
+                <h3>Solution Accepted!</h3>
+                <p class="already-solved-text">You've already solved this problem before.</p>
+                <p class="no-stats-text">Stats won't be updated for repeat solutions.</p>
+                <div class="suggestion-box">
+                    <strong>💪 Challenge yourself:</strong>
+                    <ul>
+                        <li>Try a different approach</li>
+                        <li>Optimize for better performance</li>
+                        <li>Solve in a different language</li>
+                    </ul>
+                </div>
+                <button class="continue-btn secondary" onclick="this.closest('.already-solved-notification').remove()">
+                    Got it! 👌
+                </button>
+            </div>
+        </div>
+    `;
+
+    // Add specific styles for already solved notification
+    const style = document.createElement('style');
+    style.textContent = `
+        .already-solved-notification {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        .notification-content.already-solved {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            border: 2px solid #ffc107;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            max-width: 450px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        .info-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .info-message h3 {
+            color: #ffc107;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .already-solved-text {
+            color: #ffc107;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .no-stats-text {
+            color: #a0aec0;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        
+        .suggestion-box {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+            border-radius: 5px;
+        }
+        
+        .suggestion-box strong {
+            color: #ffc107;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .suggestion-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .suggestion-box li {
+            margin-bottom: 5px;
+            color: #e2e8f0;
+        }
+        
+        .continue-btn.secondary {
+            background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%);
+            color: #2d3748;
+        }
+        
+        .continue-btn.secondary:hover {
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+        }
+    `;
+    
+    document.head.appendChild(style);
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 6 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+            style.remove();
+        }
+    }, 6000);
 }
 
 // Display detailed submission results
