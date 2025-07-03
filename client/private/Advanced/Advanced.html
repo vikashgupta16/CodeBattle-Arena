@@ -6,6 +6,7 @@
     <title>Advance Arena - CODIGO</title>
     <link rel="shortcut icon" href="../privasset/web-development.png" type="image/x-icon">
     <link rel="stylesheet" href="Advanc.css">
+    <link rel="stylesheet" href="../common/problemStyles.css">
 </head>
 <body>
     <nav class="navbar">
@@ -28,56 +29,14 @@
     
     <main class="container">
         <section class="assignments" id="assignments">
-            <h2>Advance</h2>
+            <h2>Advanced Problems</h2>
             
             <div id="challenge-container">
-                                
-                <div class="assignment-box">
-                    <h3>Palindrome Checker</h3>
-                    <p>Write a program to check whether a string is a palindrome.</p>
-                    <a onclick="transferProblem(this);" class="solve-btn">Solve Now</a>
-                </div>
-                
-                <div class="assignment-box">
-                    <h3>Fibonacci Generator</h3>
-                    <p>Write a program to generate the first N Fibonacci numbers.</p>
-                    <a onclick="transferProblem(this);" class="solve-btn">Solve Now</a>
-                </div>
-                
-                <div class="assignment-box">
-                    <h3>Prime Number Range</h3>
-                    <p>Write a program to print all prime numbers in a given range.</p>
-                    <a onclick="transferProblem(this);" class="solve-btn">Solve Now</a>
-                </div>
-                
-                <div class="assignment-box">
-                    <h3>Binary Search</h3>
-                    <p>Implement binary search on a sorted array.</p>
-                    <a onclick="transferProblem(this);" class="solve-btn">Solve Now</a>
-                </div>
-                
-                <div class="assignment-box">
-                    <h3>Matrix Multiplication</h3>
-                    <p>Write a program to multiply two matrices.</p>
-                    <a onclick="transferProblem(this);" class="solve-btn">Solve Now</a>
-                </div>
-                
-                <div class="assignment-box">
-                    <h3>String Anagram Check</h3>
-                    <p>Write a program to check if two strings are anagrams.</p>
-                    <a onclick="transferProblem(this);" class="solve-btn">Solve Now</a>
-                </div>
-                
-                <div class="assignment-box">
-                    <h3>Factorial Using Recursion</h3>
-                    <p>Write a recursive function to calculate the factorial of a number.</p>
-                    <a onclick="transferProblem(this);" class="solve-btn">Solve Now</a>
-                </div>
-                
-                
+                <!-- Problems will be loaded dynamically -->
             </div>
         </section>
     </main>
+    <script src="../common/problemLoader.js"></script>
     <script src="Advance.js"></script>
 </body>
 </html>

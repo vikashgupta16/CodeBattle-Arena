@@ -7,6 +7,15 @@
     <link rel="shortcut icon" href="../privasset/web-development.png" type="image/x-icon">
     <link rel="stylesheet" href="coder.css">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Clerk SDK -->
+    <script 
+        async
+        crossorigin="anonymous"
+        data-clerk-publishable-key="pk_test_aGFybWxlc3Mtd2VldmlsLTE1LmNsZXJrLmFjY291bnRzLmRldiQ"
+        src="https://harmless-weevil-15.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
+        type="text/javascript">
+    </script>
 </head>
 
 <body>
@@ -31,28 +40,89 @@
     <main class="container">
         <div id="coding-page">
             <button class="back-btn" onclick="window.location.href='../HomePage/codigo.html#practice'">← Back to Challenges</button>
-            <div class="challenge-display">
-                <h3 id="selected-challenge-title"></h3>
-                <p id="selected-challenge-description"></p>
-            </div>
-
-            <div class="compiler-container">
-                <div class="code-header">
-                    <h3>Enter Your Code</h3>
-                    <select class="language-selector" id="language-selector" oninput="changeLang(this)">
-                        <option value="c">C</option>
-                        <option value="c++">C++</option>
-                        <option value="java">Java</option>
-                        <option value="python">Python</option>
-                    </select>
-                </div>
-                <div id="code-editor"></div>
-                <div class="input-output-section">
-                    <button id="run-btn" class="practice-btn" onclick="runCode(this)">Run Code</button>
-                    <div id="output-container" class="hidden">
-                        <h3>Output</h3>
-                        <div id="output-box" class="output-display"></div>
+            
+            <!-- Main Split Layout -->
+            <div class="split-layout">
+                <!-- Left Side: Problem Description -->
+                <div class="problem-panel">
+                    <div class="problem-header">
+                        <h3 id="selected-challenge-title">Loading...</h3>
+                        <span id="problem-difficulty" class="difficulty-badge"></span>
                     </div>
+                    
+                    <div class="problem-content">
+                        <div class="problem-description">
+                            <h4>Description</h4>
+                            <p id="selected-challenge-description">Loading problem details...</p>
+                        </div>
+                        
+                        <div class="problem-constraints" id="problem-constraints" style="display: none;">
+                            <h4>Constraints</h4>
+                            <p id="constraints-text"></p>
+                        </div>
+                        
+                        <div class="problem-examples" id="problem-examples" style="display: none;">
+                            <h4>Examples</h4>
+                            <div id="examples-container"></div>
+                        </div>
+                        
+                        <div class="problem-hints" id="problem-hints" style="display: none;">
+                            <h4>💡 Hints</h4>
+                            <ul id="hints-list"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Code Editor and Controls -->
+                <div class="editor-panel">
+                    <div class="code-header">
+                        <h3>Solution</h3>
+                        <select class="language-selector" id="language-selector" oninput="changeLang(this)">
+                            <option value="c">C</option>
+                            <option value="c++">C++</option>
+                            <option value="java">Java</option>
+                            <option value="python">Python</option>
+                        </select>
+                    </div>
+                    
+                    <div id="code-editor"></div>
+                    
+                    <div class="editor-controls">
+                        <div class="input-section">
+                            <label for="input-area">Custom Input (optional)</label>
+                            <textarea id="input-area" placeholder="Enter test input..." rows="2"></textarea>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button id="run-btn" class="action-btn run-btn" onclick="runCode(this)">
+                                <span>▶</span> Run Code
+                            </button>
+                            <button id="submit-btn" class="action-btn submit-btn" onclick="submitSolution(this)">
+                                <span>✓</span> Submit Solution
+                            </button>
+                        </div>
+                        
+                        <!-- Guest user notice -->
+                        <div id="guest-notice" class="guest-notice" data-guest-only style="display: none;">
+                            <div class="notice-content">
+                                <span class="notice-icon">🎯</span>
+                                <span class="notice-text">Sign in to save your progress and track achievements!</span>
+                                <button class="notice-btn" onclick="authManager.redirectToSignIn(window.location.href)">
+                                    Sign In
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom: Output and Test Results -->
+            <div class="output-section">
+                <div class="output-header">
+                    <h4>Output & Test Results</h4>
+                </div>
+                <div id="output-container">
+                    <div id="output-box" class="output-display">Run your code to see the output here...</div>
                 </div>
             </div>
         </div>
