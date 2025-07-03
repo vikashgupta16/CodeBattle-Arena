@@ -397,6 +397,22 @@ class UserDBHandler {
             console.error('[UserDBHandler Error] Migration failed:', error);
         }
     }
+
+    /**
+     * Update user stats directly (for migration/fix purposes)
+     */
+    async updateUserStats(userId, statsUpdate) {
+        try {
+            await UserDBHandler.Users.updateOne(
+                { userID: userId },
+                { $set: statsUpdate }
+            );
+            return true;
+        } catch (error) {
+            console.error(`[UserDBHandler Error] Failed to update stats for user ${userId}:`, error);
+            throw error;
+        }
+    }
 }
 
 export {

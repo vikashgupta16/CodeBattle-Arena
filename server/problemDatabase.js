@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { UserDBHandler } from "./database.js";
 
 // Problem Schema
 const problemSchema = new mongoose.Schema({
@@ -321,8 +322,7 @@ class ProblemDBHandler {
 
                     if (isFirstSolve) {
                         try {
-                            // Import UserDBHandler to update stats
-                            const { UserDBHandler } = require('./database.js');
+                            // Update user stats for first-time solve
                             const userDBHandler = new UserDBHandler();
                             updatedStats = await userDBHandler.updateUserOnProblemSolved(
                                 userId, 
@@ -436,7 +436,7 @@ class ProblemDBHandler {
                     language: language,
                     version: langInfo.version,
                     files: [{ content: code }],
-                    input: testCase.input || "",
+                    stdin: testCase.input || "",
                     run_timeout: timeLimit
                 })
             });
