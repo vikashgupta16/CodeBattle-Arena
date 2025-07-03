@@ -953,6 +953,7 @@ main {
     padding: 3px 8px;
     border-radius: 12px;
     margin-right: 12px;
+    margin-top: 3px;
     text-transform: uppercase;
 }
 
@@ -1024,28 +1025,81 @@ main {
     min-height: 200px;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-    .dashboard-container {
-        flex-direction: column;
-    }
-
-    .dashboard-column {
-        flex-direction: row;
-    }
-
-    .dashboard-column>.dashboard-card {
-        flex: 1;
-    }
+/* Arena Section Styles */
+.arena-section {
+    padding: 40px 20px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 15px;
+    margin: 20px 0;
 }
 
-@media (max-width: 768px) {
-    .dashboard-column {
-        flex-direction: column;
-    }
+.arena-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-    .quick-actions-grid,
-    .language-grid {
-        grid-template-columns: 1fr;
-    }
+.arena-intro {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.arena-intro h3 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.arena-intro p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Arena Features */
+.arena-features {
+    margin-bottom: 40px;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.feature-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(102, 126, 234, 0.3);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.feature-card h4 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: var(--accent-blue);
+}
+
+.feature-card p {
+    opacity: 0.8;
+    font-size: 0.95rem;
 }
