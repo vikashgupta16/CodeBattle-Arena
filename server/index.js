@@ -84,17 +84,6 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// Leaderboard endpoint
-app.get('/api/leaderboard', async (req, res) => {
-    try {
-        const users = await uDBHandler.getLeaderboard();
-        res.json(users);
-    } catch (error) {
-        console.error('Leaderboard error:', error);
-        res.status(500).json({ error: 'Failed to fetch leaderboard' });
-    }
-});
-
 // Problem endpoints
 app.get('/api/problems', problemDBHandler.endpoint_getProblems.bind(problemDBHandler));
 app.get('/api/problems/:problemId', problemDBHandler.endpoint_getProblem.bind(problemDBHandler));
@@ -112,6 +101,7 @@ app.get('/api/user/solved-problems',
 
 // User stats endpoints
 app.get('/api/userdata', clerk.requireAuth(), uDBHandler.endpoint_userData.bind(uDBHandler));
+app.get('/api/leaderboard', uDBHandler.endpoint_getLeaderboard.bind(uDBHandler));
 app.post('/api/user/problem-solved', 
     express.json(), 
     clerk.requireAuth(), 

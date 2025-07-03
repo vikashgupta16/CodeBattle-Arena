@@ -89,6 +89,36 @@ class UserDBHandler {
     }
 
     /**
+     * Get leaderboard data
+     * @param {Request} req The request object
+     * @param {Response} res The response object
+     */
+    async endpoint_getLeaderboard(req, res) {
+        try {
+            const limit = parseInt(req.query.limit) || 50;
+            const leaderboard = await this.getLeaderboard(limit);
+            
+            // Add ranking positions
+            const rankedLeaderboard = leaderboard.map((user, index) => ({
+                ...user.toObject(),
+                position: index + 1
+            }));
+            
+            res.json({ 
+                success: true, 
+                leaderboard: rankedLeaderboard,
+                totalUsers: rankedLeaderboard.length
+            });
+        } catch (error) {
+            console.error('Leaderboard endpoint error:', error);
+            res.status(500).json({ 
+                success: false, 
+                error: 'Failed to fetch leaderboard' 
+            });
+        }
+    }
+
+    /**
      * Requires the req object to contain the param[optional] set to make sure the rank is set and not incremented
      * @param {Request} req The request object
      * @param {Response} res The response object
@@ -198,8 +228,26 @@ class UserDBHandler {
     async getLeaderboard(limit = 50) {
         try {
             return await UserDBHandler.Users
-                .find({}, { name: 1, rank: 1, contests_count: 1, streak_count: 1, _id: 0 })
-                .sort({ rank: -1, contests_count: -1 })
+                .find({}, { 
+                    name: 1, 
+                    userID: 1,
+                    rank: 1, 
+                    contests_count: 1, 
+                    streak_count: 1, 
+                    problemsSolved: 1,
+                    easyCount: 1,
+                    mediumCount: 1,
+                    hardCount: 1,
+                    lastSolvedDate: 1,
+                    _id: 0 
+                })
+                .sort({ 
+                    problemsSolved: -1, 
+                    hardCount: -1, 
+                    mediumCount: -1, 
+                    easyCount: -1, 
+                    lastSolvedDate: -1 
+                })
                 .limit(limit);
         } catch (error) {
             console.error('[UserDBHandler Error] getLeaderboard failed:', error);
