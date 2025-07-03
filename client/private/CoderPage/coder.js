@@ -196,7 +196,7 @@ async function submitSolution(btn) {
     btn.disabled = true;
     
     try {
-        const response = await fetch(`/api/problems/${currentProblem._id}/submit`, {
+        const response = await fetch(`/api/problems/${currentProblem.problemId}/submit`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -62,7 +62,6 @@ class ProblemDBHandler {
     static Problems = mongoose.model("Problems", problemSchema);
     static Submissions = mongoose.model("Submissions", submissionSchema);
     static UserProblemSolved = mongoose.model("UserProblemSolved", userProblemSolvedSchema);
-    static UserProblemSolved = mongoose.model("UserProblemSolved", userProblemSolvedSchema);
 
     // Get all problems with filtering
     async getProblems(filters = {}) {
