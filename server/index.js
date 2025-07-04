@@ -5,10 +5,13 @@ import session from "cookie-session";
 import crypto from "node:crypto";
 import cors from "cors";
 import path from "path";
+import { createServer } from "http";
 
 import { MongooseConnect, UserDBHandler } from "./database.js";
 import { CodeRunner } from "./codeRun.js";
 import { ProblemDBHandler } from "./problemDatabase.js";
+import { ArenaDBHandler } from "./arenaDatabase.js";
+import { ArenaSocketHandler } from "./arenaSocket.js";
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -20,6 +23,10 @@ process.env.PORT = process.env.PORT || '8080';
 
 // the main app instance
 const app = express();
+const server = createServer(app);
+
+// Initialize Arena Socket Handler
+const arenaSocketHandler = new ArenaSocketHandler(server);
 
 // CORS middleware
 app.use(cors({
@@ -44,6 +51,9 @@ const codeRunnerHandler = new CodeRunner();
 
 // problem database handler -------
 const problemDBHandler = new ProblemDBHandler();
+
+// arena database handler ----------
+const arenaDBHandler = new ArenaDBHandler();
 
 // user database handler -------------
 MongooseConnect.connect(process.env.MONGO_DB_URL);
@@ -107,6 +117,36 @@ app.post('/api/user/problem-solved',
     clerk.requireAuth(), 
     uDBHandler.endpoint_updateOnProblemSolved.bind(uDBHandler)
 );
+
+// Arena endpoints
+app.get('/api/arena/stats', async (req, res) => {
+    try {
+        const stats = await arenaSocketHandler.getArenaStats();
+        res.json({ success: true, stats });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Failed to get arena stats' });
+    }
+});
+
+app.get('/api/arena/leaderboard', async (req, res) => {
+    try {
+        const leaderboard = await arenaDBHandler.getArenaLeaderboard();
+        res.json({ success: true, leaderboard });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Failed to get arena leaderboard' });
+    }
+});
+
+app.get('/api/arena/player-stats/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const stats = await arenaDBHandler.getPlayerStats(userId);
+        res.json({ success: true, stats });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Failed to get player stats' });
+    }
+});
+
 app.post('/api/run/:lang', express.json(), codeRunnerHandler.endpoint.bind(codeRunnerHandler));
 
 // main redirect
@@ -120,6 +160,6 @@ app.get('/LandingPage', (req, res) => {
 });
 
 // http listen on PORT
-app.listen(+process.env.PORT, () => {
+server.listen(+process.env.PORT, () => {
     console.log(`Server live at http://localhost:${process.env.PORT}`);
 });

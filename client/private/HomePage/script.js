@@ -149,6 +149,57 @@ function showStatsUpdateNotification(stats) {
     }, 3000);
 }
 
+// Arena Data Loading Functions
+async function loadArenaData() {
+    try {
+        // Load Arena stats
+        const statsResponse = await fetch('/api/arena/stats');
+        if (statsResponse.ok) {
+            const { stats } = await statsResponse.json();
+            updateArenaStats(stats);
+        }
+
+        // Load Arena leaderboard preview
+        const leaderboardResponse = await fetch('/api/arena/leaderboard');
+        if (leaderboardResponse.ok) {
+            const { leaderboard } = await leaderboardResponse.json();
+            updateArenaLeaderboard(leaderboard.slice(0, 3)); // Show top 3
+        }
+    } catch (error) {
+        console.error('Failed to load Arena data:', error);
+    }
+}
+
+function updateArenaStats(stats) {
+    document.getElementById('arenaOnlineUsers').textContent = stats.onlineUsers || 0;
+    document.getElementById('arenaActiveMatches').textContent = stats.activeMatches || 0;
+    document.getElementById('arenaTotalMatches').textContent = stats.totalMatches || 0;
+}
+
+function updateArenaLeaderboard(leaderboard) {
+    const container = document.getElementById('arenaTopPlayers');
+    
+    if (!leaderboard || leaderboard.length === 0) {
+        container.innerHTML = '<div class="loading">No matches played yet. Be the first to enter the Arena!</div>';
+        return;
+    }
+    
+    container.innerHTML = leaderboard.map((player, index) => `
+        <div class="leaderboard-item-preview">
+            <div class="leaderboard-rank-preview">#${index + 1}</div>
+            <div class="leaderboard-player-preview">
+                <h4>${player.username}</h4>
+                <p>${player.totalMatches} matches • ${player.currentStreak} streak</p>
+            </div>
+            <div class="leaderboard-stats-preview">
+                <div class="win-rate-preview">${player.winRate}%</div>
+                <div>${player.wins}W ${player.losses}L</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Add Arena data loading to the existing initialization
 document.addEventListener('DOMContentLoaded', function() {
     // 1. Navigation Toggle
     const nav = document.querySelector('.codingPageNav');
@@ -199,8 +250,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up navigation links
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function (e) {
+            // Skip preventDefault for external links (like Arena)
+            const href = this.getAttribute('href');
+            if (href.startsWith('../') || href.startsWith('http')) {
+                return; // Allow default navigation behavior
+            }
+            
             e.preventDefault();
-            const sectionId = this.getAttribute('href').substring(1); // Get the section ID from the href
+            const sectionId = href.substring(1); // Get the section ID from the href
             showSection(sectionId);
         });
     });
@@ -325,4 +382,12 @@ function success()
     });
 
     updateUserDetails(); // update the user details once all listeners have been added
+    // Load Arena data when the page loads
+    loadArenaData();
+    
+    // Refresh Arena data every 30 seconds
+    setInterval(loadArenaData, 30000);
 });
+
+// Make loadArenaData globally available for the refresh button
+window.loadArenaData = loadArenaData;
