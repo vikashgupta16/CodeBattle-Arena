@@ -113,6 +113,10 @@ class ArenaCore {
                 this.loadPlayerStats().catch(err => console.warn('Failed to load player stats:', err))
             ]);
             
+            // Start periodic stats refresh
+            this.startArenaStatsRefresh();
+            this.startPlayerStatsRefresh();
+            
         } catch (error) {
             console.error('❌ Error initializing components:', error);
             // Don't throw, just log the error
@@ -131,15 +135,39 @@ class ArenaCore {
         }
     }
 
+    // Periodically refresh arena stats
+    startArenaStatsRefresh() {
+        // Refresh stats every 30 seconds
+        setInterval(() => {
+            this.loadArenaStats();
+        }, 30000);
+    }
+
+    // Periodically refresh player stats
+    startPlayerStatsRefresh() {
+        // Refresh player stats every 60 seconds (less frequent than arena stats)
+        setInterval(() => {
+            this.loadPlayerStats();
+        }, 60000);
+    }
+
     async loadPlayerStats() {
         try {
+            if (!this.currentUser) {
+                console.warn('⚠️ [ArenaCore] Cannot load player stats: no current user');
+                return;
+            }
+            
             const response = await fetch(`/api/arena/player-stats/${this.currentUser.userId}`);
             if (response.ok) {
                 const { stats } = await response.json();
+                console.log('📊 [ArenaCore] Loaded player stats:', stats);
                 this.uiManager.updatePlayerStats(stats);
+            } else {
+                console.warn('⚠️ [ArenaCore] Failed to load player stats:', response.status, response.statusText);
             }
         } catch (error) {
-            console.error('Failed to load player stats:', error);
+            console.error('❌ [ArenaCore] Failed to load player stats:', error);
         }
     }
 
@@ -182,7 +210,7 @@ class ArenaCore {
     }
 
     showScreen(screenId) {
-        this.uiManager.showScreen(screenId);
+        this.uiManager.showScreen(screenId, this);
     }
 }
 

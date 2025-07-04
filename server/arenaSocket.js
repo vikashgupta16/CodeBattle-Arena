@@ -61,6 +61,9 @@ class ArenaSocketHandler {
                             difficulty
                         });
                     }
+                    
+                    // Broadcast updated arena stats
+                    await this.broadcastArenaStats();
                 } catch (error) {
                     console.error('[Arena] Join queue error:', error);
                     socket.emit('arena:error', { message: 'Failed to join queue' });
@@ -73,6 +76,9 @@ class ArenaSocketHandler {
                     if (socket.userId) {
                         await this.arenaDB.leaveQueue(socket.userId);
                         socket.emit('arena:queue-left');
+                        
+                        // Broadcast updated arena stats
+                        await this.broadcastArenaStats();
                     }
                 } catch (error) {
                     console.error('[Arena] Leave queue error:', error);
@@ -231,6 +237,9 @@ class ArenaSocketHandler {
                 });
 
                 console.log('🎮 [Arena] Match setup complete!');
+
+                // Broadcast updated arena stats to all clients
+                await this.broadcastArenaStats();
             } else {
                 console.error('❌ [Arena] Could not find both player sockets!');
                 console.log('🔍 [Arena] Available sockets:');
@@ -847,6 +856,13 @@ class ArenaSocketHandler {
 
             // Remove from active matches
             this.activeMatches.delete(matchId);
+
+            // Broadcast updated player stats to both players
+            await this.broadcastPlayerStatsUpdate(match.player1.userId);
+            await this.broadcastPlayerStatsUpdate(match.player2.userId);
+
+            // Broadcast updated arena stats to all clients
+            await this.broadcastArenaStats();
             
             console.log(`✅ [Arena] Match ${matchId} ended successfully`);
         } catch (error) {
@@ -880,6 +896,31 @@ class ArenaSocketHandler {
         } catch (error) {
             console.error('[Arena] Get arena stats error:', error);
             return { totalMatches: 0, activeMatches: 0, playersInQueue: 0, onlineUsers: 0 };
+        }
+    }
+
+    // Broadcast updated arena stats to all clients
+    async broadcastArenaStats() {
+        try {
+            const stats = await this.getArenaStats();
+            this.io.emit('arena:stats-update', { stats });
+        } catch (error) {
+            console.error('[Arena] Broadcast stats error:', error);
+        }
+    }
+
+    // Broadcast updated player stats to a specific user
+    async broadcastPlayerStatsUpdate(userId) {
+        try {
+            const stats = await this.arenaDB.getPlayerStats(userId);
+            const socket = this.findSocketByUserId(userId);
+            
+            if (socket && stats) {
+                socket.emit('arena:player-stats-update', { stats });
+                console.log(`📊 [Arena] Broadcasted player stats update to user ${userId}`);
+            }
+        } catch (error) {
+            console.error('[Arena] Broadcast player stats error:', error);
         }
     }
 }
