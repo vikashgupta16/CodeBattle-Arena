@@ -237,8 +237,11 @@ class ArenaDBHandler {
                 const targetDifficulty = difficulties[i];
                 console.log(`📝 [ArenaDB] Getting ${targetDifficulty} problem for question ${i + 1}`);
                 
-                // Get all problems of this difficulty
-                const problems = await problemHandler.getProblems({ difficulty: targetDifficulty });
+                // Get all problems of this difficulty, excluding real-world project categories
+                const problems = await problemHandler.getProblems({ 
+                    difficulty: targetDifficulty,
+                    excludeCategories: ['games', 'web', 'ai', 'iot', 'projects'] // Exclude real-world project categories
+                });
                 
                 if (problems && problems.length > 0) {
                     // Filter out already used problems
@@ -269,7 +272,10 @@ class ArenaDBHandler {
                 } else {
                     console.warn(`❌ [ArenaDB] No problems found for difficulty: ${targetDifficulty}`);
                     // Fallback to easy problems if target difficulty has none
-                    const easyProblems = await problemHandler.getProblems({ difficulty: 'easy' });
+                    const easyProblems = await problemHandler.getProblems({ 
+                        difficulty: 'easy',
+                        excludeCategories: ['games', 'web', 'ai', 'iot', 'projects']
+                    });
                     if (easyProblems && easyProblems.length > 0) {
                         const fallbackProblem = easyProblems[Math.floor(Math.random() * easyProblems.length)];
                         questions.push({

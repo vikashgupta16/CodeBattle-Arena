@@ -99,6 +99,9 @@ class ArenaMatchManager {
         // Reset button states for new question
         this.resetButtonStates();
         
+        // Clear previous test results to prevent confusion
+        this.clearPreviousResults();
+        
         // Initialize timer display (server will send updates)
         this.initializeTimerDisplay(data.timeRemaining);
         
@@ -126,6 +129,26 @@ class ArenaMatchManager {
         if (submitBtn) {
             submitBtn.disabled = false;
             submitBtn.textContent = '✅ Submit';
+        }
+    }
+
+    clearPreviousResults() {
+        // Clear any previous test results to prevent confusion with wrong test cases
+        const resultsPanel = document.getElementById('resultsPanel');
+        const resultsContent = document.getElementById('resultsContent');
+        const resultsStatus = document.getElementById('resultsStatus');
+        
+        if (resultsPanel) {
+            resultsPanel.style.display = 'none';
+        }
+        
+        if (resultsContent) {
+            resultsContent.innerHTML = '';
+        }
+        
+        if (resultsStatus) {
+            resultsStatus.textContent = '';
+            resultsStatus.className = 'status';
         }
     }
 

@@ -313,7 +313,8 @@ class ArenaSocketHandler {
                 return;
             }
 
-            console.log(`✅ [Arena] Found problem: ${problem.title}`);
+            console.log(`✅ [Arena] Found problem: ${problem.title} (ID: ${problem.problemId})`);
+            console.log(`📝 [Arena] Problem difficulty: ${problem.difficulty}, category: ${problem.category}`);
 
             // Start independent timer for this player
             this.startPlayerTimer(matchId, userId, questionIndex, currentQuestion.timeLimit);
@@ -365,10 +366,33 @@ class ArenaSocketHandler {
             if (timeRemaining % 10 === 0 || timeRemaining <= 10) {
                 const playerSocket = this.findSocketByUserId(userId);
                 if (playerSocket) {
+                    // Get current match and both players' progress for score updates
+                    const match = await ArenaDBHandler.ArenaMatch.findOne({ matchId }).catch(() => null);
+                    let matchData = null;
+                    
+                    if (match) {
+                        const player1Progress = this.playerProgress.get(match.player1.userId);
+                        const player2Progress = this.playerProgress.get(match.player2.userId);
+                        
+                        matchData = {
+                            player1: {
+                                userId: match.player1.userId,
+                                username: match.player1.username,
+                                score: player1Progress?.score || 0
+                            },
+                            player2: {
+                                userId: match.player2.userId,
+                                username: match.player2.username,
+                                score: player2Progress?.score || 0
+                            }
+                        };
+                    }
+                    
                     playerSocket.emit('arena:time-update', {
                         questionIndex,
                         timeRemaining,
-                        playerProgress: this.playerProgress.get(userId)
+                        playerProgress: this.playerProgress.get(userId),
+                        matchData: matchData
                     });
                 }
             }
@@ -622,11 +646,14 @@ class ArenaSocketHandler {
             const problem = await this.problemDB.getProblemWithTestCases(currentQuestion.problemId);
             if (!problem) throw new Error('Problem not found');
 
-            console.log(`🔍 [Arena] Running test cases for problem ${currentQuestion.problemId}`);
+            console.log(`🔍 [Arena] Running test cases for problem ${currentQuestion.problemId} (${problem.title})`);
+            console.log(`📋 [Arena] Problem has ${problem.testCases.length} total test cases`);
 
             // Run only sample/visible test cases (not hidden ones) for Run & Test
             const sampleTestCases = problem.testCases.filter(tc => !tc.isHidden).slice(0, 3); // Show up to 3 sample cases
             const results = [];
+
+            console.log(`🧪 [Arena] Running ${sampleTestCases.length} sample test cases for ${currentQuestion.problemId}`);
 
             for (const testCase of sampleTestCases) {
                 const result = await this.problemDB.runTestCase(code, language, testCase, problem.timeLimit);
@@ -654,7 +681,9 @@ class ArenaSocketHandler {
                 feedback: totalTests > 0 
                     ? `${passedTests}/${totalTests} sample test cases passed`
                     : 'No sample test cases available',
-                questionIndex: currentQuestionIndex
+                questionIndex: currentQuestionIndex,
+                problemId: currentQuestion.problemId, // Add problemId for debugging
+                problemTitle: problem.title // Add problem title for debugging
             });
 
         } catch (error) {
