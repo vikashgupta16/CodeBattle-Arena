@@ -16,10 +16,25 @@
         type="text/javascript">
     </script>
     
-    <!-- Monaco Editor -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.js"></script>
+    <!-- ACE Editor (same as coder.js) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ace.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/mode-c_cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/mode-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/mode-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/theme-monokai.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ext-language_tools.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/ext-prompt.min.js"></script>
     <!-- Socket.IO -->
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- Arena Modules -->
+    <script src="modules/ArenaAuth.js"></script>
+    <script src="modules/ArenaSocketManager.js"></script>
+    <script src="modules/ArenaUIManager.js"></script>
+    <script src="modules/ArenaMatchManager.js"></script>
+    <script src="modules/ArenaCodeManager.js"></script>
+    <script src="modules/ArenaEffects.js"></script>
+    <script src="modules/ArenaCore.js"></script>
 </head>
 <body>
     <div id="app">
@@ -174,12 +189,16 @@
             <!-- Match Header -->
             <div class="match-header">
                 <div class="match-info">
-                    <h2>Question <span id="currentQuestionNum">1</span> of 5</h2>
+                    <h2>Question <span id="currentQuestionIndex">1</span> of 5</h2>
                     <div class="timer-container">
                         <div id="questionTimer" class="timer">05:00</div>
                         <div class="timer-bar">
                             <div id="timerProgress" class="timer-progress"></div>
                         </div>
+                    </div>
+                    <div class="progress-info">
+                        <span>Score: <span id="currentScore">0</span></span>
+                        <span>Completed: <span id="questionsCompleted">0</span>/5</span>
                     </div>
                 </div>
                 
@@ -305,6 +324,43 @@
             </div>
         </div>
 
+        <!-- Match Complete Screen -->
+        <div id="matchCompleteScreen" class="arena-screen">
+            <div class="container">
+                <div class="match-complete-header">
+                    <h1>🎉 Match Complete!</h1>
+                    <p>Congratulations on completing all questions!</p>
+                </div>
+                
+                <div class="final-stats">
+                    <div class="stat-card">
+                        <h3 id="finalScore">0</h3>
+                        <p>Final Score</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="questionsCompletedFinal">0</h3>
+                        <p>Questions Completed</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="averageTime">--</h3>
+                        <p>Average Time</p>
+                    </div>
+                </div>
+                
+                <div class="match-complete-actions">
+                    <button id="playAgainBtn" class="action-btn primary">
+                        🔄 Play Again
+                    </button>
+                    <button id="viewLeaderboardBtn" class="action-btn secondary">
+                        🏆 View Leaderboard
+                    </button>
+                    <button id="backToMenuBtn" class="action-btn secondary">
+                        🏠 Back to Menu
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Leaderboard Modal -->
         <div id="leaderboardModal" class="modal">
             <div class="modal-content">
@@ -324,7 +380,6 @@
     <!-- Notifications -->
     <div id="notifications" class="notifications-container"></div>
 
-    <script src="../common/auth.js"></script>
     <script src="arena.js"></script>
 </body>
 </html>

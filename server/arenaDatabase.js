@@ -99,8 +99,14 @@ class ArenaDBHandler {
     // Matchmaking: Join queue
     async joinQueue(userId, username, difficulty) {
         try {
+            console.log(`🎯 [ArenaDB] User ${username} (${userId}) joining ${difficulty} queue`);
+
             // Remove any existing queue entry for this user
-            await ArenaDBHandler.ArenaQueue.deleteOne({ userId });
+            const existingEntry = await ArenaDBHandler.ArenaQueue.findOne({ userId });
+            if (existingEntry) {
+                console.log(`🔄 [ArenaDB] Removing existing queue entry for ${username}`);
+                await ArenaDBHandler.ArenaQueue.deleteOne({ userId });
+            }
 
             // Add to queue
             const queueEntry = new ArenaDBHandler.ArenaQueue({
@@ -110,6 +116,7 @@ class ArenaDBHandler {
             });
 
             await queueEntry.save();
+            console.log(`✅ [ArenaDB] Added ${username} to ${difficulty} queue`);
 
             // Try to find a match
             const opponent = await ArenaDBHandler.ArenaQueue.findOne({
@@ -118,22 +125,34 @@ class ArenaDBHandler {
                 status: 'waiting'
             }).sort({ joinedAt: 1 }); // Oldest first
 
+            console.log(`🔍 [ArenaDB] Looking for opponent in ${difficulty} queue...`);
+            
             if (opponent) {
+                console.log(`🎉 [ArenaDB] Found opponent: ${opponent.username} (${opponent.userId})`);
+                
                 // Create match
                 const match = await this.createMatch(
                     { userId, username, difficulty },
                     { userId: opponent.userId, username: opponent.username, difficulty: opponent.selectedDifficulty }
                 );
 
+                console.log(`🎮 [ArenaDB] Created match: ${match.matchId}`);
+
                 // Remove both players from queue
-                await ArenaDBHandler.ArenaQueue.deleteMany({
+                const removeResult = await ArenaDBHandler.ArenaQueue.deleteMany({
                     userId: { $in: [userId, opponent.userId] }
                 });
+                
+                console.log(`🧹 [ArenaDB] Removed ${removeResult.deletedCount} players from queue`);
 
                 return { matched: true, match };
+            } else {
+                console.log(`⏳ [ArenaDB] No opponent found, staying in queue`);
+                const queuePosition = await this.getQueuePosition(userId, difficulty);
+                console.log(`📍 [ArenaDB] Queue position: ${queuePosition}`);
+                
+                return { matched: false, queuePosition };
             }
-
-            return { matched: false, queuePosition: await this.getQueuePosition(userId, difficulty) };
         } catch (error) {
             console.error('[ArenaDBHandler] joinQueue error:', error);
             throw error;
@@ -201,31 +220,69 @@ class ArenaDBHandler {
     // Generate questions for a match
     async generateMatchQuestions(player1Difficulty, player2Difficulty) {
         try {
+            console.log(`🎲 [ArenaDB] Generating questions for difficulties: ${player1Difficulty} vs ${player2Difficulty}`);
+            
             const { ProblemDBHandler } = await import('./problemDatabase.js');
             const problemHandler = new ProblemDBHandler();
             
             const questions = [];
-            const questionsPerMatch = 5; // Configurable
+            const questionsPerMatch = 5;
+            const usedProblemIds = new Set(); // Prevent duplicates
             
-            // Mix of difficulties based on players' preferences
+            // Get improved difficulty mix
             const difficulties = this.getDifficultyMix(player1Difficulty, player2Difficulty);
+            console.log(`🎯 [ArenaDB] Difficulty sequence: [${difficulties.join(', ')}]`);
             
             for (let i = 0; i < questionsPerMatch; i++) {
-                const difficulty = difficulties[i % difficulties.length];
+                const targetDifficulty = difficulties[i];
+                console.log(`📝 [ArenaDB] Getting ${targetDifficulty} problem for question ${i + 1}`);
                 
-                // Get random problem of this difficulty
-                const problems = await problemHandler.getProblems({ difficulty });
-                if (problems.length > 0) {
-                    const randomProblem = problems[Math.floor(Math.random() * problems.length)];
+                // Get all problems of this difficulty
+                const problems = await problemHandler.getProblems({ difficulty: targetDifficulty });
+                
+                if (problems && problems.length > 0) {
+                    // Filter out already used problems
+                    const availableProblems = problems.filter(p => !usedProblemIds.has(p.problemId));
                     
-                    questions.push({
-                        problemId: randomProblem.problemId,
-                        difficulty: randomProblem.difficulty,
-                        timeLimit: this.getTimeLimit(randomProblem.difficulty)
-                    });
+                    if (availableProblems.length > 0) {
+                        // Randomly select from available problems
+                        const randomProblem = availableProblems[Math.floor(Math.random() * availableProblems.length)];
+                        usedProblemIds.add(randomProblem.problemId);
+                        
+                        questions.push({
+                            problemId: randomProblem.problemId,
+                            difficulty: randomProblem.difficulty,
+                            timeLimit: this.getTimeLimit(randomProblem.difficulty)
+                        });
+                        
+                        console.log(`✅ [ArenaDB] Added problem ${randomProblem.problemId} (${randomProblem.title || 'Untitled'}) - ${randomProblem.difficulty}`);
+                    } else {
+                        // Fallback: reuse a random problem if no new ones available
+                        const fallbackProblem = problems[Math.floor(Math.random() * problems.length)];
+                        questions.push({
+                            problemId: fallbackProblem.problemId,
+                            difficulty: fallbackProblem.difficulty,
+                            timeLimit: this.getTimeLimit(fallbackProblem.difficulty)
+                        });
+                        console.log(`⚠️ [ArenaDB] Reusing problem ${fallbackProblem.problemId} (no unique problems left)`);
+                    }
+                } else {
+                    console.warn(`❌ [ArenaDB] No problems found for difficulty: ${targetDifficulty}`);
+                    // Fallback to easy problems if target difficulty has none
+                    const easyProblems = await problemHandler.getProblems({ difficulty: 'easy' });
+                    if (easyProblems && easyProblems.length > 0) {
+                        const fallbackProblem = easyProblems[Math.floor(Math.random() * easyProblems.length)];
+                        questions.push({
+                            problemId: fallbackProblem.problemId,
+                            difficulty: 'easy',
+                            timeLimit: this.getTimeLimit('easy')
+                        });
+                        console.log(`🔄 [ArenaDB] Fallback to easy problem: ${fallbackProblem.problemId}`);
+                    }
                 }
             }
             
+            console.log(`🎮 [ArenaDB] Generated ${questions.length} questions for match`);
             return questions;
         } catch (error) {
             console.error('[ArenaDBHandler] generateMatchQuestions error:', error);
@@ -235,31 +292,49 @@ class ArenaDBHandler {
 
     // Get difficulty mix for the match
     getDifficultyMix(player1Difficulty, player2Difficulty) {
-        // Create a fair mix based on both players' preferences
+        console.log(`🎯 [ArenaDB] Creating difficulty mix for: ${player1Difficulty} vs ${player2Difficulty}`);
+        
+        // Map Arena difficulty names to database difficulty names (same as coder.js)
+        const difficultyMap = {
+            'easy': 'easy',
+            'medium': 'medium', 
+            'hard': 'hard',
+            // Handle any inconsistencies
+            'intermediate': 'medium'
+        };
+        
+        const mappedPlayer1Diff = difficultyMap[player1Difficulty] || 'easy';
+        const mappedPlayer2Diff = difficultyMap[player2Difficulty] || 'easy';
+        
         const difficulties = [];
         
-        if (player1Difficulty === player2Difficulty) {
-            // Same difficulty - all questions of that difficulty
+        if (mappedPlayer1Diff === mappedPlayer2Diff) {
+            // Same difficulty - all questions should be exactly that difficulty
+            console.log(`📚 [ArenaDB] Both players chose ${mappedPlayer1Diff}, all questions will be ${mappedPlayer1Diff}`);
             for (let i = 0; i < 5; i++) {
-                difficulties.push(player1Difficulty);
+                difficulties.push(mappedPlayer1Diff);
             }
         } else {
-            // Different difficulties - mix them
-            difficulties.push(player1Difficulty, player2Difficulty);
-            difficulties.push(player1Difficulty, player2Difficulty);
-            difficulties.push('medium'); // Neutral middle ground
+            // Different difficulties - create a balanced mix favoring both preferences
+            console.log(`📚 [ArenaDB] Mixed difficulties: ${mappedPlayer1Diff} + ${mappedPlayer2Diff}`);
+            difficulties.push(mappedPlayer1Diff);    // Question 1: Player 1's choice
+            difficulties.push(mappedPlayer2Diff);    // Question 2: Player 2's choice  
+            difficulties.push(mappedPlayer1Diff);    // Question 3: Player 1's choice
+            difficulties.push(mappedPlayer2Diff);    // Question 4: Player 2's choice
+            difficulties.push('medium');             // Question 5: Neutral middle ground
         }
         
         return difficulties;
     }
 
-    // Get time limit based on difficulty
+    // Get time limit based on difficulty (Arena specifications)
     getTimeLimit(difficulty) {
         switch (difficulty.toLowerCase()) {
-            case 'easy': return 300; // 5 minutes
-            case 'medium': return 480; // 8 minutes
-            case 'hard': return 900; // 15 minutes
-            default: return 300;
+            case 'easy': return 300;      // 5 minutes (300 seconds)
+            case 'medium': return 480;    // 8 minutes (480 seconds) 
+            case 'hard': return 900;      // 15 minutes (900 seconds)
+            case 'intermediate': return 480; // Handle intermediate as medium
+            default: return 300;          // Default to easy
         }
     }
 
