@@ -53,6 +53,132 @@ const editor = ace.edit("code-editor", {
     enableBasicAutocompletion: true
 });
 
+// Initialize AI Assistance for beginner-level problems
+let aiAssistanceInstance = null;
+
+function initializeAIAssistance() {
+    console.log('🚀 Initializing AI Assistance...');
+    console.log('Current problem:', currentProblem);
+    console.log('Problem difficulty:', currentProblem?.difficulty);
+    
+    // Only enable AI assistance for Easy difficulty problems (beginner level)
+    if (currentProblem && currentProblem.difficulty === 'easy') {
+        const currentLanguage = getCurrentLanguage();
+        console.log('🤖 Creating AI Assistance Manager for language:', currentLanguage);
+        
+        aiAssistanceInstance = new AIAssistanceManager(editor, currentLanguage);
+        aiAssistanceInstance.setProblem(currentProblem);
+        
+        // Set global reference for onclick handlers
+        window.currentAIAssistance = aiAssistanceInstance;
+        
+        console.log('✅ AI Assistance enabled for beginner level problem');
+    } else if (aiAssistanceInstance) {
+        // Disable AI assistance for non-beginner problems
+        console.log('🚫 Disabling AI assistance for non-beginner problem');
+        aiAssistanceInstance.destroy();
+        aiAssistanceInstance = null;
+        window.currentAIAssistance = null;
+        console.log('🤖 AI Assistance disabled for non-beginner level problem');
+    } else {
+        console.log('ℹ️ No AI assistance needed - not an easy problem or already disabled');
+    }
+}
+
+function getCurrentLanguage() {
+    const langSelector = document.getElementById('language-selector');
+    if (langSelector) {
+        return langSelector.value;
+    }
+    // Default language mapping based on ace mode
+    const mode = editor.session.getMode().$id;
+    if (mode.includes('c_cpp')) return 'c++';
+    if (mode.includes('python')) return 'python';
+    if (mode.includes('java')) return 'java';
+    if (mode.includes('javascript')) return 'javascript';
+    return 'javascript'; // fallback
+}
+
+// Auto-detect language based on code content
+function detectLanguageFromCode(code) {
+    const trimmedCode = code.trim();
+    
+    // C++ indicators (check before C and Python due to #include)
+    if (trimmedCode.includes('#include') || 
+        trimmedCode.includes('std::') ||
+        trimmedCode.includes('cout <<') ||
+        trimmedCode.includes('using namespace')) {
+        return 'c++';
+    }
+    
+    // C indicators (check before Python due to #include)
+    if (trimmedCode.includes('printf(') || 
+        trimmedCode.includes('scanf(') ||
+        (trimmedCode.includes('#include') && trimmedCode.includes('stdio.h'))) {
+        return 'c';
+    }
+    
+    // Python indicators
+    if (trimmedCode.includes('print(') || 
+        trimmedCode.includes('def ') || 
+        trimmedCode.includes('import ') ||
+        trimmedCode.includes('from ') ||
+        (trimmedCode.startsWith('#') && !trimmedCode.includes('#include'))) {
+        return 'python';
+    }
+    
+    // Java indicators
+    if (trimmedCode.includes('public class') || 
+        trimmedCode.includes('System.out.print') ||
+        trimmedCode.includes('public static void main')) {
+        return 'java';
+    }
+    
+    // JavaScript indicators
+    if (trimmedCode.includes('console.log') || 
+        trimmedCode.includes('function ') ||
+        trimmedCode.includes('const ') ||
+        trimmedCode.includes('let ')) {
+        return 'javascript';
+    }
+    
+    // Default to current selector value
+    return getCurrentLanguage();
+}
+
+// Make it globally available
+window.detectLanguageFromCode = detectLanguageFromCode;
+
+// Enhanced language change handler
+function updateLanguage(list) {
+    const selectedLang = list.value;
+    
+    if (selectedLang === 'cpp') {
+        editor.session.setMode('ace/mode/c_cpp');
+    } else if (selectedLang === 'python') {
+        editor.session.setMode('ace/mode/python');
+    } else if (selectedLang === 'java') {
+        editor.session.setMode('ace/mode/java');
+    } else {
+        editor.session.setMode('ace/mode/' + selectedLang);
+    }
+    
+    // Update AI assistance when language changes
+    if (aiAssistanceInstance && currentProblem && currentProblem.difficulty === 'easy') {
+        aiAssistanceInstance.setLanguage(selectedLang);
+    }
+}
+
+// Add language selector event listener
+document.addEventListener('DOMContentLoaded', function() {
+    const langSelector = document.getElementById('language-selector');
+    if (langSelector) {
+        langSelector.addEventListener('change', function() {
+            updateLanguage(this);
+        });
+    }
+});
+
 // Utility function to get URL parameters
 function getUrlParameter(name) {
     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
@@ -129,6 +255,11 @@ function displayProblem(problem) {
         const hintsList = document.getElementById('hints-list');
         hintsList.innerHTML = problem.hints.map(hint => `<li>${hint}</li>`).join('');
     }
+    
+    // Initialize AI Assistance for beginner-level problems
+    setTimeout(() => {
+        initializeAIAssistance();
+    }, 500); // Small delay to ensure DOM is ready
 }
 
 async function runCode(btn) {
@@ -158,6 +289,11 @@ async function runCode(btn) {
             let output = data.output || 'No output';
             if (data.error && data.error.trim()) {
                 output += '\n\n--- Errors/Warnings ---\n' + data.error;
+                
+                // If AI assistance is enabled and this is a beginner problem, suggest fixes
+                if (aiAssistanceInstance && currentProblem && currentProblem.difficulty === 'easy') {
+                    aiAssistanceInstance.suggestFix(data.error);
+                }
             }
             if (data.executionTime) {
                 output += '\n\n--- Execution Time ---\n' + data.executionTime;
@@ -165,14 +301,26 @@ async function runCode(btn) {
             outputBox.textContent = output;
             outputBox.className = 'output-success';
         } else {
-            outputBox.textContent = 'Error: ' + (data.error || 'Unknown error occurred');
+            const errorMessage = data.error || 'Unknown error occurred';
+            outputBox.textContent = 'Error: ' + errorMessage;
             outputBox.className = 'output-error';
+            
+            // If AI assistance is enabled and this is a beginner problem, suggest fixes
+            if (aiAssistanceInstance && currentProblem && currentProblem.difficulty === 'easy') {
+                aiAssistanceInstance.suggestFix(errorMessage);
+            }
         }
         
     } catch (error) {
         console.error('Code execution failed:', error);
-        outputBox.textContent = 'Failed to execute code: ' + error.message;
+        const errorMessage = 'Failed to execute code: ' + error.message;
+        outputBox.textContent = errorMessage;
         outputBox.className = 'output-error';
+        
+        // If AI assistance is enabled and this is a beginner problem, suggest fixes
+        if (aiAssistanceInstance && currentProblem && currentProblem.difficulty === 'easy') {
+            aiAssistanceInstance.suggestFix(error.message);
+        }
     } finally {
         btn.textContent = 'Run Code';
         btn.disabled = false;
@@ -216,6 +364,20 @@ async function submitSolution(btn) {
         
         if (data.success) {
             displaySubmissionResults(data.submission);
+            
+            // AI assistance for failed test cases (Easy problems only)
+            if (aiAssistanceInstance && currentProblem && currentProblem.difficulty === 'easy' && 
+                data.submission.status !== 'accepted' && data.submission.testResults) {
+                
+                // Analyze failed test cases with AI
+                aiAssistanceInstance.analyzeTestCaseFailure({
+                    status: data.submission.status,
+                    testCasesPassed: data.submission.testCasesPassed,
+                    totalTestCases: data.submission.totalTestCases,
+                    testResults: data.submission.testResults.filter(test => !test.passed),
+                    feedback: data.submission.feedback
+                });
+            }
             
             // Handle different solve scenarios
             if (data.submission.status === 'accepted') {
@@ -675,11 +837,20 @@ function displaySubmissionResults(submission) {
 }
 
 function changeLang(list) {
-    if (list.value === 'c' || list.value === 'c++') {
+    const selectedLang = list.value;
+    
+    // Update editor mode
+    if (selectedLang === 'c' || selectedLang === 'c++') {
         editor.session.setMode('ace/mode/c_cpp');
     }
     else {
-        editor.session.setMode('ace/mode/' + list.value);
+        editor.session.setMode('ace/mode/' + selectedLang);
+    }
+    
+    // Update AI assistance language if it's active and for easy problems
+    if (aiAssistanceInstance && currentProblem && currentProblem.difficulty === 'easy') {
+        console.log(`🔄 Updating AI assistance language to: ${selectedLang}`);
+        aiAssistanceInstance.setLanguage(selectedLang);
     }
 }
 
@@ -708,3 +879,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+

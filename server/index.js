@@ -12,6 +12,7 @@ import { CodeRunner } from "./codeRun.js";
 import { ProblemDBHandler } from "./problemDatabase.js";
 import { ArenaDBHandler } from "./arenaDatabase.js";
 import { ArenaSocketHandler } from "./arenaSocket.js";
+import { AIAssistanceService } from "./aiAssistance.js";
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -54,6 +55,9 @@ const problemDBHandler = new ProblemDBHandler();
 
 // arena database handler ----------
 const arenaDBHandler = new ArenaDBHandler();
+
+// AI assistance handler -----------
+const aiAssistanceService = new AIAssistanceService();
 
 // user database handler -------------
 MongooseConnect.connect(process.env.MONGO_DB_URL);
@@ -148,6 +152,156 @@ app.get('/api/arena/player-stats/:userId', async (req, res) => {
 });
 
 app.post('/api/run/:lang', express.json(), codeRunnerHandler.endpoint.bind(codeRunnerHandler));
+
+// AI Assistance endpoints
+app.post('/api/ai/analyze-code', express.json({ limit: '10mb' }), async (req, res) => {
+    try {
+        const { code, language, problem, currentLine } = req.body;
+        
+        if (!code || !language) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Code and language are required' 
+            });
+        }
+
+        const analysis = await aiAssistanceService.analyzeCodeLine(code, language, problem, currentLine);
+        res.json({ success: true, analysis });
+    } catch (error) {
+        console.error('AI Analysis Error:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: 'AI analysis failed' 
+        });
+    }
+});
+
+app.post('/api/ai/code-completion', express.json(), async (req, res) => {
+    try {
+        const { code, language, cursorLine, cursorColumn } = req.body;
+        
+        if (!code || !language || cursorLine === undefined || cursorColumn === undefined) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Code, language, and cursor position are required' 
+            });
+        }
+
+        const completions = await aiAssistanceService.getCodeCompletion(code, language, cursorLine, cursorColumn);
+        res.json({ success: true, completions });
+    } catch (error) {
+        console.error('Code Completion Error:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Code completion failed' 
+        });
+    }
+});
+
+app.post('/api/ai/suggest-fix', express.json(), async (req, res) => {
+    try {
+        const { code, language, errorMessage } = req.body;
+        
+        if (!code || !language || !errorMessage) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Code, language, and error message are required' 
+            });
+        }
+
+        const fixSuggestion = await aiAssistanceService.suggestFix(code, language, errorMessage);
+        res.json({ success: true, fixSuggestion });
+    } catch (error) {
+        console.error('Fix Suggestion Error:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Fix suggestion failed' 
+        });
+    }
+});
+
+app.get('/api/ai/language-tips/:language', async (req, res) => {
+    try {
+        const { language } = req.params;
+        const tips = aiAssistanceService.getLanguageTips(language);
+        res.json({ success: true, tips });
+    } catch (error) {
+        console.error('Language Tips Error:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Failed to get language tips' 
+        });
+    }
+});
+
+// Enhanced AI Assistance endpoints for real-time per-line help
+app.post('/api/ai/real-time-analysis', express.json({ limit: '10mb' }), async (req, res) => {
+    try {
+        const { code, currentLine, currentLineText, language, problem } = req.body;
+        
+        if (!code || currentLine === undefined || !language) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Code, currentLine, and language are required' 
+            });
+        }
+
+        const analysis = await aiAssistanceService.performRealTimeAnalysis(
+            code, currentLine, currentLineText, language, problem
+        );
+        res.json(analysis);
+    } catch (error) {
+        console.error('Real-time Analysis Error:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Real-time analysis failed' 
+        });
+    }
+});
+
+app.post('/api/ai/contextual-help', express.json(), async (req, res) => {
+    try {
+        const { line, token, cursor, language, problem } = req.body;
+        
+        if (!line || !language || !cursor) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Line, language, and cursor position are required' 
+            });
+        }
+
+        const help = await aiAssistanceService.getContextualHelp(line, token, cursor, language, problem);
+        res.json(help);
+    } catch (error) {
+        console.error('Contextual Help Error:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Contextual help failed' 
+        });
+    }
+});
+
+app.post('/api/ai/analyze-test-failure', express.json({ limit: '10mb' }), async (req, res) => {
+    try {
+        const { code, language, problem, testResults } = req.body;
+        
+        if (!code || !language || !testResults) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Code, language, and test results are required' 
+            });
+        }
+
+        const analysis = await aiAssistanceService.analyzeTestCaseFailure(code, language, problem, testResults);
+        res.json(analysis);
+    } catch (error) {
+        console.error('Test Failure Analysis Error:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Test failure analysis failed' 
+        });
+    }
+});
 
 // main redirect
 app.get('/', (req, res) => {
