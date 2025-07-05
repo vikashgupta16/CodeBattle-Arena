@@ -183,7 +183,7 @@ npm run seed                 # Initialize with sample problems
 **GPL-3.0-or-later** © 2025
 
 **Authors:**
-- [Rouvik Maji](https://github.com/Rouvik) - Backend & Architecture
-- [Archisman Pal](https://github.com/Dealer-09) - Frontend & UI/UX
-- [Vikash Gupta](https://github.com/vikashgupta16) - Arena System
-- [Rajbeer Saha](https://github.com/pixelpioneer404) - Database Design
+- [Rouvik Maji](https://github.com/Rouvik) - Database Design
+- [Archisman Pal](https://github.com/Dealer-09) - Backend & Architecture
+- [Vikash Gupta](https://github.com/vikashgupta16) -  Frontend & UI/UX
+- [Rajbeer Saha](https://github.com/pixelpioneer404) - Frontend & UI/UX
