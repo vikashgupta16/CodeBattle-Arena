@@ -365,18 +365,29 @@ async function submitSolution(btn) {
         if (data.success) {
             displaySubmissionResults(data.submission);
             
-            // AI assistance for failed test cases (Easy problems only)
-            if (aiAssistanceInstance && currentProblem && currentProblem.difficulty === 'easy' && 
-                data.submission.status !== 'accepted' && data.submission.testResults) {
+            // Handle successful test completion - disable AI assistance if all tests pass
+            if (data.submission.status === 'accepted') {
+                console.log('🎉 All tests passed! Disabling AI assistance...');
                 
-                // Analyze failed test cases with AI
-                aiAssistanceInstance.analyzeTestCaseFailure({
-                    status: data.submission.status,
-                    testCasesPassed: data.submission.testCasesPassed,
-                    totalTestCases: data.submission.totalTestCases,
-                    testResults: data.submission.testResults.filter(test => !test.passed),
-                    feedback: data.submission.feedback
-                });
+                // Disable AI assistance since the problem is solved correctly
+                if (aiAssistanceInstance) {
+                    aiAssistanceInstance.disableForSuccess();
+                    console.log('✅ AI assistance disabled - problem solved successfully!');
+                }
+            } else {
+                // AI assistance for failed test cases (Easy problems only)
+                if (aiAssistanceInstance && currentProblem && currentProblem.difficulty === 'easy' && 
+                    data.submission.testResults) {
+                    
+                    // Analyze failed test cases with AI
+                    aiAssistanceInstance.analyzeTestCaseFailure({
+                        status: data.submission.status,
+                        testCasesPassed: data.submission.testCasesPassed,
+                        totalTestCases: data.submission.totalTestCases,
+                        testResults: data.submission.testResults.filter(test => !test.passed),
+                        feedback: data.submission.feedback
+                    });
+                }
             }
             
             // Handle different solve scenarios

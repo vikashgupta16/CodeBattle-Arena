@@ -28,7 +28,7 @@ class AIAssistanceService {
             const currentLineCode = currentLine !== null ? lines[currentLine] : '';
             
             const prompt = `
-You are an AI coding assistant for beginner programmers. Analyze this ${language} code and provide helpful suggestions.
+You are a smart AI coding assistant for beginner programmers. You must CAREFULLY analyze the problem context before making suggestions.
 
 PROBLEM CONTEXT:
 Title: ${problem?.title || 'Unknown'}
@@ -42,24 +42,37 @@ ${code}
 
 ${currentLine !== null ? `CURRENT LINE (${currentLine + 1}): ${currentLineCode}` : ''}
 
+CRITICAL INSTRUCTIONS:
+1. FIRST understand what the problem is asking for
+2. Check if the current code ALREADY solves the problem correctly
+3. If the code works and produces correct output for the given problem, DO NOT suggest unnecessary changes
+4. Only suggest improvements if there are actual errors, bugs, or significant improvements needed
+5. For simple input/output problems, don't suggest adding prompts unless specifically required
+6. Consider the problem requirements - if it just asks for output, don't suggest input prompts
+
 Please provide a JSON response with:
-1. "suggestions" - Array of helpful coding suggestions for beginners
-2. "errors" - Array of syntax or logic errors found
-3. "warnings" - Array of potential issues or improvements
-4. "lineSpecific" - Suggestions specific to the current line (if provided)
+1. "suggestions" - Array of NECESSARY improvements (only if code has real issues)
+2. "errors" - Array of actual syntax or logic errors
+3. "warnings" - Array of potential issues that could cause wrong output
+4. "lineSpecific" - Suggestions specific to the current line (only if needed)
 
 Format each item as: { "line": number, "type": "error|warning|suggestion", "message": "description", "fix": "suggested fix" }
 
-Focus on:
-- Syntax errors
-- Common beginner mistakes
-- Logic issues
-- Best practices for beginners
-- Variable naming conventions
-- Missing imports or declarations
-- Infinite loops or inefficient code
+Focus ONLY on:
+- Actual syntax errors that prevent compilation
+- Logic errors that cause wrong output
+- Critical bugs that break functionality
+- Security vulnerabilities
+- Performance issues in complex code
 
-Keep suggestions beginner-friendly and encouraging!
+AVOID suggesting:
+- Adding prompts when problem doesn't require them
+- Cosmetic changes to working code
+- Style preferences that don't affect functionality
+- Unnecessary complexity for simple problems
+- Changes that would make correct code incorrect
+
+Be smart and context-aware. Empty arrays are better than false suggestions!
 `;
 
             const result = await this.model.generateContent(prompt);
@@ -225,9 +238,9 @@ Make the explanation beginner-friendly and encouraging!
 
         try {
             const prompt = `
-You are a real-time AI coding assistant providing VS Code-like IntelliSense. Analyze this code and provide immediate, actionable suggestions.
+You are a smart AI coding assistant providing VS Code-like IntelliSense. You must CAREFULLY analyze the problem context before making suggestions.
 
-PROBLEM: ${problem?.title || 'Coding Challenge'}
+PROBLEM STATEMENT: ${problem?.description || problem?.title || 'Coding Challenge'}
 LANGUAGE: ${language}
 CURRENT LINE ${currentLine + 1}: "${currentLineText}"
 
@@ -235,6 +248,14 @@ FULL CODE:
 \`\`\`${language}
 ${code}
 \`\`\`
+
+CRITICAL INSTRUCTIONS:
+1. FIRST understand what the problem is asking for
+2. Check if the current code ALREADY solves the problem correctly
+3. If the code is working and solves the problem, DO NOT suggest unnecessary changes
+4. Only suggest improvements if there are actual errors, bugs, or significant improvements needed
+5. For simple problems like "sum two numbers", don't suggest adding prompts if not required
+6. Consider the ENTIRE program context, not just individual lines
 
 Provide a JSON response with:
 {
@@ -256,16 +277,20 @@ Provide a JSON response with:
   ]
 }
 
-Focus on:
-- Syntax errors and typos
-- Missing semicolons, brackets, parentheses
-- Variable naming improvements
-- Logic errors
-- Best practices for beginners
-- Code completion suggestions
-- Performance tips
+Only focus on REAL issues:
+- Actual syntax errors
+- Logic bugs that would cause wrong output
+- Performance issues in complex code
+- Security vulnerabilities
+- Critical best practices violations
 
-Be concise and actionable. Only suggest fixes that directly improve the code.
+AVOID suggesting:
+- Adding prompts when problem doesn't require them
+- Cosmetic changes to working code
+- Style preferences that don't affect functionality
+- Unnecessary complexity for simple problems
+
+Be smart and context-aware. Empty lineAnalysis is better than false suggestions.
 `;
 
             const result = await this.model.generateContent(prompt);

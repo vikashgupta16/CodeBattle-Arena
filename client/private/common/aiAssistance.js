@@ -340,6 +340,22 @@ class AIAssistanceManager {
             }, 5000);
         }
     }
+    
+    showAuthenticationRequired() {
+        const statusText = document.querySelector('.ai-status-text');
+        if (statusText) {
+            statusText.textContent = 'AI Assistant - Authentication Required';
+            statusText.style.color = '#ffd43b';
+        }
+    }
+    
+    showNetworkError() {
+        const statusText = document.querySelector('.ai-status-text');
+        if (statusText) {
+            statusText.textContent = 'AI Assistant - Network Error';
+            statusText.style.color = '#f56565';
+        }
+    }
 
     toggleSection() {
         // No longer needed with popup approach
@@ -378,6 +394,12 @@ class AIAssistanceManager {
         if (this.codeEditor) {
             // Real-time analysis (fast response for per-line help)
             this.codeEditor.on('change', () => {
+                // Re-enable AI assistance if it was disabled due to successful solve
+                // but user is now modifying the code (maybe to improve it)
+                if (!this.isEnabled) {
+                    this.reEnableAfterModification();
+                }
+                
                 clearTimeout(this.realTimeTimer);
                 this.realTimeTimer = setTimeout(() => {
                     this.performRealTimeAnalysis();
@@ -623,7 +645,7 @@ class AIAssistanceManager {
 
     async performRealTimeAnalysis() {
         if (!this.isEnabled) {
-            console.log('🚫 AI assistance is disabled');
+            console.log('🚫 AI assistance is disabled (problem solved or manually disabled)');
             return;
         }
         
@@ -633,6 +655,12 @@ class AIAssistanceManager {
         
         // Skip analysis for empty lines or very short content
         if (!currentLineText.trim() || currentLineText.trim().length < 3) {
+            return;
+        }
+        
+        // Smart validation: Don't analyze simple, complete solutions
+        if (this.isSimpleCompleteSolution(code)) {
+            console.log('🎯 Code appears to be a complete, simple solution - skipping unnecessary analysis');
             return;
         }
         
@@ -662,6 +690,15 @@ class AIAssistanceManager {
                 problem: this.currentProblem
             };
             
+            console.log('🔍 Making real-time analysis request:', {
+                url: '/api/ai/real-time-analysis',
+                method: 'POST',
+                currentLine: currentLine,
+                language: this.language,
+                codeLength: code.length,
+                windowLocation: window.location.href
+            });
+            
             const response = await fetch('/api/ai/real-time-analysis', {
                 method: 'POST',
                 headers: {
@@ -670,13 +707,46 @@ class AIAssistanceManager {
                 body: JSON.stringify(requestData)
             });
 
+            if (!response.ok) {
+                console.error('❌ AI analysis request failed:', {
+                    status: response.status, 
+                    statusText: response.statusText,
+                    url: response.url,
+                    headers: Object.fromEntries(response.headers.entries())
+                });
+                const errorText = await response.text();
+                console.error('Error response body:', errorText);
+                
+                // Handle authentication errors specifically
+                if (response.status === 401 || response.status === 403) {
+                    console.warn('🔐 Authentication required for AI assistance');
+                    this.showAuthenticationRequired();
+                }
+                return;
+            }
+
             const data = await response.json();
+            console.log('✅ AI analysis response:', data);
             
             if (data.success) {
                 this.updateLineDecorations(data.analysis);
+            } else {
+                console.warn('⚠️ AI analysis unsuccessful:', data.error);
             }
         } catch (error) {
-            console.error('Real-time analysis error:', error);
+            console.error('❌ Real-time analysis error:', error);
+            console.error('Error details:', {
+                name: error.name,
+                message: error.message,
+                stack: error.stack,
+                cause: error.cause
+            });
+            
+            // Check if it's a network error
+            if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                console.error('🌐 Network error - check if server is running and accessible');
+                this.showNetworkError();
+            }
         }
     }
 
@@ -1120,6 +1190,56 @@ class AIAssistanceManager {
         }
     }
 
+    /**
+     * Smart validation to avoid unnecessary suggestions for simple, complete solutions
+     * @param {string} code - The complete code
+     * @returns {boolean} True if this appears to be a simple, complete solution
+     */
+    isSimpleCompleteSolution(code) {
+        const lines = code.trim().split('\n').filter(line => line.trim());
+        
+        // Very short solutions (1-3 lines) that follow common patterns
+        if (lines.length <= 3) {
+            const codeText = code.toLowerCase();
+            
+            // Common simple input/output patterns that are likely correct
+            const simplePatterns = [
+                // Python: a, b = map(int, input().split()); print(a + b)
+                /^\s*[a-z],\s*[a-z]\s*=\s*map\s*\(\s*int\s*,\s*input\s*\(\s*\)\s*\.\s*split\s*\(\s*\)\s*\)\s*$/,
+                // Python: print(a + b) or similar
+                /^\s*print\s*\(\s*[a-z]\s*[+\-*/]\s*[a-z]\s*\)\s*$/,
+                // Python: result = a + b; print(result)
+                /^\s*[a-z_]+\s*=\s*[a-z]\s*[+\-*/]\s*[a-z]\s*$/,
+                // JavaScript: console.log(a + b)
+                /^\s*console\s*\.\s*log\s*\(\s*[a-z]\s*[+\-*/]\s*[a-z]\s*\)\s*$/,
+                // Simple variable declarations and operations
+                /^\s*(let|const|var)\s+[a-z_]+\s*=\s*.+$/
+            ];
+            
+            // Check if the code matches simple, working patterns
+            for (const line of lines) {
+                for (const pattern of simplePatterns) {
+                    if (pattern.test(line)) {
+                        return true;
+                    }
+                }
+            }
+            
+            // Additional checks for common complete solutions
+            if (codeText.includes('input') && codeText.includes('print') && lines.length <= 2) {
+                return true; // Likely a simple input/output solution
+            }
+            
+            if ((codeText.includes('console.log') || codeText.includes('print')) && 
+                (codeText.includes('+') || codeText.includes('-') || codeText.includes('*') || codeText.includes('/')) &&
+                lines.length <= 3) {
+                return true; // Likely a simple calculation solution
+            }
+        }
+        
+        return false;
+    }
+
     // Clean up method for proper disposal
     destroy() {
         // Clear timers
@@ -1322,6 +1442,96 @@ class AIAssistanceManager {
                 overlay.remove();
             }
         }, 10000);
+    }
+
+    /**
+     * Disable AI assistance when the user successfully passes all tests
+     * This prevents unnecessary suggestions when the problem is already solved correctly
+     */
+    disableForSuccess() {
+        console.log('🎉 Disabling AI assistance - all tests passed!');
+        
+        // Clear all existing decorations and suggestions
+        this.clearLineDecorations();
+        this.removeExistingPopups();
+        
+        // Update status to show success
+        const statusText = document.querySelector('.ai-status-text');
+        const statusIndicator = document.getElementById('ai-status-indicator');
+        
+        if (statusText) {
+            statusText.textContent = 'AI Assistant - Problem Solved! 🎉';
+            statusText.style.color = '#75f74d';
+        }
+        
+        if (statusIndicator) {
+            statusIndicator.classList.add('success-state');
+        }
+        
+        // Disable further analysis
+        this.isEnabled = false;
+        
+        // Add success state styling
+        this.addSuccessStateStyles();
+        
+        console.log('✅ AI assistance successfully disabled for solved problem');
+    }
+    
+    /**
+     * Add CSS styles for success state
+     */
+    addSuccessStateStyles() {
+        const existingStyles = document.getElementById('ai-assistance-styles');
+        if (existingStyles) {
+            const successStyles = `
+                /* Success state styling */
+                .ai-status-indicator.success-state {
+                    background: linear-gradient(135deg, #75f74d 0%, #2b8a3e 100%);
+                    border-color: #75f74d;
+                }
+                
+                .ai-status-indicator.success-state .ai-status-icon {
+                    animation: celebrateSuccess 2s ease-in-out;
+                }
+                
+                @keyframes celebrateSuccess {
+                    0%, 100% { transform: scale(1); }
+                    25% { transform: scale(1.2) rotate(10deg); }
+                    50% { transform: scale(1.1) rotate(-10deg); }
+                    75% { transform: scale(1.2) rotate(5deg); }
+                }
+                
+                .ai-status-indicator.success-state .ai-status-text {
+                    color: #000 !important;
+                    font-weight: 600;
+                }
+            `;
+            
+            existingStyles.insertAdjacentHTML('beforeend', successStyles);
+        }
+    }
+    
+    /**
+     * Re-enable AI assistance (e.g., when user modifies code after solving)
+     */
+    reEnableAfterModification() {
+        if (!this.isEnabled) {
+            console.log('🔄 Re-enabling AI assistance - code modified after solve');
+            this.isEnabled = true;
+            
+            // Update status back to normal
+            const statusText = document.querySelector('.ai-status-text');
+            const statusIndicator = document.getElementById('ai-status-indicator');
+            
+            if (statusText) {
+                statusText.textContent = 'AI Assistant Active';
+                statusText.style.color = '';
+            }
+            
+            if (statusIndicator) {
+                statusIndicator.classList.remove('success-state');
+            }
+        }
     }
 }
 
