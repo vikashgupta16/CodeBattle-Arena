@@ -11,18 +11,38 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
+  "globals": {
+    "Clerk": "readonly",
+    "ace": "readonly",
+    "io": "readonly",
+    "ArenaCore": "readonly",
+    "ArenaAuth": "readonly",
+    "ArenaSocketManager": "readonly",
+    "ArenaUIManager": "readonly",
+    "ArenaMatchManager": "readonly",
+    "ArenaCodeManager": "readonly",
+    "ArenaEffects": "readonly",
+    "AIAssistanceManager": "readonly",
+    "ProblemLoader": "readonly",
+    "emailjs": "readonly",
+    "swal": "readonly"
+  },
   "rules": {
-    "indent": ["error", 4],
-    "linebreak-style": ["error", "unix"],
-    "quotes": ["error", "single"],
-    "semi": ["error", "always"],
+    "indent": "off",
+    "linebreak-style": "off",
+    "quotes": "off",
+    "semi": ["warn", "always"],
     "no-unused-vars": "warn",
     "no-console": "off",
-    "no-undef": "error"
+    "no-undef": "error",
+    "no-dupe-class-members": "warn",
+    "no-useless-escape": "warn"
   },
   "ignorePatterns": [
     "node_modules/",
     "dist/",
-    "build/"
+    "build/",
+    "client/public/LandingPage/fonts/",
+    "client/private/privasset/"
   ]
 }

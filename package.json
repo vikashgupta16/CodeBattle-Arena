@@ -9,7 +9,7 @@
     "dev": "nodemon server/index.js",
     "test": "echo \"No tests specified yet\" && exit 0",
     "seed": "node server/seedDatabase.js",
-    "lint": "eslint server/ client/ --ext .js",
+    "lint": "eslint server/ client/ --ext .js --max-warnings 50",
     "build": "echo \"Build step - verifying files exist\" && ls server/",
     "health": "curl -f http://localhost:8080/health || echo 'Health check endpoint needed'"
   },
