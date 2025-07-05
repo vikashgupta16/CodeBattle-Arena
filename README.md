@@ -152,7 +152,33 @@ CodeBattle-Arena/
 
 ---
 
-## 📄 License & Authors
+## � CI/CD Pipeline
+
+### **GitHub Actions Workflow**
+Automated testing, building, and deployment pipeline:
+
+- **🧪 Testing**: Automated unit tests on pull requests
+- **🔍 Code Quality**: ESLint and code formatting checks
+- **🚀 Auto-Deploy**: Automatic deployment to Render on main branch
+- **📦 Dependency Security**: Vulnerability scanning
+
+### **Deployment Commands**
+```bash
+# Production deployment
+npm start                    # Uses: node server/index.js
+
+# Development
+npm run dev                  # Uses: nodemon server/index.js
+
+# Database seeding
+npm run seed                 # Initialize with sample problems
+```
+
+📋 **For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)**
+
+---
+
+## �📄 License & Authors
 
 **GPL-3.0-or-later** © 2025
 
