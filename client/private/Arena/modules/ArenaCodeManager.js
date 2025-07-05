@@ -161,6 +161,8 @@ int main() {
     }
 
     handleTestResult(data) {
+        console.log(`🧪 [Arena] Received test results for problem ${data.problemId} (${data.problemTitle})`);
+        
         this.updateButtonState('runTestBtn', false, '▶️ Run & Test');
         
         if (data.success) {

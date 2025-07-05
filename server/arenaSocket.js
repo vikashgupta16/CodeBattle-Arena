@@ -61,6 +61,9 @@ class ArenaSocketHandler {
                             difficulty
                         });
                     }
+                    
+                    // Broadcast updated arena stats
+                    await this.broadcastArenaStats();
                 } catch (error) {
                     console.error('[Arena] Join queue error:', error);
                     socket.emit('arena:error', { message: 'Failed to join queue' });
@@ -73,6 +76,9 @@ class ArenaSocketHandler {
                     if (socket.userId) {
                         await this.arenaDB.leaveQueue(socket.userId);
                         socket.emit('arena:queue-left');
+                        
+                        // Broadcast updated arena stats
+                        await this.broadcastArenaStats();
                     }
                 } catch (error) {
                     console.error('[Arena] Leave queue error:', error);
@@ -231,6 +237,9 @@ class ArenaSocketHandler {
                 });
 
                 console.log('🎮 [Arena] Match setup complete!');
+
+                // Broadcast updated arena stats to all clients
+                await this.broadcastArenaStats();
             } else {
                 console.error('❌ [Arena] Could not find both player sockets!');
                 console.log('🔍 [Arena] Available sockets:');
@@ -313,7 +322,8 @@ class ArenaSocketHandler {
                 return;
             }
 
-            console.log(`✅ [Arena] Found problem: ${problem.title}`);
+            console.log(`✅ [Arena] Found problem: ${problem.title} (ID: ${problem.problemId})`);
+            console.log(`📝 [Arena] Problem difficulty: ${problem.difficulty}, category: ${problem.category}`);
 
             // Start independent timer for this player
             this.startPlayerTimer(matchId, userId, questionIndex, currentQuestion.timeLimit);
@@ -365,10 +375,33 @@ class ArenaSocketHandler {
             if (timeRemaining % 10 === 0 || timeRemaining <= 10) {
                 const playerSocket = this.findSocketByUserId(userId);
                 if (playerSocket) {
+                    // Get current match and both players' progress for score updates
+                    const match = await ArenaDBHandler.ArenaMatch.findOne({ matchId }).catch(() => null);
+                    let matchData = null;
+                    
+                    if (match) {
+                        const player1Progress = this.playerProgress.get(match.player1.userId);
+                        const player2Progress = this.playerProgress.get(match.player2.userId);
+                        
+                        matchData = {
+                            player1: {
+                                userId: match.player1.userId,
+                                username: match.player1.username,
+                                score: player1Progress?.score || 0
+                            },
+                            player2: {
+                                userId: match.player2.userId,
+                                username: match.player2.username,
+                                score: player2Progress?.score || 0
+                            }
+                        };
+                    }
+                    
                     playerSocket.emit('arena:time-update', {
                         questionIndex,
                         timeRemaining,
-                        playerProgress: this.playerProgress.get(userId)
+                        playerProgress: this.playerProgress.get(userId),
+                        matchData: matchData
                     });
                 }
             }
@@ -622,11 +655,14 @@ class ArenaSocketHandler {
             const problem = await this.problemDB.getProblemWithTestCases(currentQuestion.problemId);
             if (!problem) throw new Error('Problem not found');
 
-            console.log(`🔍 [Arena] Running test cases for problem ${currentQuestion.problemId}`);
+            console.log(`🔍 [Arena] Running test cases for problem ${currentQuestion.problemId} (${problem.title})`);
+            console.log(`📋 [Arena] Problem has ${problem.testCases.length} total test cases`);
 
             // Run only sample/visible test cases (not hidden ones) for Run & Test
             const sampleTestCases = problem.testCases.filter(tc => !tc.isHidden).slice(0, 3); // Show up to 3 sample cases
             const results = [];
+
+            console.log(`🧪 [Arena] Running ${sampleTestCases.length} sample test cases for ${currentQuestion.problemId}`);
 
             for (const testCase of sampleTestCases) {
                 const result = await this.problemDB.runTestCase(code, language, testCase, problem.timeLimit);
@@ -654,7 +690,9 @@ class ArenaSocketHandler {
                 feedback: totalTests > 0 
                     ? `${passedTests}/${totalTests} sample test cases passed`
                     : 'No sample test cases available',
-                questionIndex: currentQuestionIndex
+                questionIndex: currentQuestionIndex,
+                problemId: currentQuestion.problemId, // Add problemId for debugging
+                problemTitle: problem.title // Add problem title for debugging
             });
 
         } catch (error) {
@@ -818,6 +856,13 @@ class ArenaSocketHandler {
 
             // Remove from active matches
             this.activeMatches.delete(matchId);
+
+            // Broadcast updated player stats to both players
+            await this.broadcastPlayerStatsUpdate(match.player1.userId);
+            await this.broadcastPlayerStatsUpdate(match.player2.userId);
+
+            // Broadcast updated arena stats to all clients
+            await this.broadcastArenaStats();
             
             console.log(`✅ [Arena] Match ${matchId} ended successfully`);
         } catch (error) {
@@ -851,6 +896,31 @@ class ArenaSocketHandler {
         } catch (error) {
             console.error('[Arena] Get arena stats error:', error);
             return { totalMatches: 0, activeMatches: 0, playersInQueue: 0, onlineUsers: 0 };
+        }
+    }
+
+    // Broadcast updated arena stats to all clients
+    async broadcastArenaStats() {
+        try {
+            const stats = await this.getArenaStats();
+            this.io.emit('arena:stats-update', { stats });
+        } catch (error) {
+            console.error('[Arena] Broadcast stats error:', error);
+        }
+    }
+
+    // Broadcast updated player stats to a specific user
+    async broadcastPlayerStatsUpdate(userId) {
+        try {
+            const stats = await this.arenaDB.getPlayerStats(userId);
+            const socket = this.findSocketByUserId(userId);
+            
+            if (socket && stats) {
+                socket.emit('arena:player-stats-update', { stats });
+                console.log(`📊 [Arena] Broadcasted player stats update to user ${userId}`);
+            }
+        } catch (error) {
+            console.error('[Arena] Broadcast player stats error:', error);
         }
     }
 }

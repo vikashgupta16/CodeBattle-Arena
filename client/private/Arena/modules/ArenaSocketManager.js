@@ -80,6 +80,14 @@ class ArenaSocketManager {
         this.socket.on('arena:player-complete', (data) => {
             this.arena.matchManager.handlePlayerComplete(data, this.arena);
         });
+
+        this.socket.on('arena:player-stats-update', (data) => {
+            this.arena.uiManager.updatePlayerStats(data.stats);
+        });
+
+        this.socket.on('arena:stats-update', (data) => {
+            this.arena.uiManager.updateArenaStats(data.stats);
+        });
     }
 
     emit(event, data) {

@@ -80,6 +80,11 @@ class ProblemDBHandler {
                 query.tags = { $in: filters.tags };
             }
 
+            // Support excluding specific categories (for Arena mode)
+            if (filters.excludeCategories && filters.excludeCategories.length > 0) {
+                query.category = { $nin: filters.excludeCategories };
+            }
+
             return await ProblemDBHandler.Problems.find(query)
                 .select('-testCases') // Don't expose test cases to frontend
                 .sort({ difficulty: 1, solvedCount: -1 });

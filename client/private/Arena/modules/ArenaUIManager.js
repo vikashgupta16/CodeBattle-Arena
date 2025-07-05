@@ -54,11 +54,11 @@ class ArenaUIManager {
         });
 
         document.getElementById('playAgainBtn')?.addEventListener('click', () => {
-            this.showScreen('arenaMenu');
+            this.showScreen('arenaMenu', arena);
         });
 
         document.getElementById('backToArenaBtn')?.addEventListener('click', () => {
-            this.showScreen('arenaMenu');
+            this.showScreen('arenaMenu', arena);
         });
 
         // Modal close on outside click
@@ -76,18 +76,25 @@ class ArenaUIManager {
     }
 
     updatePlayerStats(stats) {
+        console.log('🎯 [ArenaUIManager] Updating player stats:', stats);
         document.getElementById('playerMatches').textContent = stats.totalMatches;
         document.getElementById('playerWins').textContent = stats.wins;
         document.getElementById('playerWinRate').textContent = `${stats.winRate.toFixed(1)}%`;
         document.getElementById('playerStreak').textContent = stats.currentStreak;
     }
 
-    showScreen(screenId) {
+    showScreen(screenId, arena = null) {
         document.querySelectorAll('.arena-screen').forEach(screen => {
             screen.classList.remove('active');
         });
         document.getElementById(screenId).classList.add('active');
         this.activeScreen = screenId;
+        
+        // Refresh stats when returning to arena menu
+        if (screenId === 'arenaMenu' && arena) {
+            arena.loadPlayerStats().catch(err => console.warn('Failed to refresh player stats:', err));
+            arena.loadArenaStats().catch(err => console.warn('Failed to refresh arena stats:', err));
+        }
     }
 
     showNotification(message, type = 'info') {
