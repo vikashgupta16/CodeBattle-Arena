@@ -12,17 +12,25 @@
 - Dynamic scoring: 10 points per test case + 5 bonus for complete solutions
 - 5-question rounds with auto-advancement
 
+### 🤖 **AI-Powered Assistance**
+- Real-time code analysis with Google Gemini AI
+- VS Code-style visual indicators (lightbulbs, error/warning icons)
+- Per-line and full-program suggestions for beginners
+- Test-aware intelligence: disables when all tests pass, re-enables on code changes
+- Context-aware hints and debugging assistance
+
 ### 📚 **Practice Modes**
 - **Easy/Medium/Hard**: Tiered difficulty levels (5min/8min/15min)
 - **Categories**: Arrays, Algorithms, Mathematics, Data Structures
 - **Real-World Projects**: Games, Web Apps, AI/ML, IoT challenges
 - Multi-language support (JavaScript, Python, C++, Java)
 
-### 🏆 **User System**
+### 🏆 **User System & Analytics**
 - Clerk authentication with secure session management
-- Real-time leaderboards and global rankings
-- Personal statistics, streaks, and achievement tracking
-- Performance analytics and progress insights
+- Real-time arena leaderboards and global practice rankings
+- Comprehensive statistics: win rates, streaks, match history
+- Personal analytics: performance insights, difficulty progress
+- Arena player stats with ELO-style ranking system
 
 ---
 
@@ -41,11 +49,13 @@
 - **Real-time**: Socket.IO for WebSocket communication
 - **Code Execution**: Piston API (40+ language support)
 - **Authentication**: Clerk integration
+- **AI Engine**: Google Gemini 2.0 Flash for code assistance
 
 ### **External Services**
 - **Clerk**: User management & authentication
 - **Piston API**: Secure code execution sandbox
 - **MongoDB Atlas**: Cloud database hosting
+- **Google Gemini AI**: Intelligent code assistance
 
 ---
 
@@ -70,7 +80,7 @@ graph TD
     G --> G1[🟢 Easy] 
     G --> G2[🟡 Medium]
     G --> G3[🔴 Hard]
-    G1 --> K[👨‍💻 Code Editor]
+    G1 --> K[👨‍💻 Code Editor + 🤖 AI Assistant]
     G2 --> K
     G3 --> K
     
@@ -79,7 +89,7 @@ graph TD
     H2 --> H3[🤝 Match Found]
     H3 --> H4[⚡ Ready Phase]
     H4 --> H5[🥊 Live Battle]
-    H5 --> H6[🏁 Results]
+    H5 --> H6[🏁 Results & Stats Update]
     
     I --> I1[🎮 Games]
     I --> I2[🌐 Web Apps]
@@ -88,8 +98,11 @@ graph TD
     
     K --> L[▶️ Run & Test]
     K --> M[✅ Submit]
+    K --> AI[🤖 AI Hints & Analysis]
     L --> N[📊 Results]
     M --> N
+    AI --> O[💡 Smart Suggestions]
+    O --> K
 ```
 
 ---
@@ -107,6 +120,8 @@ npm install
 # Set up environment variables (.env)
 MONGODB_URI=mongodb://localhost:27017/codebattle-arena
 CLERK_PUBLISHABLE_KEY=your_clerk_key
+GEMINI_API_KEY=your_gemini_api_key
+AI_ASSISTANCE_ENABLED=true
 PORT=8080
 
 # Seed database and start
@@ -121,14 +136,17 @@ CodeBattle-Arena/
 ├── client/
 │   ├── public/          # Landing page, auth
 │   └── private/         # Authenticated areas
-│       ├── Arena/       # Real-time battle mode
-│       ├── HomePage/    # Dashboard
+│       ├── Arena/       # Real-time battle mode (7 modules)
+│       ├── HomePage/    # Dashboard with stats
 │       ├── CoderPage/   # Practice mode
+│       ├── Leaderboard/ # Rankings & leaderboards
+│       ├── common/      # Shared utilities (AI assistance)
 │       └── Easy/Intermediate/Advanced/  # Difficulty levels
 └── server/
     ├── index.js         # Main server
     ├── arenaSocket.js   # WebSocket handlers
-    ├── arenaDatabase.js # Match management
+    ├── arenaDatabase.js # Match & stats management
+    ├── aiAssistance.js  # Gemini AI integration
     └── problemDatabase.js # Problems & submissions
 ```
 
