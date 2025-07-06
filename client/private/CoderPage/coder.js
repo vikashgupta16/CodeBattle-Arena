@@ -12,6 +12,7 @@ window.addEventListener('load', async () => {
 
 // Mobile menu toggle functionality
 const menuToggle = document.getElementById('menu-toggle');
+const closeBtn = document.getElementById('close-btn');
 const sidebar = document.getElementById('sidebar');
 
 const outputBox = document.getElementById('output-box');
@@ -261,7 +262,6 @@ function displayProblem(problem) {
     }, 500); // Small delay to ensure DOM is ready
 }
 
-// eslint-disable-next-line no-unused-vars
 async function runCode(btn) {
     btn.textContent = 'Running...';
     btn.disabled = true;
@@ -328,7 +328,6 @@ async function runCode(btn) {
 }
 
 // Submit solution function
-// eslint-disable-next-line no-unused-vars
 async function submitSolution(btn) {
     if (!currentProblem) {
         alert('No problem loaded. Please try refreshing the page.');
@@ -848,8 +847,6 @@ function displaySubmissionResults(submission) {
     outputBox.className = isAccepted ? 'output-success' : 'output-error';
 }
 
-// Language change function
-// eslint-disable-next-line no-unused-vars
 function changeLang(list) {
     const selectedLang = list.value;
     
@@ -893,4 +890,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
-

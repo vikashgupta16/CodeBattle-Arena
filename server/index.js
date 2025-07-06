@@ -13,6 +13,7 @@ import { CodeRunner } from "./codeRun.js";
 import { ProblemDBHandler } from "./problemDatabase.js";
 import { ArenaDBHandler } from "./arenaDatabase.js";
 import { ArenaSocketHandler } from "./arenaSocket.js";
+import { AIAssistanceService } from "./aiAssistance.js";
 
 import { fileURLToPath } from 'url';
 
@@ -32,6 +33,9 @@ const arenaSocketHandler = new ArenaSocketHandler(server);
 
 // Initialize User Stats Service with arena socket handler for real-time stats
 const userStatsService = new UserStatsService(arenaSocketHandler);
+
+// Initialize AI Assistance Service
+const aiAssistanceService = new AIAssistanceService();
 
 // CORS middleware
 app.use(cors({
@@ -151,6 +155,84 @@ app.get('/api/arena/player-stats/:userId', async (req, res) => {
         res.json({ success: true, stats });
     } catch (error) {
         res.status(500).json({ success: false, error: 'Failed to get player stats' });
+    }
+});
+
+// AI Assistance endpoints
+app.post('/api/ai/analyze-code', express.json(), async (req, res) => {
+    try {
+        const { code, language, problem, currentLine } = req.body;
+        const analysis = await aiAssistanceService.analyzeCodeLine(code, language, problem, currentLine);
+        res.json({ success: true, analysis });
+    } catch (error) {
+        console.error('AI analyze-code error:', error);
+        res.status(500).json({ success: false, error: 'AI analysis failed' });
+    }
+});
+
+app.get('/api/ai/language-tips/:language', async (req, res) => {
+    try {
+        const { language } = req.params;
+        const tips = aiAssistanceService.getLanguageTips(language);
+        res.json({ success: true, tips });
+    } catch (error) {
+        console.error('AI language-tips error:', error);
+        res.status(500).json({ success: false, error: 'Failed to get language tips' });
+    }
+});
+
+app.post('/api/ai/real-time-analysis', express.json(), async (req, res) => {
+    try {
+        const { code, currentLine, currentLineText, language, problem } = req.body;
+        const analysis = await aiAssistanceService.performRealTimeAnalysis(code, currentLine, currentLineText, language, problem);
+        res.json(analysis);
+    } catch (error) {
+        console.error('AI real-time-analysis error:', error);
+        res.status(500).json({ success: false, error: 'Real-time analysis failed' });
+    }
+});
+
+app.post('/api/ai/analyze-test-failure', express.json(), async (req, res) => {
+    try {
+        const { code, language, problem, testResults } = req.body;
+        const analysis = await aiAssistanceService.analyzeTestCaseFailure(code, language, problem, testResults);
+        res.json(analysis);
+    } catch (error) {
+        console.error('AI analyze-test-failure error:', error);
+        res.status(500).json({ success: false, error: 'Test failure analysis failed' });
+    }
+});
+
+app.post('/api/ai/suggest-fix', express.json(), async (req, res) => {
+    try {
+        const { code, language, errorMessage } = req.body;
+        const suggestion = await aiAssistanceService.suggestFix(code, language, errorMessage);
+        res.json({ success: true, suggestion });
+    } catch (error) {
+        console.error('AI suggest-fix error:', error);
+        res.status(500).json({ success: false, error: 'Fix suggestion failed' });
+    }
+});
+
+app.post('/api/ai/contextual-help', express.json(), async (req, res) => {
+    try {
+        const { line, token, cursor, language, problem } = req.body;
+        const help = await aiAssistanceService.getContextualHelp(line, token, cursor, language, problem);
+        res.json(help);
+    } catch (error) {
+        console.error('AI contextual-help error:', error);
+        res.status(500).json({ success: false, error: 'Contextual help failed' });
+    }
+});
+
+app.post('/api/ai/code-completion', express.json(), async (req, res) => {
+    try {
+        const { code, language, cursorLine, cursorColumn } = req.body;
+        const completions = await aiAssistanceService.getCodeCompletion(code, language, cursorLine, cursorColumn);
+        res.json({ success: true, completions });
+    } catch (error) {
+        console.error('AI code-completion error:', error);
+        res.status(500).json({ success: false, error: 'Code completion failed' });
     }
 });
 
