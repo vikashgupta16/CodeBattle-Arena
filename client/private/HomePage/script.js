@@ -1,16 +1,7 @@
-// @author Rouvik Maji
+// @author Rouvik Maji & Archisman Pal
 async function updateUserDetails()
 {
-    const username = document.getElementById("dashboard_username");
-    const currRank = document.getElementById("dashboard_currRank");
-    const contestCount = document.getElementById("dashboard_contestCount");
-    const streakCount = document.getElementById("dashboard_streakCount");
-    
-    // New detailed stats elements
-    const totalProblems = document.getElementById("dashboard_totalProblems");
-    const easyCount = document.getElementById("dashboard_easyCount");
-    const mediumCount = document.getElementById("dashboard_mediumCount");
-    const hardCount = document.getElementById("dashboard_hardCount");
+    // DOM elements are accessed in updateStatsDisplay function
 
     try {
         // Check if stats were updated from localStorage first
@@ -29,18 +20,40 @@ async function updateUserDetails()
             }
         }
 
-        // Otherwise fetch from server
-        const res = await fetch(window.location.origin + '/api/userdata');
-        const data = await res.json();
+        // Fetch user basic data
+        const userResponse = await fetch('/api/userdata');
         
-        updateStatsDisplay(data);
+        // Fetch detailed user stats 
+        const statsResponse = await fetch('/api/user/stats');
+
+        if (userResponse.ok && statsResponse.ok) {
+            const userData = await userResponse.json();
+            const statsData = await statsResponse.json();
+            
+            // Combine the data - use rankPosition for display instead of rank points
+            const combinedData = {
+                name: userData.name || 'User',
+                rank: statsData.stats.rankPosition || 0, // Use actual leaderboard position
+                arenaWins: statsData.stats.arena?.wins || 0, // Arena matches won
+                streak_count: statsData.stats.streak_count || 0,
+                problemsSolved: statsData.stats.problemsSolved || 0,
+                easyCount: statsData.stats.easyCount || 0,
+                mediumCount: statsData.stats.mediumCount || 0,
+                hardCount: statsData.stats.hardCount || 0,
+                realWorldCount: statsData.stats.realWorldCount || 0
+            };
+            
+            updateStatsDisplay(combinedData);
+        } else {
+            throw new Error('Failed to fetch user data or stats');
+        }
     } catch (error) {
         console.error('Failed to update user details:', error);
         // Set default values if fetch fails
         updateStatsDisplay({
             name: 'User',
             rank: 0,
-            contests_count: 0,
+            arenaWins: 0, // Default arena wins to 0
             streak_count: 0,
             problemsSolved: 0,
             easyCount: 0,
@@ -63,7 +76,7 @@ function updateStatsDisplay(data) {
 
     username.textContent = data.name || 'User';
     currRank.textContent = data.rank || '0';
-    contestCount.textContent = data.contests_count || '0';
+    contestCount.textContent = data.arenaWins || '0'; // Display arena wins instead of contests
     streakCount.textContent = data.streak_count || '0';
     
     // Update detailed problem stats
@@ -152,8 +165,8 @@ function showStatsUpdateNotification(stats) {
 // Arena Data Loading Functions
 async function loadArenaData() {
     try {
-        // Load Arena stats
-        const statsResponse = await fetch('/api/arena/stats');
+        // Load Arena system stats (online users, active matches, total matches)
+        const statsResponse = await fetch('/api/arena/system-stats');
         if (statsResponse.ok) {
             const { stats } = await statsResponse.json();
             updateArenaStats(stats);
@@ -171,9 +184,9 @@ async function loadArenaData() {
 }
 
 function updateArenaStats(stats) {
-    document.getElementById('arenaOnlineUsers').textContent = stats.onlineUsers || 0;
-    document.getElementById('arenaActiveMatches').textContent = stats.activeMatches || 0;
-    document.getElementById('arenaTotalMatches').textContent = stats.totalMatches || 0;
+    document.getElementById('arenaOnlineUsers').textContent = stats.onlinePlayersCount || 0;
+    document.getElementById('arenaActiveMatches').textContent = stats.activeMatchesCount || 0;
+    document.getElementById('arenaTotalMatches').textContent = stats.totalMatchesCount || 0;
 }
 
 function updateArenaLeaderboard(leaderboard) {
@@ -198,8 +211,6 @@ function updateArenaLeaderboard(leaderboard) {
         </div>
     `).join('');
 }
-
-// Add Arena data loading to the existing initialization
 document.addEventListener('DOMContentLoaded', function() {
     // 1. Navigation Toggle
     const nav = document.querySelector('.codingPageNav');
@@ -382,12 +393,4 @@ function success()
     });
 
     updateUserDetails(); // update the user details once all listeners have been added
-    // Load Arena data when the page loads
-    loadArenaData();
-    
-    // Refresh Arena data every 30 seconds
-    setInterval(loadArenaData, 30000);
 });
-
-// Make loadArenaData globally available for the refresh button
-window.loadArenaData = loadArenaData;

@@ -12,7 +12,10 @@ class RealWorldProjectLoader extends ProblemLoader {
             let url = '/api/problems';
             const params = new URLSearchParams();
             
-            // For real-world page, we want all difficulties but specific categories
+            // For real-world page, fetch problems with "real-world" difficulty
+            params.append('difficulty', 'real-world');
+            
+            // Optionally filter by category as well
             if (category && category !== 'all') {
                 params.append('category', category);
             }
@@ -25,10 +28,8 @@ class RealWorldProjectLoader extends ProblemLoader {
             const data = await response.json();
             
             if (data.success) {
-                // Filter for real-world project categories
-                this.problems = data.problems.filter(problem => 
-                    ['games', 'web', 'ai', 'algorithms'].includes(problem.category)
-                );
+                // Return all real-world problems (they should already be filtered by difficulty)
+                this.problems = data.problems;
                 return this.problems;
             } else {
                 throw new Error(data.error || 'Failed to fetch problems');
@@ -92,7 +93,8 @@ class RealWorldProjectLoader extends ProblemLoader {
         const difficultyColor = {
             'easy': '#28a745',
             'medium': '#ffc107', 
-            'hard': '#dc3545'
+            'hard': '#dc3545',
+            'real-world': '#6c5ce7'  // Purple color for real-world projects
         };
 
         const categoryIcons = {

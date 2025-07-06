@@ -153,11 +153,12 @@ class ProblemLoader {
                 total: problems.length,
                 easy: problems.filter(p => p.difficulty === 'easy').length,
                 medium: problems.filter(p => p.difficulty === 'medium').length,
-                hard: problems.filter(p => p.difficulty === 'hard').length
+                hard: problems.filter(p => p.difficulty === 'hard').length,
+                'real-world': problems.filter(p => p.difficulty === 'real-world').length
             };
         } catch (error) {
             console.error('Error getting problem stats:', error);
-            return { total: 0, easy: 0, medium: 0, hard: 0 };
+            return { total: 0, easy: 0, medium: 0, hard: 0, 'real-world': 0 };
         }
     }
 }
@@ -171,7 +172,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentPage = window.location.pathname;
     
     if (currentPage.includes('beginner') || currentPage.includes('Easy')) {
-        problemLoader.renderProblems('challenge-container', 'easy');
+        // For beginner page, load easy problems but exclude games (those belong in Real-World)
+        problemLoader.fetchProblems('easy').then(problems => {
+            const filteredProblems = problems.filter(problem => problem.category !== 'games');
+            problemLoader.problems = filteredProblems;
+            
+            const container = document.getElementById('challenge-container');
+            if (container) {
+                if (filteredProblems.length === 0) {
+                    container.innerHTML = '<div class="no-problems">No problems found for this difficulty.</div>';
+                    return;
+                }
+                const problemsHTML = filteredProblems.map(problem => problemLoader.createProblemHTML(problem)).join('');
+                container.innerHTML = problemsHTML;
+                problemLoader.addProblemClickHandlers();
+            }
+        }).catch(error => {
+            const container = document.getElementById('challenge-container');
+            if (container) {
+                container.innerHTML = `<div class="error">Error loading problems: ${error.message}</div>`;
+            }
+        });
     } else if (currentPage.includes('Intermediate')) {
         problemLoader.renderProblems('challenge-container', 'medium');
     } else if (currentPage.includes('Advanced')) {

@@ -12,7 +12,6 @@ window.addEventListener('load', async () => {
 
 // Mobile menu toggle functionality
 const menuToggle = document.getElementById('menu-toggle');
-const closeBtn = document.getElementById('close-btn');
 const sidebar = document.getElementById('sidebar');
 
 const outputBox = document.getElementById('output-box');
@@ -262,6 +261,7 @@ function displayProblem(problem) {
     }, 500); // Small delay to ensure DOM is ready
 }
 
+// eslint-disable-next-line no-unused-vars
 async function runCode(btn) {
     btn.textContent = 'Running...';
     btn.disabled = true;
@@ -328,6 +328,7 @@ async function runCode(btn) {
 }
 
 // Submit solution function
+// eslint-disable-next-line no-unused-vars
 async function submitSolution(btn) {
     if (!currentProblem) {
         alert('No problem loaded. Please try refreshing the page.');
@@ -365,18 +366,29 @@ async function submitSolution(btn) {
         if (data.success) {
             displaySubmissionResults(data.submission);
             
-            // AI assistance for failed test cases (Easy problems only)
-            if (aiAssistanceInstance && currentProblem && currentProblem.difficulty === 'easy' && 
-                data.submission.status !== 'accepted' && data.submission.testResults) {
+            // Handle successful test completion - disable AI assistance if all tests pass
+            if (data.submission.status === 'accepted') {
+                console.log('🎉 All tests passed! Disabling AI assistance...');
                 
-                // Analyze failed test cases with AI
-                aiAssistanceInstance.analyzeTestCaseFailure({
-                    status: data.submission.status,
-                    testCasesPassed: data.submission.testCasesPassed,
-                    totalTestCases: data.submission.totalTestCases,
-                    testResults: data.submission.testResults.filter(test => !test.passed),
-                    feedback: data.submission.feedback
-                });
+                // Disable AI assistance since the problem is solved correctly
+                if (aiAssistanceInstance) {
+                    aiAssistanceInstance.disableForSuccess();
+                    console.log('✅ AI assistance disabled - problem solved successfully!');
+                }
+            } else {
+                // AI assistance for failed test cases (Easy problems only)
+                if (aiAssistanceInstance && currentProblem && currentProblem.difficulty === 'easy' && 
+                    data.submission.testResults) {
+                    
+                    // Analyze failed test cases with AI
+                    aiAssistanceInstance.analyzeTestCaseFailure({
+                        status: data.submission.status,
+                        testCasesPassed: data.submission.testCasesPassed,
+                        totalTestCases: data.submission.totalTestCases,
+                        testResults: data.submission.testResults.filter(test => !test.passed),
+                        feedback: data.submission.feedback
+                    });
+                }
             }
             
             // Handle different solve scenarios
@@ -836,6 +848,8 @@ function displaySubmissionResults(submission) {
     outputBox.className = isAccepted ? 'output-success' : 'output-error';
 }
 
+// Language change function
+// eslint-disable-next-line no-unused-vars
 function changeLang(list) {
     const selectedLang = list.value;
     

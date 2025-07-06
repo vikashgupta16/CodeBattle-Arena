@@ -10,6 +10,12 @@
     <link rel="stylesheet" href="leaderboard.css">
     <link rel="shortcut icon" href="../HomePage/assets/web-development.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Clerk auth library -->
+    <script async crossorigin="anonymous"
+        data-clerk-publishable-key="pk_test_aGFybWxlc3Mtd2VldmlsLTE1LmNsZXJrLmFjY291bnRzLmRldiQ"
+        src="https://harmless-weevil-15.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
+        type="text/javascript"></script>
 </head>
 
 <body class="dark-theme">
@@ -20,9 +26,9 @@
     <nav class="codingPageNav" aria-label="Main navigation">
         <button class="nav-close inside-logo-sidebar" onclick="hideNav()" aria-label="Close Navigation"></button>
         <ul>
-            <li><a href="../HomePage/codigo.html" class="nav-link">Home</a></li>
+            <li><a href="#home" class="nav-link current" onclick="showSection('home')">Home</a></li>
             <li><a href="#practice" class="nav-link" onclick="showSection('practice')">Practice</a></li>
-            <li><a href="#stats" class="nav-link" onclick="showSection('stats')">Stats</a></li>
+            <li><a href="../Arena/arena.html" class="nav-link">Arena</a></li>
             <li><a href="#help" class="nav-link" onclick="showSection('help')">Ask AI</a></li>
             <li><a href="#contact" class="nav-link" onclick="showSection('contact')">Contact Us</a></li>
             <li class="nav-actions">
@@ -30,7 +36,7 @@
                     <option value="dark-theme" selected>Dark theme</option>
                     <option value="light-theme">Light theme</option>
                 </select>
-                <a href="../../public/LandingPage/index.html" class="logout-btn">Logout</a>
+                <button onclick="authManager.logout()" class="logout-btn">Logout</button>
             </li>
         </ul>
     </nav>

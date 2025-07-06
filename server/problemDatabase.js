@@ -6,7 +6,7 @@ const problemSchema = new mongoose.Schema({
     problemId: { type: String, unique: true, required: true },
     title: { type: String, required: true },
     description: { type: String, required: true },
-    difficulty: { type: String, enum: ['easy', 'medium', 'hard'], required: true },
+    difficulty: { type: String, enum: ['easy', 'medium', 'hard', 'real-world'], required: true },
     category: { type: String, required: true },
     tags: [String],
     constraints: String,
@@ -62,6 +62,10 @@ class ProblemDBHandler {
     static Problems = mongoose.model("Problems", problemSchema);
     static Submissions = mongoose.model("Submissions", submissionSchema);
     static UserProblemSolved = mongoose.model("UserProblemSolved", userProblemSolvedSchema);
+
+    constructor(userStatsService) {
+        this.userStatsService = userStatsService;
+    }
 
     // Get all problems with filtering
     async getProblems(filters = {}) {
@@ -306,6 +310,8 @@ class ProblemDBHandler {
                 problemId,
                 code,
                 language,
+                difficulty: problem.difficulty,
+                category: problem.category,
                 ...validationResult
             });
 
@@ -315,6 +321,16 @@ class ProblemDBHandler {
             
             if (validationResult.status === 'accepted') {
                 if (!alreadySolved) {
+                    // Ensure difficulty and category are not undefined
+                    if (!problem.difficulty || !problem.category) {
+                        console.error('[SUBMISSION ERROR] Problem missing difficulty or category:', {
+                            problemId: problem.problemId,
+                            difficulty: problem.difficulty,
+                            category: problem.category
+                        });
+                        throw new Error(`Problem ${problemId} has missing difficulty or category`);
+                    }
+                    
                     // Mark as solved and update stats only for first-time solve
                     isFirstSolve = await this.markProblemAsSolved(
                         userId, 
@@ -326,9 +342,8 @@ class ProblemDBHandler {
 
                     if (isFirstSolve) {
                         try {
-                            // Update user stats for first-time solve
-                            const userDBHandler = new UserDBHandler();
-                            updatedStats = await userDBHandler.updateUserOnProblemSolved(
+                            // Update user stats for first-time solve using new stats service
+                            updatedStats = await this.userStatsService.updateUserOnProblemSolved(
                                 userId, 
                                 problem.difficulty, 
                                 problem.category
@@ -538,23 +553,6 @@ class ProblemDBHandler {
                     }
                 }
             );
-
-            // If solution is accepted, track in userProblemSolved
-            if (submissionData.status === 'accepted') {
-                await ProblemDBHandler.UserProblemSolved.updateOne(
-                    { userId: submissionData.userId, problemId: submissionData.problemId },
-                    { 
-                        $setOnInsert: { 
-                            difficulty: submissionData.difficulty,
-                            category: submissionData.category,
-                            firstSolvedAt: new Date(),
-                            bestSubmissionId: submissionId 
-                        },
-                        $inc: { totalAttempts: 1 }
-                    },
-                    { upsert: true }
-                );
-            }
 
             return submission;
         } catch (error) {
