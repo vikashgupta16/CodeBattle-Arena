@@ -1,16 +1,7 @@
-// @author Rouvik Maji
+// @author Rouvik Maji & Archisman Pal
 async function updateUserDetails()
 {
-    const username = document.getElementById("dashboard_username");
-    const currRank = document.getElementById("dashboard_currRank");
-    const contestCount = document.getElementById("dashboard_contestCount");
-    const streakCount = document.getElementById("dashboard_streakCount");
-    
-    // New detailed stats elements
-    const totalProblems = document.getElementById("dashboard_totalProblems");
-    const easyCount = document.getElementById("dashboard_easyCount");
-    const mediumCount = document.getElementById("dashboard_mediumCount");
-    const hardCount = document.getElementById("dashboard_hardCount");
+    // DOM elements are accessed in updateStatsDisplay function
 
     try {
         // Check if stats were updated from localStorage first

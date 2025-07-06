@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
+    "lint": "eslint server/ client/ --ext .js --max-warnings 50",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,7 +19,7 @@
     "ws",
     "dotenv"
   ],
-  "author": "Rouvik Maji",
+  "author": "Rouvik Maji Archisman Pal",
   "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/vikashgupta16/CodeBattle-Arena/issues"

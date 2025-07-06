@@ -15,6 +15,7 @@ function updateLoginButtonText() {
 updateLoginButtonText();
 window.addEventListener("resize", updateLoginButtonText);
 
+// eslint-disable-next-line no-unused-vars
 function toggleFAQ(element) {
     const faq = element.parentElement;
     faq.classList.toggle("open");

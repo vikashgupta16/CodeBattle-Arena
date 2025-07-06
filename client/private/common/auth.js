@@ -75,6 +75,26 @@ class AuthManager {
             }
         };
     }
+
+    async logout() {
+        try {
+            // Check if Clerk is loaded and sign out the user
+            if (typeof Clerk !== 'undefined' && Clerk.user) {
+                await Clerk.signOut();
+            }
+            
+            // Clear local auth state
+            this.isAuthenticated = false;
+            this.user = null;
+            
+            // Redirect to landing page
+            window.location.href = '/public/LandingPage/index.html';
+        } catch (error) {
+            console.error('Logout failed:', error);
+            // Even if Clerk logout fails, redirect to landing page
+            window.location.href = '/public/LandingPage/index.html';
+        }
+    }
 }
 
 // Initialize global auth manager
