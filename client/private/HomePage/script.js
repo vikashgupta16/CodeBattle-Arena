@@ -20,11 +20,33 @@ async function updateUserDetails()
             }
         }
 
-        // Otherwise fetch from server
-        const res = await fetch(window.location.origin + '/api/userdata');
-        const data = await res.json();
+        // Fetch user basic data
+        const userResponse = await fetch('/api/userdata');
         
-        updateStatsDisplay(data);
+        // Fetch detailed user stats 
+        const statsResponse = await fetch('/api/user/stats');
+
+        if (userResponse.ok && statsResponse.ok) {
+            const userData = await userResponse.json();
+            const statsData = await statsResponse.json();
+            
+            // Combine the data
+            const combinedData = {
+                name: userData.name || 'User',
+                rank: userData.rank || 0,
+                contests_count: userData.contests_count || 0,
+                streak_count: statsData.stats.streak_count || 0,
+                problemsSolved: statsData.stats.problemsSolved || 0,
+                easyCount: statsData.stats.easyCount || 0,
+                mediumCount: statsData.stats.mediumCount || 0,
+                hardCount: statsData.stats.hardCount || 0,
+                realWorldCount: statsData.stats.realWorldCount || 0
+            };
+            
+            updateStatsDisplay(combinedData);
+        } else {
+            throw new Error('Failed to fetch user data or stats');
+        }
     } catch (error) {
         console.error('Failed to update user details:', error);
         // Set default values if fetch fails
