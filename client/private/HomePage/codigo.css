@@ -470,67 +470,6 @@ main {
     }
 }
 
-#chat-assistant {
-    width: 100%;
-    height: 100%;
-    background-color: #000000;
-    border-radius: 20px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-}
-
-#header {
-    text-align: center;
-    font-size: 1.5em;
-    font-weight: bold;
-    color: #1a237e;
-}
-
-#coding-info {
-    text-align: center;
-    margin-top: 10px;
-    font-size: 1em;
-    color: #282727;
-}
-
-#chat-box {
-    flex: 1;
-    background-color: #0e0c0cb9;
-    border-radius: 20px;
-    padding: 10px;
-    overflow-y: auto;
-    margin: 20px 0;
-}
-
-#input-section {
-    display: flex;
-    gap: 10px;
-}
-
-#chat-input {
-    flex: 1;
-    padding: 10px;
-    border-radius: 25px;
-    border: 1px solid #3cff00;
-}
-
-#send-button {
-    background-color: #24b414;
-    color: rgb(0, 0, 0);
-    padding: 10px;
-    border-radius: 20px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-    font-family: poppins;
-}
-
-#send-button:hover {
-    background-color: #154519da;
-}
-
 /* ===== New Dashboard Styles ===== */
 .dashboard-grid {
     display: grid;
@@ -820,6 +759,8 @@ main {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    min-height: 0;
+    align-items: stretch;
 }
 
 .dashboard-card {
@@ -843,7 +784,8 @@ main {
 
 /* Activity Card */
 .activity-card {
-    flex-grow: 1;
+    min-height: 250px;
+    max-height: 350px;
 }
 
 /* Quick Actions Grid */
@@ -895,7 +837,8 @@ main {
 
 .languages-card {
     /* display: flex; */
-    height: 100%;
+    height: 45%;
+    padding: 12px;
 }
 
 .language-grid {
@@ -1007,24 +950,6 @@ main {
     color: rgba(0, 255, 0, 0.8);
 }
 
-/* AI Card */
-.ai-card {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-#chat-assistant {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-#chat-box {
-    flex-grow: 1;
-    min-height: 200px;
-}
-
 /* Arena Section Styles */
 .arena-section {
     padding: 40px 20px;
@@ -1102,4 +1027,31 @@ main {
 .feature-card p {
     opacity: 0.8;
     font-size: 0.95rem;
+}
+
+/* Responsive Dashboard */
+@media (max-width: 1200px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+    
+    .dashboard-column {
+        width: 100%;
+    }
+    
+    .activity-card {
+        min-height: 200px;
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 992px) {
+    .dashboard-container {
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .dashboard-card {
+        padding: 15px;
+    }
 }

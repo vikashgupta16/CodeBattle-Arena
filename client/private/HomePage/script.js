@@ -2,7 +2,6 @@
 async function updateUserDetails()
 {
     // DOM elements are accessed in updateStatsDisplay function
-
     try {
         // Check if stats were updated from localStorage first
         if (localStorage.getItem('statsUpdated') === 'true') {
@@ -337,60 +336,6 @@ function success()
         icon: "success",
       });
 }
-
-    // 5. Chat System
-    const chatInput = document.getElementById('chat-input');
-    const sendButton = document.getElementById('send-button');
-    const chatBox = document.getElementById('chat-box');
-
-    function addMessage(sender, text) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${sender}-message`;
-        messageDiv.innerHTML = `<strong>${sender === 'user' ? 'You' : 'CODI'}:</strong> ${text}`;
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function sendMessage() {
-        const message = chatInput.value.trim();
-        if (!message) return;
-
-        addMessage('user', message);
-        chatInput.value = '';
-        const typing = document.createElement('div');
-        typing.className = 'typing-indicator';
-        typing.innerHTML = '<span></span><span></span><span></span>';
-        chatBox.appendChild(typing);
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        // Simulate AI response
-        setTimeout(() => {
-            typing.remove();
-            addMessage('assistant', getAIResponse(message));
-        }, 1000 + Math.random() * 2000);
-    }
-
-    function getAIResponse(message) {
-        const lowerMsg = message.toLowerCase();
-
-        // Simple responses
-        if (/(hello|hi|hey|hola|yo|what's up)/.test(lowerMsg)) {
-            return "👋 Hey there, Code Warrior! Ready to crush some bugs or crack some problems?";
-        }
-    
-        // Help-related handler
-        if (/(help|assist|support|guide|how to|what can you do)/.test(lowerMsg)) {
-            return "🧠 I'm your coding buddy! I can assist with:\n\n💻 Languages: C, C++, Java, Python\n🛠️ Debugging help\n📘 Concepts explanation\n⚔️ Coding challenges\n\nJust type your question or drop your code!";
-        }
-    
-        // Default response
-        return "🤖 I'm your AI coding assistant. Ask me anything related to programming, and let's level up together!";
-    }
-
-    sendButton.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') sendMessage();
-    });
 
     updateUserDetails(); // update the user details once all listeners have been added
 });
