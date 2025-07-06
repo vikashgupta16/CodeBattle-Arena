@@ -8,7 +8,7 @@ import path from "path";
 import { createServer } from "http";
 
 import { MongooseConnect, UserDBHandler } from "./database.js";
-import { userStatsService } from "./userStatsService.js";
+import { UserStatsService } from "./userStatsService.js";
 import { CodeRunner } from "./codeRun.js";
 import { ProblemDBHandler } from "./problemDatabase.js";
 import { ArenaDBHandler } from "./arenaDatabase.js";
@@ -29,6 +29,9 @@ const server = createServer(app);
 
 // Initialize Arena Socket Handler
 const arenaSocketHandler = new ArenaSocketHandler(server);
+
+// Initialize User Stats Service with arena socket handler for real-time stats
+const userStatsService = new UserStatsService(arenaSocketHandler);
 
 // CORS middleware
 app.use(cors({
@@ -52,10 +55,10 @@ app.use(session({
 const codeRunnerHandler = new CodeRunner();
 
 // problem database handler -------
-const problemDBHandler = new ProblemDBHandler();
+const problemDBHandler = new ProblemDBHandler(userStatsService);
 
 // arena database handler ----------
-const arenaDBHandler = new ArenaDBHandler();
+const arenaDBHandler = new ArenaDBHandler(userStatsService);
 
 // user database handler -------------
 MongooseConnect.connect(process.env.MONGO_DB_URL);
@@ -66,6 +69,18 @@ uDBHandler.migrateUsersStats().catch(console.error);
 
 // Run migration for real-world stats
 userStatsService.migrateUsersForRealWorld().catch(console.error);
+
+// Start periodic 30-minute match timeout enforcement (every 5 minutes)
+setInterval(async () => {
+    try {
+        const cleanedCount = await userStatsService.cleanupStaleMatches();
+        if (cleanedCount > 0) {
+            console.log(`🔧 [Server] Periodic cleanup: ended ${cleanedCount} matches that exceeded 30-minute limit`);
+        }
+    } catch (error) {
+        console.error('❌ [Server] Periodic match cleanup error:', error);
+    }
+}, 5 * 60 * 1000); // Every 5 minutes
 
 // authentication -----------------
 app.use(clerk.clerkMiddleware());
@@ -126,24 +141,10 @@ app.post('/api/user/problem-solved',
     userStatsService.endpoint_updateOnProblemSolved.bind(userStatsService)
 );
 
-// Arena endpoints
-app.get('/api/arena/stats', async (req, res) => {
-    try {
-        const stats = await arenaSocketHandler.getArenaStats();
-        res.json({ success: true, stats });
-    } catch (error) {
-        res.status(500).json({ success: false, error: 'Failed to get arena stats' });
-    }
-});
-
-app.get('/api/arena/leaderboard', async (req, res) => {
-    try {
-        const leaderboard = await arenaDBHandler.getArenaLeaderboard();
-        res.json({ success: true, leaderboard });
-    } catch (error) {
-        res.status(500).json({ success: false, error: 'Failed to get arena leaderboard' });
-    }
-});
+// Arena endpoints - now unified through UserStatsService
+app.get('/api/arena/stats', clerk.requireAuth(), userStatsService.endpoint_getArenaStats.bind(userStatsService));
+app.get('/api/arena/leaderboard', userStatsService.endpoint_getArenaLeaderboard.bind(userStatsService));
+app.get('/api/arena/system-stats', userStatsService.endpoint_getArenaSystemStats.bind(userStatsService));
 
 app.get('/api/arena/player-stats/:userId', async (req, res) => {
     try {

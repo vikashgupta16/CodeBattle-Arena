@@ -70,9 +70,9 @@ class ArenaUIManager {
     }
 
     updateArenaStats(stats) {
-        document.getElementById('onlineUsers').textContent = stats.onlineUsers;
-        document.getElementById('activeMatches').textContent = stats.activeMatches;
-        document.getElementById('totalMatches').textContent = stats.totalMatches;
+        document.getElementById('onlineUsers').textContent = stats.onlinePlayersCount || 0;
+        document.getElementById('activeMatches').textContent = stats.activeMatchesCount || 0;
+        document.getElementById('totalMatches').textContent = stats.totalMatchesCount || 0;
     }
 
     updatePlayerStats(stats) {

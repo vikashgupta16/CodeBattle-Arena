@@ -67,34 +67,14 @@ const arenaQueueSchema = new mongoose.Schema({
     status: { type: String, enum: ['waiting', 'matched'], default: 'waiting' }
 });
 
-// Arena Player Stats Schema
-const arenaPlayerStatsSchema = new mongoose.Schema({
-    userId: { type: String, required: true, unique: true },
-    username: { type: String, required: true },
-    totalMatches: { type: Number, default: 0 },
-    wins: { type: Number, default: 0 },
-    losses: { type: Number, default: 0 },
-    draws: { type: Number, default: 0 },
-    totalScore: { type: Number, default: 0 },
-    totalBonusPoints: { type: Number, default: 0 },
-    averageScore: { type: Number, default: 0 },
-    winRate: { type: Number, default: 0 },
-    questionsCompleted: { type: Number, default: 0 },
-    fastestSolve: { type: Number }, // in seconds
-    easyWins: { type: Number, default: 0 },
-    mediumWins: { type: Number, default: 0 },
-    hardWins: { type: Number, default: 0 },
-    currentStreak: { type: Number, default: 0 },
-    bestStreak: { type: Number, default: 0 },
-    lastMatchAt: { type: Date },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
-});
-
 class ArenaDBHandler {
     static ArenaMatch = mongoose.model("ArenaMatch", arenaMatchSchema);
     static ArenaQueue = mongoose.model("ArenaQueue", arenaQueueSchema);
-    static ArenaPlayerStats = mongoose.model("ArenaPlayerStats", arenaPlayerStatsSchema);
+    // ArenaPlayerStats is now managed by UserStatsService
+
+    constructor(userStatsService) {
+        this.userStatsService = userStatsService;
+    }
 
     // Matchmaking: Join queue
     async joinQueue(userId, username, difficulty) {
@@ -497,47 +477,44 @@ class ArenaDBHandler {
         }
     }
 
-    // Update player statistics
+    // Update player statistics using unified UserStatsService
     async updatePlayerStats(match) {
         try {
-            const player1Stats = await this.getOrCreatePlayerStats(match.player1.userId, match.player1.username);
-            const player2Stats = await this.getOrCreatePlayerStats(match.player2.userId, match.player2.username);
+            console.log(`📊 [ArenaDBHandler] Updating arena stats for match ${match.matchId}:`);
+            console.log(`   Winner: ${match.winner || 'Draw'}`);
+            console.log(`   Player1: ${match.player1.username} (Score: ${match.player1.score || 0})`);
+            console.log(`   Player2: ${match.player2.username} (Score: ${match.player2.score || 0})`);
+            
+            // Prepare match data for UserStatsService
+            const matchData = {
+                player1: {
+                    userId: match.player1.userId,
+                    username: match.player1.username,
+                    score: match.player1.score,
+                    bonusPoints: match.player1.bonusPoints,
+                    questionsCompleted: match.player1.questionsCompleted,
+                    selectedDifficulty: match.player1.selectedDifficulty
+                },
+                player2: {
+                    userId: match.player2.userId,
+                    username: match.player2.username,
+                    score: match.player2.score,
+                    bonusPoints: match.player2.bonusPoints,
+                    questionsCompleted: match.player2.questionsCompleted,
+                    selectedDifficulty: match.player2.selectedDifficulty
+                },
+                winner: match.winner,
+                endedAt: match.endedAt
+            };
 
-            // Update both players' stats
-            for (const [player, stats] of [[match.player1, player1Stats], [match.player2, player2Stats]]) {
-                stats.totalMatches += 1;
-                stats.totalScore += player.score;
-                stats.totalBonusPoints += player.bonusPoints;
-                stats.questionsCompleted += player.questionsCompleted;
-                stats.lastMatchAt = match.endedAt;
-
-                if (match.winner === player.userId) {
-                    stats.wins += 1;
-                    stats.currentStreak += 1;
-                    stats.bestStreak = Math.max(stats.bestStreak, stats.currentStreak);
-                    
-                    // Increment difficulty-specific wins
-                    switch (player.selectedDifficulty) {
-                        case 'easy': stats.easyWins += 1; break;
-                        case 'medium': stats.mediumWins += 1; break;
-                        case 'hard': stats.hardWins += 1; break;
-                    }
-                } else if (match.winner) {
-                    stats.losses += 1;
-                    stats.currentStreak = 0;
-                } else {
-                    stats.draws += 1;
-                }
-
-                // Calculate averages
-                stats.averageScore = stats.totalScore / stats.totalMatches;
-                stats.winRate = (stats.wins / stats.totalMatches) * 100;
-                stats.updatedAt = new Date();
-
-                await stats.save();
-            }
+            // Update arena stats through unified service
+            const updates = await this.userStatsService.updateArenaStats(matchData);
+            
+            console.log(`✅ [ArenaDBHandler] Arena stats updated for ${updates.length} players`);
+            return updates;
         } catch (error) {
-            console.error('[ArenaDBHandler] updatePlayerStats error:', error);
+            console.error(`❌ [ArenaDBHandler] updatePlayerStats error for match ${match.matchId}:`, error);
+            throw error;
         }
     }
 
@@ -595,49 +572,53 @@ class ArenaDBHandler {
         return Math.max(0, question.timeLimit - elapsed);
     }
 
-    // Get player stats
+    // Get player stats using unified service
     async getPlayerStats(userId) {
         try {
-            const stats = await ArenaDBHandler.ArenaPlayerStats.findOne({ userId });
-            return stats || {
-                totalMatches: 0,
-                wins: 0,
-                losses: 0,
-                draws: 0,
-                winRate: 0,
-                averageScore: 0,
-                currentStreak: 0,
-                bestStreak: 0
-            };
+            return await this.userStatsService.getArenaStats(userId);
         } catch (error) {
             console.error('[ArenaDBHandler] getPlayerStats error:', error);
             throw error;
         }
     }
 
-    // Get leaderboard
+    // Get leaderboard using unified service
     async getArenaLeaderboard(limit = 20) {
         try {
-            const leaderboard = await ArenaDBHandler.ArenaPlayerStats
-                .find({ totalMatches: { $gt: 0 } })
-                .sort({ winRate: -1, totalScore: -1 })
-                .limit(limit);
-
-            return leaderboard.map((player, index) => ({
-                rank: index + 1,
-                username: player.username,
-                totalMatches: player.totalMatches,
-                wins: player.wins,
-                losses: player.losses,
-                draws: player.draws,
-                winRate: Math.round(player.winRate * 100) / 100,
-                averageScore: Math.round(player.averageScore * 100) / 100,
-                currentStreak: player.currentStreak,
-                bestStreak: player.bestStreak
-            }));
+            return await this.userStatsService.getArenaLeaderboard(limit);
         } catch (error) {
             console.error('[ArenaDBHandler] getArenaLeaderboard error:', error);
             return [];
+        }
+    }
+
+    // Abandon a match due to timeout or player disconnect
+    async abandonMatch(matchId, reason = 'timeout') {
+        try {
+            const match = await ArenaDBHandler.ArenaMatch.findOne({ matchId });
+            if (!match) {
+                throw new Error(`Match ${matchId} not found`);
+            }
+
+            // Don't abandon already completed matches
+            if (match.status === 'completed') {
+                console.log(`Match ${matchId} already completed, skipping abandon`);
+                return match;
+            }
+
+            // Mark as abandoned
+            match.status = 'abandoned';
+            match.endedAt = new Date();
+            match.totalDuration = (match.endedAt - match.startedAt) / 1000;
+            match.endReason = reason;
+
+            await match.save();
+
+            console.log(`Match ${matchId} abandoned due to: ${reason}`);
+            return match;
+        } catch (error) {
+            console.error('[ArenaDBHandler] abandonMatch error:', error);
+            throw error;
         }
     }
 }

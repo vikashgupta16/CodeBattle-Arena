@@ -184,7 +184,46 @@ class ArenaSocketHandler {
                     await this.arenaDB.leaveQueue(socket.userId);
                     
                     // Handle match abandonment if in active match
-                    // (You might want to pause the match or mark as abandoned)
+                    for (const [matchId, matchData] of this.activeMatches.entries()) {
+                        if (matchData.player1 === socket.userId || matchData.player2 === socket.userId) {
+                            console.log(`🚫 [Arena] Player ${socket.userId} disconnected from active match ${matchId}`);
+                            
+                            // Clear timeout for this match since it's being abandoned
+                            if (matchData.timeout) {
+                                clearTimeout(matchData.timeout);
+                            }
+                            
+                            // Mark match as abandoned in database
+                            try {
+                                await this.arenaDB.abandonMatch(matchId, socket.userId);
+                                console.log(`🏃 [Arena] Match ${matchId} abandoned due to player disconnect`);
+                            } catch (error) {
+                                console.error(`❌ [Arena] Error abandoning match ${matchId}:`, error);
+                            }
+                            
+                            // Clean up match data
+                            this.activeMatches.delete(matchId);
+                            this.playerProgress.delete(matchData.player1);
+                            this.playerProgress.delete(matchData.player2);
+                            
+                            // Notify the other player if still connected
+                            const otherPlayerId = matchData.player1 === socket.userId ? matchData.player2 : matchData.player1;
+                            const otherSocket = this.findSocketByUserId(otherPlayerId);
+                            
+                            if (otherSocket) {
+                                otherSocket.emit('arena:opponent-disconnected', {
+                                    message: 'Your opponent disconnected. You win by forfeit!',
+                                    matchId: matchId,
+                                    winner: otherPlayerId
+                                });
+                                otherSocket.leave(`match:${matchId}`);
+                            }
+                            
+                            // Broadcast updated stats
+                            await this.broadcastArenaStats();
+                            break;
+                        }
+                    }
                 }
             });
         });
@@ -229,12 +268,22 @@ class ArenaSocketHandler {
                 player1Socket.emit('arena:match-found', matchData1);
                 player2Socket.emit('arena:match-found', matchData2);
 
-                // Store active match
+                // Store active match with timeout
                 this.activeMatches.set(match.matchId, {
                     player1: match.player1.userId,
                     player2: match.player2.userId,
-                    currentQuestionIndex: 0
+                    currentQuestionIndex: 0,
+                    startTime: new Date()
                 });
+
+                // Set 30-minute match timeout
+                const matchTimeout = setTimeout(async () => {
+                    console.log(`⏰ [Arena] Match ${match.matchId} timed out after 30 minutes`);
+                    await this.endMatchOnTimeout(match.matchId);
+                }, 30 * 60 * 1000); // 30 minutes in milliseconds
+
+                // Store timeout reference for cleanup
+                this.activeMatches.get(match.matchId).timeout = matchTimeout;
 
                 console.log('🎮 [Arena] Match setup complete!');
 
@@ -854,6 +903,12 @@ class ArenaSocketHandler {
             this.playerProgress.delete(match.player1.userId);
             this.playerProgress.delete(match.player2.userId);
 
+            // Clear match timeout if it exists
+            const activeMatch = this.activeMatches.get(matchId);
+            if (activeMatch && activeMatch.timeout) {
+                clearTimeout(activeMatch.timeout);
+            }
+
             // Remove from active matches
             this.activeMatches.delete(matchId);
 
@@ -867,6 +922,99 @@ class ArenaSocketHandler {
             console.log(`✅ [Arena] Match ${matchId} ended successfully`);
         } catch (error) {
             console.error('[Arena] Handle match end error:', error);
+        }
+    }
+
+    // Handle match timeout (30 minutes)
+    async endMatchOnTimeout(matchId) {
+        try {
+            console.log(`⏰ [Arena] Ending match ${matchId} due to timeout`);
+            
+            // Get match data
+            const match = await this.arenaDB.getMatch(matchId);
+            if (!match) {
+                console.error(`❌ [Arena] Match ${matchId} not found for timeout`);
+                return;
+            }
+
+            // If match is already completed, nothing to do
+            if (match.status === 'completed') {
+                console.log(`✅ [Arena] Match ${matchId} already completed, ignoring timeout`);
+                return;
+            }
+
+            // Get current scores for both players
+            const player1Progress = this.playerProgress.get(match.player1.userId) || { 
+                currentQuestionIndex: 0, 
+                correctAnswers: 0, 
+                totalScore: 0 
+            };
+            const player2Progress = this.playerProgress.get(match.player2.userId) || { 
+                currentQuestionIndex: 0, 
+                correctAnswers: 0, 
+                totalScore: 0 
+            };
+
+            // Determine winner based on current scores
+            let winner = null;
+            if (player1Progress.totalScore > player2Progress.totalScore) {
+                winner = match.player1.userId;
+            } else if (player2Progress.totalScore > player1Progress.totalScore) {
+                winner = match.player2.userId;
+            }
+            // If scores are equal, it's a draw (winner remains null)
+
+            // End the match with timeout reason
+            await this.arenaDB.endMatch(matchId, {
+                winner,
+                player1FinalScore: player1Progress.totalScore,
+                player2FinalScore: player2Progress.totalScore,
+                player1QuestionsCompleted: player1Progress.correctAnswers,
+                player2QuestionsCompleted: player2Progress.correctAnswers,
+                endReason: 'timeout',
+                totalDuration: 30 * 60 * 1000 // 30 minutes in milliseconds
+            });
+
+            // Notify both players about the timeout
+            const player1Socket = this.findSocketByUserId(match.player1.userId);
+            const player2Socket = this.findSocketByUserId(match.player2.userId);
+
+            const timeoutMessage = {
+                type: 'timeout',
+                winner,
+                reason: 'Match ended due to 30-minute time limit',
+                finalScores: {
+                    [match.player1.userId]: player1Progress.totalScore,
+                    [match.player2.userId]: player2Progress.totalScore
+                },
+                questionsCompleted: {
+                    [match.player1.userId]: player1Progress.correctAnswers,
+                    [match.player2.userId]: player2Progress.correctAnswers
+                }
+            };
+
+            if (player1Socket) {
+                player1Socket.emit('arena:match-ended', timeoutMessage);
+                player1Socket.leave(`match:${matchId}`);
+            }
+
+            if (player2Socket) {
+                player2Socket.emit('arena:match-ended', timeoutMessage);
+                player2Socket.leave(`match:${matchId}`);
+            }
+
+            // Clean up match data
+            this.playerProgress.delete(match.player1.userId);
+            this.playerProgress.delete(match.player2.userId);
+            this.activeMatches.delete(matchId);
+
+            // Broadcast updated stats
+            await this.broadcastArenaStats();
+
+            console.log(`✅ [Arena] Match ${matchId} ended due to timeout. Winner: ${winner || 'Draw'}`);
+            
+        } catch (error) {
+            console.error(`❌ [Arena] Error ending match ${matchId} on timeout:`, error);
         }
     }
 

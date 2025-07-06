@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { UserDBHandler } from "./database.js";
-import { userStatsService } from "./userStatsService.js";
 
 // Problem Schema
 const problemSchema = new mongoose.Schema({
@@ -63,6 +62,10 @@ class ProblemDBHandler {
     static Problems = mongoose.model("Problems", problemSchema);
     static Submissions = mongoose.model("Submissions", submissionSchema);
     static UserProblemSolved = mongoose.model("UserProblemSolved", userProblemSolvedSchema);
+
+    constructor(userStatsService) {
+        this.userStatsService = userStatsService;
+    }
 
     // Get all problems with filtering
     async getProblems(filters = {}) {
@@ -340,7 +343,7 @@ class ProblemDBHandler {
                     if (isFirstSolve) {
                         try {
                             // Update user stats for first-time solve using new stats service
-                            updatedStats = await userStatsService.updateUserOnProblemSolved(
+                            updatedStats = await this.userStatsService.updateUserOnProblemSolved(
                                 userId, 
                                 problem.difficulty, 
                                 problem.category

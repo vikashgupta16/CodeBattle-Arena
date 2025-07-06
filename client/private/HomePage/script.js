@@ -165,8 +165,8 @@ function showStatsUpdateNotification(stats) {
 // Arena Data Loading Functions
 async function loadArenaData() {
     try {
-        // Load Arena stats
-        const statsResponse = await fetch('/api/arena/stats');
+        // Load Arena system stats (online users, active matches, total matches)
+        const statsResponse = await fetch('/api/arena/system-stats');
         if (statsResponse.ok) {
             const { stats } = await statsResponse.json();
             updateArenaStats(stats);
@@ -184,9 +184,9 @@ async function loadArenaData() {
 }
 
 function updateArenaStats(stats) {
-    document.getElementById('arenaOnlineUsers').textContent = stats.onlineUsers || 0;
-    document.getElementById('arenaActiveMatches').textContent = stats.activeMatches || 0;
-    document.getElementById('arenaTotalMatches').textContent = stats.totalMatches || 0;
+    document.getElementById('arenaOnlineUsers').textContent = stats.onlinePlayersCount || 0;
+    document.getElementById('arenaActiveMatches').textContent = stats.activeMatchesCount || 0;
+    document.getElementById('arenaTotalMatches').textContent = stats.totalMatchesCount || 0;
 }
 
 function updateArenaLeaderboard(leaderboard) {

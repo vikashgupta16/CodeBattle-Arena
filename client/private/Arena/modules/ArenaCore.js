@@ -125,7 +125,7 @@ class ArenaCore {
 
     async loadArenaStats() {
         try {
-            const response = await fetch('/api/arena/stats');
+            const response = await fetch('/api/arena/system-stats');
             if (response.ok) {
                 const { stats } = await response.json();
                 this.uiManager.updateArenaStats(stats);
