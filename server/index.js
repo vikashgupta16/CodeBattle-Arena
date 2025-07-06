@@ -88,9 +88,6 @@ app.use(clerk.clerkMiddleware());
 // base entry point of server
 app.use('/public', express.static('client/public'));
 
-// Serve test file (remove in production)
-app.use('/test-stats.html', express.static('test-stats.html'));
-
 app.use('/private', clerk.requireAuth({ signInUrl: process.env.CLERK_SIGN_IN_URL, signUpUrl: process.env.CLERK_SIGN_UP_URL }),
                     uDBHandler.middleware_userAuth.bind(uDBHandler),
                     express.static('client/private'));
@@ -134,6 +131,7 @@ app.get('/api/userdata', clerk.requireAuth(), uDBHandler.endpoint_userData.bind(
 
 // New unified stats and leaderboard endpoints
 app.get('/api/user/stats', clerk.requireAuth(), userStatsService.endpoint_getUserStats.bind(userStatsService));
+app.get('/api/user/rank-position', clerk.requireAuth(), userStatsService.endpoint_getUserRankPosition.bind(userStatsService));
 app.get('/api/leaderboard', userStatsService.endpoint_getLeaderboard.bind(userStatsService));
 app.post('/api/user/problem-solved', 
     express.json(), 

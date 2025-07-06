@@ -30,11 +30,11 @@ async function updateUserDetails()
             const userData = await userResponse.json();
             const statsData = await statsResponse.json();
             
-            // Combine the data
+            // Combine the data - use rankPosition for display instead of rank points
             const combinedData = {
                 name: userData.name || 'User',
-                rank: userData.rank || 0,
-                contests_count: userData.contests_count || 0,
+                rank: statsData.stats.rankPosition || 0, // Use actual leaderboard position
+                arenaWins: statsData.stats.arena?.wins || 0, // Arena matches won
                 streak_count: statsData.stats.streak_count || 0,
                 problemsSolved: statsData.stats.problemsSolved || 0,
                 easyCount: statsData.stats.easyCount || 0,
@@ -53,7 +53,7 @@ async function updateUserDetails()
         updateStatsDisplay({
             name: 'User',
             rank: 0,
-            contests_count: 0,
+            arenaWins: 0, // Default arena wins to 0
             streak_count: 0,
             problemsSolved: 0,
             easyCount: 0,
@@ -76,7 +76,7 @@ function updateStatsDisplay(data) {
 
     username.textContent = data.name || 'User';
     currRank.textContent = data.rank || '0';
-    contestCount.textContent = data.contests_count || '0';
+    contestCount.textContent = data.arenaWins || '0'; // Display arena wins instead of contests
     streakCount.textContent = data.streak_count || '0';
     
     // Update detailed problem stats
@@ -211,8 +211,6 @@ function updateArenaLeaderboard(leaderboard) {
         </div>
     `).join('');
 }
-
-// Add Arena data loading to the existing initialization
 document.addEventListener('DOMContentLoaded', function() {
     // 1. Navigation Toggle
     const nav = document.querySelector('.codingPageNav');
@@ -395,12 +393,4 @@ function success()
     });
 
     updateUserDetails(); // update the user details once all listeners have been added
-    // Load Arena data when the page loads
-    loadArenaData();
-    
-    // Refresh Arena data every 30 seconds
-    setInterval(loadArenaData, 30000);
 });
-
-// Make loadArenaData globally available for the refresh button
-window.loadArenaData = loadArenaData;

@@ -82,28 +82,55 @@ class UserStatsService {
     }
 
     /**
-     * Get leaderboard with user statistics
+     * Get leaderboard with user statistics and correct ranking positions
      * @param {number} limit - Number of users to return
-     * @returns {Array} Array of user objects with stats
+     * @returns {Array} Array of user objects with stats and rank positions
      */
     async getLeaderboard(limit = 50) {
         try {
             const users = await UserDBHandler.Users.find({})
-                .sort({ rank: -1 })
-                .limit(limit)
-                .select('userID name problemsSolved easyCount mediumCount hardCount realWorldCount rank streak_count');
+                .sort({ 
+                    rank: -1, 
+                    problemsSolved: -1, 
+                    streak_count: -1, 
+                    userID: 1 // Add userID as a tiebreaker for consistent ordering
+                })
+                .select('userID name problemsSolved easyCount mediumCount hardCount realWorldCount rank streak_count lastSolvedDate');
 
-            return users.map(user => ({
-                userID: user.userID,
-                name: user.name, // Use 'name' to match frontend expectations
-                problemsSolved: user.problemsSolved || 0,
-                easyCount: user.easyCount || 0,
-                mediumCount: user.mediumCount || 0,
-                hardCount: user.hardCount || 0,
-                realWorldCount: user.realWorldCount || 0,
-                rank: user.rank || 0,
-                streak_count: user.streak_count || 0
-            }));
+            // Calculate rank positions with proper tie handling
+            const leaderboardWithRanks = [];
+            let currentRank = 1;
+            
+            for (let i = 0; i < users.length; i++) {
+                const user = users[i];
+                
+                // If this is not the first user, check if stats are different from previous user
+                if (i > 0) {
+                    const prevUser = users[i - 1];
+                    if (user.rank !== prevUser.rank || 
+                        user.problemsSolved !== prevUser.problemsSolved || 
+                        user.streak_count !== prevUser.streak_count) {
+                        currentRank = i + 1; // Update rank position only when stats differ
+                    }
+                    // If stats are the same, keep the same rank as previous user
+                }
+                
+                leaderboardWithRanks.push({
+                    userID: user.userID,
+                    name: user.name,
+                    problemsSolved: user.problemsSolved || 0,
+                    easyCount: user.easyCount || 0,
+                    mediumCount: user.mediumCount || 0,
+                    hardCount: user.hardCount || 0,
+                    realWorldCount: user.realWorldCount || 0,
+                    rank: user.rank || 0, // Keep original rank points for reference
+                    rankPosition: currentRank, // Proper rank position with tie handling
+                    streak_count: user.streak_count || 0,
+                    lastSolvedDate: user.lastSolvedDate
+                });
+            }
+
+            return leaderboardWithRanks.slice(0, limit);
         } catch (error) {
             console.error('[UserStatsService Error] Failed to get leaderboard:', error);
             throw error;
@@ -426,27 +453,28 @@ class UserStatsService {
     }
 
     /**
-     * Get combined user stats (problems + arena)
+     * Get combined user stats (problems + arena) including rank position
      * @param {string} userId - User ID
-     * @returns {Object} Combined stats object
+     * @returns {Object} Combined stats object with rank position
      */
     async getCombinedUserStats(userId) {
         try {
-            const [problemStats, arenaStats] = await Promise.all([
-                this.getUserStats(userId),
+            const [problemStatsWithRank, arenaStats] = await Promise.all([
+                this.getUserStatsWithRankPosition(userId),
                 this.getArenaStats(userId)
             ]);
 
             return {
                 // Problem solving stats
-                problemsSolved: problemStats.problemsSolved,
-                easyCount: problemStats.easyCount,
-                mediumCount: problemStats.mediumCount,
-                hardCount: problemStats.hardCount,
-                realWorldCount: problemStats.realWorldCount,
-                rank: problemStats.rank,
-                streak_count: problemStats.streak_count,
-                lastSolvedDate: problemStats.lastSolvedDate,
+                problemsSolved: problemStatsWithRank.problemsSolved,
+                easyCount: problemStatsWithRank.easyCount,
+                mediumCount: problemStatsWithRank.mediumCount,
+                hardCount: problemStatsWithRank.hardCount,
+                realWorldCount: problemStatsWithRank.realWorldCount,
+                rank: problemStatsWithRank.rank, // Accumulated rank points
+                rankPosition: problemStatsWithRank.rankPosition, // Actual leaderboard position
+                streak_count: problemStatsWithRank.streak_count,
+                lastSolvedDate: problemStatsWithRank.lastSolvedDate,
                 
                 // Arena stats
                 arena: arenaStats
@@ -757,6 +785,106 @@ class UserStatsService {
         }
     }
 
+    /**
+     * Get user's rank position in the leaderboard
+     * @param {string} userId - User ID
+     * @returns {number} User's rank position (1-based)
+     */
+    async getUserRankPosition(userId) {
+        try {
+            // First get the target user's stats
+            const targetUser = await UserDBHandler.Users.findOne({ userID: userId })
+                .select('rank problemsSolved streak_count');
+            
+            if (!targetUser) {
+                return 0; // User not found
+            }
+
+            const targetRank = targetUser.rank || 0;
+            const targetProblems = targetUser.problemsSolved || 0;
+            const targetStreak = targetUser.streak_count || 0;
+
+            // Get all users with better stats (ordered the same way as leaderboard)
+            const betterUsers = await UserDBHandler.Users.find({
+                $or: [
+                    // Users with higher rank points
+                    { rank: { $gt: targetRank } },
+                    
+                    // Users with same rank points but more problems solved
+                    { 
+                        rank: targetRank, 
+                        problemsSolved: { $gt: targetProblems } 
+                    },
+                    
+                    // Users with same rank points and problems solved but higher streak
+                    { 
+                        rank: targetRank, 
+                        problemsSolved: targetProblems,
+                        streak_count: { $gt: targetStreak }
+                    }
+                ]
+            }).sort({ 
+                rank: -1, 
+                problemsSolved: -1, 
+                streak_count: -1, 
+                userID: 1 
+            });
+
+            // Count users with identical stats (ties) that come before this user (by userID)
+            const tiedUsers = await UserDBHandler.Users.find({
+                rank: targetRank,
+                problemsSolved: targetProblems,
+                streak_count: targetStreak,
+                userID: { $lt: userId } // Users with lexicographically smaller userID come first
+            }).countDocuments();
+
+            // Return 1-based position (1st place = 1, 2nd place = 2, etc.)
+            return betterUsers.length + tiedUsers + 1;
+        } catch (error) {
+            console.error('[UserStatsService Error] Failed to get user rank position:', error);
+            return 0;
+        }
+    }
+
+    /**
+     * Get comprehensive user statistics including leaderboard rank position
+     * @param {string} userId - User ID
+     * @returns {Object} User stats object with rank position
+     */
+    async getUserStatsWithRankPosition(userId) {
+        try {
+            const [basicStats, rankPosition] = await Promise.all([
+                this.getUserStats(userId),
+                this.getUserRankPosition(userId)
+            ]);
+
+            return {
+                ...basicStats,
+                rankPosition: rankPosition // Actual position in leaderboard (1st, 2nd, 3rd, etc.)
+            };
+        } catch (error) {
+            console.error('[UserStatsService Error] Failed to get user stats with rank position:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * API endpoint to get user's rank position in leaderboard
+     */
+    async endpoint_getUserRankPosition(req, res) {
+        try {
+            const userId = req.auth?.userId;
+            if (!userId) {
+                return res.status(401).json({ success: false, error: 'Authentication required' });
+            }
+
+            const rankPosition = await this.getUserRankPosition(userId);
+            res.json({ success: true, rankPosition });
+        } catch (error) {
+            console.error('[UserStatsService] endpoint_getUserRankPosition error:', error);
+            res.status(500).json({ success: false, error: 'Failed to get user rank position' });
+        }
+    }
 }
 
 // Export the class and let the main server create the instance with dependencies

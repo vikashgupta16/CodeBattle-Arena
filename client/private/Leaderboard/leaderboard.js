@@ -115,8 +115,11 @@ function renderLeaderboard(leaderboard) {
         return;
     }
     
+    // The backend now properly sorts and assigns rankPosition, so we can trust the order
     leaderboard.forEach((user, index) => {
-        const row = createLeaderboardRow(user, index + 1);
+        // Use the rankPosition from backend (which handles ties properly)
+        const position = user.rankPosition || (index + 1);
+        const row = createLeaderboardRow(user, position);
         tableBody.appendChild(row);
     });
 }
@@ -131,11 +134,14 @@ function createLeaderboardRow(user, position) {
     // Format last solve date
     const lastSolve = user.lastSolvedDate ? formatDate(user.lastSolvedDate) : 'Never';
     
+    // Use the rankPosition from the backend if available, otherwise use the frontend position
+    const displayPosition = user.rankPosition || position;
+    
     // Add special styling for top 3
-    const rankClass = position <= 3 ? `rank-${position} top-3` : '';
+    const rankClass = displayPosition <= 3 ? `rank-${displayPosition} top-3` : '';
     
     row.innerHTML = `
-        <div class="rank-position ${rankClass}">${position}</div>
+        <div class="rank-position ${rankClass}">${displayPosition}</div>
         <div class="user-info">
             <div class="user-avatar">${initials}</div>
             <div class="user-name">${user.name || 'Anonymous'}</div>
