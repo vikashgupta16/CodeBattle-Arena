@@ -299,7 +299,7 @@ class ProblemDBHandler {
             }
 
             // Check if user has already solved this problem
-            const alreadySolved = await this.hasUserSolvedProblem(userId, problemId);
+            const alreadySolved = await this.hasUserSolvedProblem(userId, problem.problemId);
 
             // Validate solution against test cases
             const validationResult = await this.validateSolution(code, language, problem);
@@ -334,7 +334,7 @@ class ProblemDBHandler {
                     // Mark as solved and update stats only for first-time solve
                     isFirstSolve = await this.markProblemAsSolved(
                         userId, 
-                        problemId, 
+                        problem.problemId, // Use the actual problemId from the problem object
                         problem.difficulty, 
                         problem.category, 
                         submission.submissionId
