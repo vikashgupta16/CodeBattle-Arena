@@ -1,6 +1,7 @@
-const mongoose = require("mongoose");
-const { ProblemDBHandler } = require("./problemDatabase.js");
-require('dotenv').config();
+import mongoose from "mongoose";
+import { ProblemDBHandler } from "./problemDatabase.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Initial problem data - extracted from all HTML files
 const initialProblems = [
@@ -411,9 +412,9 @@ const initialProblems = [
         problemId: "tic-tac-toe",
         title: "Tic Tac Toe Game",
         description: "Implement a two-player Tic Tac Toe game with a console or GUI interface.",
-        difficulty: "easy",
+        difficulty: "real-world",
         category: "games",
-        tags: ["games", "logic", "arrays"],
+        tags: ["games", "logic", "arrays", "real-world"],
         constraints: "3x3 grid, two players, check win conditions",
         examples: [
             {
@@ -431,9 +432,9 @@ const initialProblems = [
         problemId: "hangman-game",
         title: "Hangman Game",
         description: "Create a word-guessing game where players try to guess a hidden word letter by letter.",
-        difficulty: "easy",
+        difficulty: "real-world",
         category: "games",
-        tags: ["games", "strings", "logic"],
+        tags: ["games", "strings", "logic", "real-world"],
         constraints: "Word length: 3-10 characters, maximum 6 wrong guesses",
         examples: [
             {
@@ -451,9 +452,9 @@ const initialProblems = [
         problemId: "number-guessing",
         title: "Number Guessing Game",
         description: "Develop a game where the player guesses a randomly generated number within a limited range.",
-        difficulty: "easy",
+        difficulty: "real-world",
         category: "games",
-        tags: ["games", "random", "loops"],
+        tags: ["games", "random", "loops", "real-world"],
         constraints: "Number range: 1-100, maximum 7 attempts",
         examples: [
             {
@@ -473,9 +474,9 @@ const initialProblems = [
         problemId: "todo-list",
         title: "To-Do List Application",
         description: "Develop a to-do list app with features to add, delete, and mark tasks as complete.",
-        difficulty: "easy",
+        difficulty: "real-world",
         category: "web",
-        tags: ["web", "crud", "javascript"],
+        tags: ["web", "crud", "javascript", "real-world"],
         constraints: "Support CRUD operations, data persistence",
         examples: [
             {
@@ -493,9 +494,9 @@ const initialProblems = [
         problemId: "weather-app",
         title: "Weather App",
         description: "Create an application that fetches and displays weather data from a public API.",
-        difficulty: "medium",
+        difficulty: "real-world",
         category: "web",
-        tags: ["web", "api", "json"],
+        tags: ["web", "api", "json", "real-world"],
         constraints: "Use a weather API, handle API errors, display temperature and conditions",
         examples: [
             {
@@ -513,9 +514,9 @@ const initialProblems = [
         problemId: "expense-tracker",
         title: "Expense Tracker",
         description: "Build an app where users can log expenses, view charts, and manage their budget.",
-        difficulty: "medium",
+        difficulty: "real-world",
         category: "web",
-        tags: ["web", "finance", "data-visualization"],
+        tags: ["web", "finance", "data-visualization", "real-world"],
         constraints: "Categories for expenses, date tracking, budget limits",
         examples: [
             {
@@ -535,9 +536,9 @@ const initialProblems = [
         problemId: "sentiment-analysis",
         title: "Sentiment Analysis Tool",
         description: "Analyze text (e.g., tweets) to detect positive/negative mood using natural language processing.",
-        difficulty: "hard",
+        difficulty: "real-world",
         category: "ai",
-        tags: ["ai", "nlp", "machine-learning"],
+        tags: ["ai", "nlp", "machine-learning", "real-world"],
         constraints: "Classify text as positive, negative, or neutral",
         examples: [
             {
@@ -556,9 +557,9 @@ const initialProblems = [
         problemId: "spam-classifier",
         title: "Spam Message Classifier",
         description: "Train a model to classify messages as spam or not using machine learning techniques.",
-        difficulty: "medium",
+        difficulty: "real-world",
         category: "ai",
-        tags: ["ai", "classification", "text-processing"],
+        tags: ["ai", "classification", "text-processing", "real-world"],
         constraints: "Binary classification: spam or not spam",
         examples: [
             {
@@ -653,8 +654,8 @@ async function seedDatabase() {
 }
 
 // Run the seeding function
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
     seedDatabase();
 }
 
-module.exports = { seedDatabase, initialProblems };
+export { seedDatabase, initialProblems };
