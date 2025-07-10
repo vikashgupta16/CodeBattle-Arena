@@ -1,3 +1,5 @@
+/* Import shared navigation styles */
+@import url('../common/navigation.css');
 .leaderboard-container {
     max-width: 1200px;
     margin: 0 auto;

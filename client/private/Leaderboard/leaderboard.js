@@ -2,45 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     loadLeaderboard();
     setupFilterButtons();
-    setupThemeToggle();
-    setupNavigation();
 });
-
-// Navigation functions
-function setupNavigation() {
-    const nav = document.querySelector('.codingPageNav');
-    
-    window.showNav = function() {
-        nav.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    };
-
-    window.hideNav = function() {
-        nav.classList.remove('show');
-        document.body.style.overflow = '';
-    };
-
-    window.showSection = function(sectionId) {
-        // For leaderboard page, redirect to home page with section
-        window.location.href = `../HomePage/codigo.html#${sectionId}`;
-    };
-}
-
-// Theme toggle functionality
-function setupThemeToggle() {
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('change', function() {
-            document.body.className = this.value;
-            localStorage.setItem('theme', this.value);
-        });
-        
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme') || 'dark-theme';
-        document.body.className = savedTheme;
-        themeToggle.value = savedTheme;
-    }
-}
 
 let currentFilter = 'all';
 

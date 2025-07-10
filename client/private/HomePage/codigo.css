@@ -1,4 +1,5 @@
-
+/* Import shared navigation styles */
+@import url('../common/navigation.css');
 /* Base Styles */
 :root {
     --bg-dark: #0d1117;
@@ -34,133 +35,6 @@ body {
 body.light-theme {
     background-color: var(--bg-light);
     color: var(--text-dark);
-}
-
-/* Navigation */
-.nav-toggle {
-    width: 30px;
-    height: 30px;
-    background-image: url(assets/sidebar-icon.png);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    position: fixed;
-    top: 0px;
-    left: 30px;
-    cursor: pointer;
-    border: none;
-    background-color: transparent;
-    z-index: 0;
-}
-
-.inside-logo-sidebar {
-    position: static;
-    margin-bottom: 30px;
-}
-
-.codingPageNav {
-    width: 280px;
-    height: 90%;
-    background-color: var(--nav-bg);
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
-    position: fixed;
-    top: 5%;
-    left: 0;
-    bottom: 5%;
-    z-index: 1;
-    padding: 20px;
-    border-radius: 0 30px 30px 0;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
-    visibility: hidden;
-}
-
-.codingPageNav ul {
-    position: relative;
-    padding-top: 50px;
-    /*dont change this, otherwise the nav will broke*/
-}
-
-.codingPageNav.show {
-    transform: translateX(0);
-    visibility: visible;
-}
-
-.codingPageNav ul {
-    list-style-type: none;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    gap: 20px;
-}
-
-.nav-link {
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 0.94rem;
-    padding: 8px 12px;
-    border-radius: 0.3rem;
-    color: var(--text-light);
-    text-decoration: none;
-    transition: var(--transition);
-    display: block;
-}
-
-.nav-link:hover,
-.nav-link:focus {
-    color: var(--accent-green);
-    background: rgba(255, 255, 255, 0.1);
-    outline: none;
-}
-
-.nav-link.current {
-    background: rgba(0, 255, 0, 0.1);
-    border-left: 3px solid var(--accent-green);
-}
-
-.nav-actions {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: 100%;
-    top: 70%;
-    /*don't change this and the position, otherwise the nav-action li will broke*/
-}
-
-#theme-toggle {
-    width: 100%;
-    height: 40px;
-    border-radius: 10px;
-    border: none;
-    padding: 0 10px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    background-color: var(--card-bg);
-    color: inherit;
-}
-
-.logout-btn {
-    width: 100%;
-    padding: 10px;
-    background-color: var(--card-bg);
-    color: inherit;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    transition: var(--transition);
-    position: relative;
-}
-
-.logout-btn:hover {
-    background-color: #ff0000;
-    color: white;
 }
 
 /* Main Content */
@@ -236,14 +110,6 @@ main {
     /* position: relative; */
     /* padding-left: 25px; */
 }
-
-/* .home-info li::before {
-    content: "•";
-    position: absolute;
-    left: 0;
-    color: var(--accent-green);
-} */
-
 .ai-chat {
     flex: 1;
     background-color: var(--nav-bg);
@@ -542,14 +408,6 @@ main {
     color: #c9d1d9;
 }
 
-/* Language List */
-/*I have commented out this class as it doesn't exist in html(by Rajbeer)*/
-/* .language-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-} */
-
 .language-item {
     background-color: #21262d;
     padding: 12px;
@@ -558,48 +416,13 @@ main {
     justify-content: space-between;
 }
 
-/* ===== Navigation Updates ===== */
-.nav-toggle {
-    position: fixed;
-    top: 27px;
-    left: 20px;
-    z-index: 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-}
-
-.nav-close {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    z-index: 2;
-    background-image: url(assets/sidebar-icon.png);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 30px;
-    height: 30px;
-}
-
-.nav-icon {
-    width: 30px;
-    height: 30px;
-}
-
-/* ===== Preserved Original Styles ===== */
+/* ...existing code... */
 .home-info {
-    /* Your original styles remain untouched */
+ 
     margin-bottom: 20px;
 }
 
 .ai-chat {
-    /* Your original styles remain untouched */
     position: relative;
 }
 
@@ -1031,29 +854,21 @@ main {
     font-size: 0.95rem;
 }
 
-/* Responsive Dashboard */
-@media (max-width: 1200px) {
-    .dashboard-container {
-        flex-direction: column;
-    }
-    
-    .dashboard-column {
-        width: 100%;
-    }
-    
-    .activity-card {
-        min-height: 200px;
-        max-height: 300px;
-    }
+/* Navigation backdrop overlay */
+.nav-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 }
 
-@media (max-width: 992px) {
-    .dashboard-container {
-        padding: 15px;
-        gap: 15px;
-    }
-    
-    .dashboard-card {
-        padding: 15px;
-    }
+.nav-backdrop.show {
+    opacity: 1;
+    visibility: visible;
 }

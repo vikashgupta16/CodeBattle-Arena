@@ -18,12 +18,15 @@
 </head>
 
 <body class="dark-theme">
-    <button class="nav-toggle outside-logo-sidebar" onclick="showNav()" aria-label="Open navigation menu">
+    <button class="nav-toggle outside-logo-sidebar" aria-label="Toggle navigation menu">
         <img src="assets/sidebar-icon.png" alt="Menu" class="nav-icon">
     </button>
 
+    <!-- Navigation backdrop -->
+    <div class="nav-backdrop"></div>
+
     <nav class="codingPageNav" aria-label="Main navigation">
-        <button class="nav-close inside-logo-sidebar" onclick="hideNav()" aria-label="Close Navigation"></button>
+        <button class="nav-close inside-logo-sidebar" aria-label="Toggle Navigation"></button>
         <ul>
             <li><a href="#home" class="nav-link current" onclick="showSection('home')">Home</a></li>
             <li><a href="#practice" class="nav-link" onclick="showSection('practice')">Practice</a></li>
@@ -40,7 +43,7 @@
         </ul>
     </nav>
 
-    <main onclick="hideNav()">
+    <main>
         <section id="home" class="home-section section active">
             <div class="dashboard-container">
                 <!-- Left Column -->
@@ -410,6 +413,7 @@
         })();
     </script>
     <script src="../common/auth.js"></script>
+    <script src="../common/navigation.js"></script>
     <script src="script.js"></script>
 </body>
 

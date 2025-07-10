@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arena - Real-Time Coding Duels</title>
     <link rel="stylesheet" href="arena.css">
+    <link rel="stylesheet" href="navigation.css">
     <link rel="stylesheet" href="../common/problemStyles.css">
     
     <!-- Clerk SDK -->
@@ -37,7 +38,34 @@
     <script src="modules/ArenaCore.js"></script>
 </head>
 <body>
-    <div id="app">
+    <!-- Navigation Toggle Button -->
+    <button class="nav-toggle outside-logo-sidebar" aria-label="Toggle navigation menu">
+        <img src="../privasset/sidebar-icon.png" alt="Menu" class="nav-icon">
+    </button>
+
+    <!-- Navigation backdrop -->
+    <div class="nav-backdrop"></div>
+
+    <!-- Navigation Menu -->
+    <nav class="codingPageNav" aria-label="Main navigation">
+        <button class="nav-close inside-logo-sidebar" aria-label="Toggle Navigation"></button>
+        <ul>
+            <li><a href="../HomePage/codigo.html" class="nav-link">Home</a></li>
+            <li><a href="#" class="nav-link current">Arena</a></li>
+            <li><a href="../HomePage/codigo.html#practice" class="nav-link">Practice</a></li>
+            <li><a href="../HomePage/codigo.html#help" class="nav-link">Ask AI</a></li>
+            <li><a href="../HomePage/codigo.html#contact" class="nav-link">Contact Us</a></li>
+            <li class="nav-actions">
+                <select name="theme-toggle" id="theme-toggle">
+                    <option value="dark-theme" selected>Dark theme</option>
+                    <option value="light-theme">Light theme</option>
+                </select>
+                <button onclick="authManager.logout()" class="logout-btn">Logout</button>
+            </li>
+        </ul>
+    </nav>
+
+    <main id="app">
         <!-- Arena Menu -->
         <div id="arenaMenu" class="arena-screen active">
             <div class="container">
@@ -375,11 +403,13 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- Notifications -->
     <div id="notifications" class="notifications-container"></div>
 
+    <script src="../common/auth.js"></script>
+    <script src="../common/navigation.js"></script>
     <script src="arena.js"></script>
 </body>
 </html>
