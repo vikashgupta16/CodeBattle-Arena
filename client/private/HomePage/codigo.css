@@ -733,6 +733,7 @@ main {
 }
 
 .section.active {
+    display: flex;
     animation: fadeIn 0.5s ease;
 }
 

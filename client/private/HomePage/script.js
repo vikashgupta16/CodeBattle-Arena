@@ -210,21 +210,47 @@ function updateArenaLeaderboard(leaderboard) {
         </div>
     `).join('');
 }
+
+// Global functions for HTML onclick handlers
+function showNav() {
+    const nav = document.querySelector('.codingPageNav');
+    nav.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function hideNav() {
+    const nav = document.querySelector('.codingPageNav');
+    nav.classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+function showSection(sectionId) {
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+    });
+
+    // Show the selected section
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.classList.add('active');
+        history.replaceState(null, null, `#${sectionId}`);
+    }
+
+    // Update active link
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.toggle('current', link.getAttribute('href') === `#${sectionId}`);
+    });
+
+    // Hide the navigation menu for better UX
+    hideNav();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // 1. Navigation Toggle
     const nav = document.querySelector('.codingPageNav');
     const navToggle = document.querySelector('.outside-logo-sidebar');
     const navClose = document.querySelector('.inside-logo-sidebar');
-
-    function showNav() {
-        nav.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function hideNav() {
-        nav.classList.remove('show');
-        document.body.style.overflow = '';
-    }
 
     navToggle.addEventListener('click', showNav);
     navClose.addEventListener('click', hideNav);
@@ -234,30 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target === this) hideNav();
     });
 
-    // 2. Show Section Functionality
-    function showSection(sectionId) {
-        // Hide all sections, previously not done correctly
-        document.querySelectorAll('.section').forEach(section => {
-            section.classList.remove('active');
-        });
-
-        // Show the selected section, previously not done correctly
-        const section = document.getElementById(sectionId);
-        if (section) {
-            section.classList.add('active');
-            history.replaceState(null, null, `#${sectionId}`);
-        }
-
-        // Update active link, previously not done correctly
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.classList.toggle('current', link.getAttribute('href') === `#${sectionId}`);
-        });
-
-        // Hide the navigation menu for better UX
-        hideNav();
-    }
-
-    // Set up navigation links
+    // 2. Set up navigation links
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function (e) {
             // Skip preventDefault for external links (like Arena)
