@@ -89,47 +89,70 @@ class UserStatsService {
     async getLeaderboard(limit = 50) {
         try {
             const users = await UserDBHandler.Users.find({})
-                .sort({ 
-                    rank: -1, 
-                    problemsSolved: -1, 
-                    streak_count: -1, 
-                    userID: 1 // Add userID as a tiebreaker for consistent ordering
-                })
-                .select('userID name problemsSolved easyCount mediumCount hardCount realWorldCount rank streak_count lastSolvedDate');
+                .select('userID name problemsSolved easyCount mediumCount hardCount realWorldCount streak_count lastSolvedDate');
 
-            // Calculate rank positions with proper tie handling
-            const leaderboardWithRanks = [];
-            let currentRank = 1;
-            
-            for (let i = 0; i < users.length; i++) {
-                const user = users[i];
-                
-                // If this is not the first user, check if stats are different from previous user
-                if (i > 0) {
-                    const prevUser = users[i - 1];
-                    if (user.rank !== prevUser.rank || 
-                        user.problemsSolved !== prevUser.problemsSolved || 
-                        user.streak_count !== prevUser.streak_count) {
-                        currentRank = i + 1; // Update rank position only when stats differ
-                    }
-                    // If stats are the same, keep the same rank as previous user
-                }
-                
-                leaderboardWithRanks.push({
+            // Calculate total points for each user
+
+            const userStats = users.map(user => {
+                const easy = user.easyCount || 0;
+                const medium = user.mediumCount || 0;
+                const hard = user.hardCount || 0;
+                const realWorld = user.realWorldCount || 0;
+                // realWorld and hard both give 20 points each
+                const totalPoints = (hard * 20) + (realWorld * 20) + (medium * 10) + (easy * 5);
+                return {
                     userID: user.userID,
                     name: user.name,
                     problemsSolved: user.problemsSolved || 0,
-                    easyCount: user.easyCount || 0,
-                    mediumCount: user.mediumCount || 0,
-                    hardCount: user.hardCount || 0,
-                    realWorldCount: user.realWorldCount || 0,
-                    rank: user.rank || 0, // Keep original rank points for reference
-                    rankPosition: currentRank, // Proper rank position with tie handling
+                    easyCount: easy,
+                    mediumCount: medium,
+                    hardCount: hard,
+                    realWorldCount: realWorld,
                     streak_count: user.streak_count || 0,
+                    lastSolvedDate: user.lastSolvedDate,
+                    totalPoints
+                };
+            });
+
+            // Sort by totalPoints DESC, then hardCount DESC, then realWorldCount DESC, then mediumCount DESC, then easyCount DESC, then userID ASC
+            userStats.sort((a, b) => {
+                if (b.totalPoints !== a.totalPoints) return b.totalPoints - a.totalPoints;
+                if (b.hardCount !== a.hardCount) return b.hardCount - a.hardCount;
+                if (b.realWorldCount !== a.realWorldCount) return b.realWorldCount - a.realWorldCount;
+                if (b.mediumCount !== a.mediumCount) return b.mediumCount - a.mediumCount;
+                if (b.easyCount !== a.easyCount) return b.easyCount - a.easyCount;
+                return a.userID.localeCompare(b.userID);
+            });
+
+            // Assign rank positions with tie handling
+            const leaderboardWithRanks = [];
+            let currentRank = 1;
+            for (let i = 0; i < userStats.length; i++) {
+                const user = userStats[i];
+                if (i > 0) {
+                    const prev = userStats[i - 1];
+                    if (
+                        user.totalPoints !== prev.totalPoints ||
+                        user.hardCount !== prev.hardCount ||
+                        user.mediumCount !== prev.mediumCount ||
+                        user.easyCount !== prev.easyCount
+                    ) {
+                        currentRank = i + 1;
+                    }
+                }
+                leaderboardWithRanks.push({
+                    userID: user.userID,
+                    name: user.name,
+                    problemsSolved: user.problemsSolved,
+                    easyCount: user.easyCount,
+                    mediumCount: user.mediumCount,
+                    hardCount: user.hardCount,
+                    realWorldCount: user.realWorldCount,
+                    rankPosition: currentRank,
+                    streak_count: user.streak_count,
                     lastSolvedDate: user.lastSolvedDate
                 });
             }
-
             return leaderboardWithRanks.slice(0, limit);
         } catch (error) {
             console.error('[UserStatsService Error] Failed to get leaderboard:', error);
