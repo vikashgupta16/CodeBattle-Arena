@@ -93,6 +93,7 @@ class UserStatsService {
 
             // Calculate total points for each user
 
+            const now = new Date();
             const userStats = users.map(user => {
                 const easy = user.easyCount || 0;
                 const medium = user.mediumCount || 0;
@@ -100,6 +101,11 @@ class UserStatsService {
                 const realWorld = user.realWorldCount || 0;
                 // realWorld and hard both give 20 points each
                 const totalPoints = (hard * 20) + (realWorld * 20) + (medium * 10) + (easy * 5);
+                let streakDays = 0;
+                if (user.lastSolvedDate && user.streak_count > 0) {
+                    const last = new Date(user.lastSolvedDate);
+                    streakDays = Math.floor((now - last) / (1000 * 60 * 60 * 24)) + 1;
+                }
                 return {
                     userID: user.userID,
                     name: user.name,
@@ -110,7 +116,8 @@ class UserStatsService {
                     realWorldCount: realWorld,
                     streak_count: user.streak_count || 0,
                     lastSolvedDate: user.lastSolvedDate,
-                    totalPoints
+                    totalPoints,
+                    streakDays
                 };
             });
 
