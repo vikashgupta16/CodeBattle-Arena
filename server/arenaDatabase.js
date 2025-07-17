@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 // Arena Match Schema
 const arenaMatchSchema = new mongoose.Schema({
     matchId: { type: String, unique: true, required: true },
@@ -451,14 +450,36 @@ class ArenaDBHandler {
     }
 
     // End a match
-    async endMatch(match) {
+    /**
+     * Ends a match and saves final scores/questions completed if provided.
+     * @param {object} matchOrId - ArenaMatch mongoose doc or matchId string
+     * @param {object} [finalData] - Optional: { winner, player1FinalScore, player2FinalScore, player1QuestionsCompleted, player2QuestionsCompleted, endReason, totalDuration }
+     */
+    async endMatch(matchOrId, finalData = {}) {
         try {
+            let match = matchOrId;
+            // If matchOrId is a string, fetch the match
+            if (typeof matchOrId === 'string') {
+                match = await ArenaDBHandler.ArenaMatch.findOne({ matchId: matchOrId });
+                if (!match) throw new Error(`Match ${matchOrId} not found`);
+            }
+
             match.status = 'completed';
             match.endedAt = new Date();
             match.totalDuration = (match.endedAt - match.startedAt) / 1000;
 
+            // If final scores/questions provided, set them
+            if (finalData.player1FinalScore !== undefined) match.player1.score = finalData.player1FinalScore;
+            if (finalData.player2FinalScore !== undefined) match.player2.score = finalData.player2FinalScore;
+            if (finalData.player1QuestionsCompleted !== undefined) match.player1.questionsCompleted = finalData.player1QuestionsCompleted;
+            if (finalData.player2QuestionsCompleted !== undefined) match.player2.questionsCompleted = finalData.player2QuestionsCompleted;
+            if (finalData.endReason) match.endReason = finalData.endReason;
+            if (finalData.totalDuration) match.totalDuration = finalData.totalDuration / 1000;
+
             // Determine winner
-            if (match.player1.score > match.player2.score) {
+            if (finalData.winner !== undefined) {
+                match.winner = finalData.winner;
+            } else if (match.player1.score > match.player2.score) {
                 match.winner = match.player1.userId;
             } else if (match.player2.score > match.player1.score) {
                 match.winner = match.player2.userId;
@@ -466,6 +487,15 @@ class ArenaDBHandler {
             // If scores are equal, it's a draw (no winner)
 
             await match.save();
+
+            // CRITICAL LOG: Confirm updatePlayerStats is called after match end
+            console.log('[CRITICAL] Calling updatePlayerStats after match end:', {
+                matchId: match.matchId,
+                player1: match.player1,
+                player2: match.player2,
+                winner: match.winner,
+                endedAt: match.endedAt
+            });
 
             // Update player stats
             await this.updatePlayerStats(match);
@@ -485,22 +515,22 @@ class ArenaDBHandler {
             console.log(`   Player1: ${match.player1.username} (Score: ${match.player1.score || 0})`);
             console.log(`   Player2: ${match.player2.username} (Score: ${match.player2.score || 0})`);
             
-            // Prepare match data for UserStatsService
+            // Prepare match data for UserStatsService, always using numbers
             const matchData = {
                 player1: {
                     userId: match.player1.userId,
                     username: match.player1.username,
-                    score: match.player1.score,
-                    bonusPoints: match.player1.bonusPoints,
-                    questionsCompleted: match.player1.questionsCompleted,
+                    score: Number(match.player1.score) || 0,
+                    bonusPoints: Number(match.player1.bonusPoints) || 0,
+                    questionsCompleted: Number(match.player1.questionsCompleted) || 0,
                     selectedDifficulty: match.player1.selectedDifficulty
                 },
                 player2: {
                     userId: match.player2.userId,
                     username: match.player2.username,
-                    score: match.player2.score,
-                    bonusPoints: match.player2.bonusPoints,
-                    questionsCompleted: match.player2.questionsCompleted,
+                    score: Number(match.player2.score) || 0,
+                    bonusPoints: Number(match.player2.bonusPoints) || 0,
+                    questionsCompleted: Number(match.player2.questionsCompleted) || 0,
                     selectedDifficulty: match.player2.selectedDifficulty
                 },
                 winner: match.winner,
@@ -521,9 +551,10 @@ class ArenaDBHandler {
     // Get or create player stats
     async getOrCreatePlayerStats(userId, username) {
         try {
-            let stats = await ArenaDBHandler.ArenaPlayerStats.findOne({ userId });
+            // Use the ArenaPlayerStats model from the injected userStatsService
+            let stats = await this.userStatsService.ArenaPlayerStats.findOne({ userId });
             if (!stats) {
-                stats = new ArenaDBHandler.ArenaPlayerStats({ userId, username });
+                stats = new this.userStatsService.ArenaPlayerStats({ userId, username });
                 await stats.save();
             }
             return stats;

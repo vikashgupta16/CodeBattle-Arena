@@ -1,7 +1,16 @@
 // Leaderboard functionality
+
+let leaderboardPollInterval = null;
 document.addEventListener('DOMContentLoaded', function() {
     loadLeaderboard();
     setupFilterButtons();
+    // Start polling every 5 seconds for real-time updates
+    leaderboardPollInterval = setInterval(loadLeaderboard, 5000);
+});
+
+// Optionally clear interval when navigating away
+window.addEventListener('beforeunload', function() {
+    if (leaderboardPollInterval) clearInterval(leaderboardPollInterval);
 });
 
 let currentFilter = 'all';

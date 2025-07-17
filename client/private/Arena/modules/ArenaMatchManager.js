@@ -1,7 +1,3 @@
-/**
- * ArenaMatchManager.js - Match logic and state management
- */
-
 class ArenaMatchManager {
     constructor(arenaCore) {
         this.currentMatch = null;
@@ -9,21 +5,17 @@ class ArenaMatchManager {
         this.isInMatch = false;
         this.readyCountdownActive = false; // Prevent duplicate countdowns
         this.arena = arenaCore; // Store reference to ArenaCore instance
-        
         // Server-synced timer properties
         this.serverTimeRemaining = 0;
         this.lastServerSync = 0;
     }
-
     joinQueue(socket, currentUser, difficulty) {
         const queueData = {
             userId: currentUser.userId,
             username: currentUser.username || currentUser.name,
             difficulty: difficulty
         };
-        
         socket.emit('arena:join-queue', queueData);
-        
         this.arena.showScreen('queueScreen');
         document.getElementById('selectedDifficulty').textContent = difficulty;
         document.getElementById('selectedDifficulty').className = `difficulty-badge ${difficulty}`;
@@ -305,6 +297,7 @@ class ArenaMatchManager {
     }
 
     handleMatchEnd(data, arena) {
+        console.debug('[ArenaMatchManager] handleMatchEnd called with data:', data);
         this.isInMatch = false;
         arena.isInMatch = false;
         
@@ -315,7 +308,17 @@ class ArenaMatchManager {
         
         arena.showScreen('matchEndScreen');
         arena.uiManager.updateMatchResults(data);
-        
+
+        // Debug: Log player and opponent scores if available
+        try {
+            if (data.player1 && data.player2) {
+                console.debug('[ArenaMatchManager] Player1:', data.player1.username, 'Score:', data.player1.score, 'Player2:', data.player2.username, 'Score:', data.player2.score);
+            } else {
+                console.debug('[ArenaMatchManager] No player1/player2 in data:', data);
+            }
+        } catch (e) {
+            console.warn('[ArenaMatchManager] Error logging matchEnd scores:', e);
+        }
         // Determine result for current player
         const currentUserId = arena.currentUser.userId;
         const isWinner = data.winner === currentUserId;
@@ -352,12 +355,36 @@ class ArenaMatchManager {
     }
 
     handlePlayerComplete(data, arena) {
+        console.debug('[ArenaMatchManager] handlePlayerComplete called with data:', data);
         // Show completion screen
         arena.showScreen('matchCompleteScreen');
-        
-        // Update completion info
-        document.getElementById('finalScore').textContent = data.finalScore || 0;
-        document.getElementById('questionsCompleted').textContent = data.questionsCompleted || 0;
+        // Debug: Check DOM elements before updating
+        const finalScoreElem = document.getElementById('finalScore');
+        const questionsCompletedElem = document.getElementById('questionsCompletedFinal');
+        const averageTimeElem = document.getElementById('averageTime');
+        console.debug('[ArenaMatchManager] finalScoreElem:', finalScoreElem, 'questionsCompletedElem:', questionsCompletedElem, 'averageTimeElem:', averageTimeElem);
+        // Debug: Log values to be set
+        const scoreToSet = (data.finalScore !== undefined ? data.finalScore : (data.score !== undefined ? data.score : 0));
+        const questionsToSet = data.questionsCompleted || 0;
+        let avgTimeDebug = '--';
+        if (data.averageTime !== undefined) {
+            avgTimeDebug = data.averageTime;
+        } else if (data.totalDuration && data.questionsCompleted) {
+            const avg = Math.round((data.totalDuration / data.questionsCompleted) / 1000); // seconds
+            avgTimeDebug = avg + 's';
+        }
+        console.debug('[ArenaMatchManager] Setting finalScore:', scoreToSet, 'questionsCompleted:', questionsToSet, 'averageTime:', avgTimeDebug);
+        document.getElementById('finalScore').textContent = scoreToSet;
+        document.getElementById('questionsCompletedFinal').textContent = questionsToSet;
+        // Calculate average time if not provided
+        let avgTime = '--';
+        if (data.averageTime !== undefined) {
+            avgTime = data.averageTime;
+        } else if (data.totalDuration && data.questionsCompleted) {
+            const avg = Math.round((data.totalDuration / data.questionsCompleted) / 1000); // seconds
+            avgTime = avg + 's';
+        }
+        document.getElementById('averageTime').textContent = avgTime;
         
         // Show completion notification
         arena.showNotification(data.message || 'Congratulations! You completed all questions!', 'success');

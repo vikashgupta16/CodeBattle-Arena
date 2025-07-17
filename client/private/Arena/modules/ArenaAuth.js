@@ -1,7 +1,3 @@
-/**
- * ArenaAuth.js - Authentication and user management
- */
-
 class ArenaAuth {
     constructor() {
         // Auth-related properties
