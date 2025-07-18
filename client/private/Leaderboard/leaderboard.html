@@ -4,12 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="CodeArena-CODIGO Leaderboard">
-    <title>Leaderboard - CodeArena-CODIGO</title>
+    <meta name="description" content="CodeArena-CODIGO Leaderboard - Top Coders Rankings">
+    <title>🏆 Leaderboard - CodeArena-CODIGO</title>
     <link rel="stylesheet" href="../HomePage/codigo.css">
     <link rel="stylesheet" href="leaderboard.css">
     <link rel="shortcut icon" href="../HomePage/assets/web-development.png" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Clerk auth library -->
     <script async crossorigin="anonymous"
@@ -42,44 +44,200 @@
     </nav>
 
     <main onclick="hideNav()">
-        <div class="leaderboard-container">
-            <header class="leaderboard-header">
-                <h1>🏆 Leaderboard</h1>
-                <p>Top coders ranked by problems solved</p>
-            </header>
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-background">
+                <div class="floating-shapes">
+                    <div class="shape shape-1"></div>
+                    <div class="shape shape-2"></div>
+                    <div class="shape shape-3"></div>
+                    <div class="shape shape-4"></div>
+                </div>
+            </div>
+            <div class="hero-content">
+                <div class="hero-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h1 class="hero-title">Elite Coders Leaderboard</h1>
+                <p class="hero-subtitle">Compete, Code, Conquer - Rise to the Top</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalUsers">-</span>
+                        <span class="stat-label">Total Coders</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalProblems">-</span>
+                        <span class="stat-label">Problems Solved</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="activeToday">-</span>
+                        <span class="stat-label">Active Today</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <div class="leaderboard-container">
+            <!-- Filters and Controls -->
+            <div class="controls-section">
+                <div class="filter-group">
+                    <h3><i class="fas fa-filter"></i> Time Period</h3>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">
+                            <i class="fas fa-infinity"></i> All Time
+                        </button>
+                        <button class="filter-btn" data-filter="month">
+                            <i class="fas fa-calendar-alt"></i> This Month
+                        </button>
+                        <button class="filter-btn" data-filter="week">
+                            <i class="fas fa-calendar-week"></i> This Week
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="view-controls">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search coders..." autocomplete="off">
+                        <button class="clear-search" id="clearSearch" style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="table">
+                            <i class="fas fa-table"></i>
+                        </button>
+                        <button class="view-btn" data-view="cards">
+                            <i class="fas fa-th"></i>
+                        </button>
+                    </div>
+                    
+                    <button class="refresh-btn" onclick="loadLeaderboard()" title="Refresh Data">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Leaderboard Content -->
             <div class="leaderboard-content">
-                <div class="leaderboard-filters">
-                    <button class="filter-btn active" data-filter="all">All Time</button>
-                    <button class="filter-btn" data-filter="month">This Month</button>
-                    <button class="filter-btn" data-filter="week">This Week</button>
+                <!-- Top 3 Podium -->
+                <div class="podium-section" id="podiumSection" style="display: none;">
+                    <div class="podium-container">
+                        <div class="podium-place second-place">
+                            <div class="podium-card">
+                                <div class="podium-rank">2</div>
+                                <div class="podium-avatar"></div>
+                                <div class="podium-name"></div>
+                                <div class="podium-score"></div>
+                                <div class="podium-badge silver">
+                                    <i class="fas fa-medal"></i>
+                                </div>
+                            </div>
+                            <div class="podium-base second"></div>
+                        </div>
+                        
+                        <div class="podium-place first-place">
+                            <div class="podium-card">
+                                <div class="podium-rank">1</div>
+                                <div class="podium-avatar"></div>
+                                <div class="podium-name"></div>
+                                <div class="podium-score"></div>
+                                <div class="podium-badge gold">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                            </div>
+                            <div class="podium-base first"></div>
+                        </div>
+                        
+                        <div class="podium-place third-place">
+                            <div class="podium-card">
+                                <div class="podium-rank">3</div>
+                                <div class="podium-avatar"></div>
+                                <div class="podium-name"></div>
+                                <div class="podium-score"></div>
+                                <div class="podium-badge bronze">
+                                    <i class="fas fa-medal"></i>
+                                </div>
+                            </div>
+                            <div class="podium-base third"></div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="leaderboard-table-container">
-                    <div class="loading" id="loadingSpinner">
-                        <div class="spinner"></div>
-                        <p>Loading leaderboard...</p>
+                <!-- Loading State -->
+                <div class="loading-container" id="loadingSpinner">
+                    <div class="modern-spinner">
+                        <div class="spinner-ring"></div>
+                        <div class="spinner-ring"></div>
+                        <div class="spinner-ring"></div>
                     </div>
+                    <p class="loading-text">Loading elite coders...</p>
+                </div>
 
-                    <div class="leaderboard-table" id="leaderboardTable" style="display: none;">
-                        <div class="table-header">
-                            <div class="rank-col">Rank</div>
-                            <div class="user-col">User</div>
-                            <div class="problems-col">Problems</div>
-                            <div class="easy-col">Easy</div>
-                            <div class="medium-col">Medium</div>
-                            <div class="hard-col">Hard</div>
-                            <div class="last-solve-col">Last Solve</div>
-                        </div>
-                        <div class="table-body" id="leaderboardBody">
-                            <!-- Leaderboard entries will be inserted here -->
+                <!-- Table View -->
+                <div class="table-container" id="tableContainer" style="display: none;">
+                    <div class="table-wrapper">
+                        <div class="leaderboard-table">
+                            <div class="table-header">
+                                <div class="rank-col">
+                                    <i class="fas fa-hashtag"></i> Rank
+                                </div>
+                                <div class="user-col">
+                                    <i class="fas fa-user"></i> Coder
+                                </div>
+                                <div class="problems-col">
+                                    <i class="fas fa-code"></i> Total
+                                </div>
+                                <div class="easy-col">
+                                    <i class="fas fa-circle" style="color: #4ade80;"></i> Easy
+                                </div>
+                                <div class="medium-col">
+                                    <i class="fas fa-circle" style="color: #fbbf24;"></i> Medium
+                                </div>
+                                <div class="hard-col">
+                                    <i class="fas fa-circle" style="color: #f87171;"></i> Hard
+                                </div>
+                                <div class="streak-col">
+                                    <i class="fas fa-fire"></i> Streak
+                                </div>
+                                <div class="last-solve-col">
+                                    <i class="fas fa-clock"></i> Last Active
+                                </div>
+                            </div>
+                            <div class="table-body" id="leaderboardBody">
+                                <!-- Dynamic content will be inserted here -->
+                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="error-message" id="errorMessage" style="display: none;">
-                        <p>Failed to load leaderboard. Please try again later.</p>
-                        <button onclick="loadLeaderboard()">Retry</button>
+                <!-- Cards View -->
+                <div class="cards-container" id="cardsContainer" style="display: none;">
+                    <div class="cards-grid" id="cardsGrid">
+                        <!-- Dynamic content will be inserted here -->
                     </div>
+                </div>
+
+                <!-- Error State -->
+                <div class="error-container" id="errorMessage" style="display: none;">
+                    <div class="error-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Oops! Something went wrong</h3>
+                    <p>Failed to load leaderboard data. Please check your connection and try again.</p>
+                    <button class="retry-btn" onclick="loadLeaderboard()">
+                        <i class="fas fa-redo"></i> Try Again
+                    </button>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-container" id="emptyState" style="display: none;">
+                    <div class="empty-icon">
+                        <i class="fas fa-users-slash"></i>
+                    </div>
+                    <h3>No Coders Found</h3>
+                    <p>Be the first to join the leaderboard and start your coding journey!</p>
                 </div>
             </div>
         </div>
