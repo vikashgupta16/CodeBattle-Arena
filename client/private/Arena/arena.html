@@ -70,61 +70,65 @@
         <div id="arenaMenu" class="arena-screen active">
             <div class="container">
                 <div class="arena-header">
-                    <h1>⚔️ CodeBattle Arena</h1>
-                    <p>Challenge players in real-time coding duels!</p>
+                    <h1>⚡ CODE ARENA ⚡</h1>
+                    <p>Enter the digital battleground where coders clash in real-time programming duels</p>
                 </div>
                 
                 <div class="arena-stats">
                     <div class="stat-card">
                         <h3 id="onlineUsers">0</h3>
-                        <p>Online Users</p>
+                        <p>Active Coders</p>
                     </div>
                     <div class="stat-card">
                         <h3 id="activeMatches">0</h3>
-                        <p>Active Matches</p>
+                        <p>Live Battles</p>
                     </div>
                     <div class="stat-card">
                         <h3 id="totalMatches">0</h3>
-                        <p>Total Matches</p>
+                        <p>Total Duels</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="queueLength">0</h3>
+                        <p>In Queue</p>
                     </div>
                 </div>
 
                 <div class="difficulty-selection">
-                    <h2>Select Your Battleground</h2>
+                    <h2>🎯 Choose Your Battleground</h2>
                     <div class="difficulty-buttons">
                         <button class="difficulty-btn easy" data-difficulty="easy">
-                            <span class="difficulty-icon">🟢</span>
+                            <div class="difficulty-icon">🟢</div>
                             <div class="difficulty-content">
-                                <h3>Easy</h3>
-                                <p>5 minutes per question</p>
+                                <h3>Novice Arena</h3>
+                                <p>Basic algorithms • 5 min per question • Perfect for beginners</p>
                             </div>
                         </button>
                         <button class="difficulty-btn medium" data-difficulty="medium">
-                            <span class="difficulty-icon">🟡</span>
+                            <div class="difficulty-icon">🟡</div>
                             <div class="difficulty-content">
-                                <h3>Medium</h3>
-                                <p>8 minutes per question</p>
+                                <h3>Warrior Arena</h3>
+                                <p>Intermediate challenges • 8 min per question • Dynamic programming</p>
                             </div>
                         </button>
                         <button class="difficulty-btn hard" data-difficulty="hard">
-                            <span class="difficulty-icon">🔴</span>
+                            <div class="difficulty-icon">🔴</div>
                             <div class="difficulty-content">
-                                <h3>Hard</h3>
-                                <p>15 minutes per question</p>
+                                <h3>Master Arena</h3>
+                                <p>Expert algorithms • 15 min per question • Complex optimization</p>
                             </div>
                         </button>
                     </div>
                 </div>
 
                 <div class="player-stats">
-                    <h2>Your Arena Stats</h2>
+                    <h2>🏆 Combat Statistics</h2>
                     <div class="stats-grid">
                         <div class="stat-item">
-                            <span class="stat-label">Matches</span>
+                            <span class="stat-label">Total Battles</span>
                             <span class="stat-value" id="playerMatches">0</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">Wins</span>
+                            <span class="stat-label">Victories</span>
                             <span class="stat-value" id="playerWins">0</span>
                         </div>
                         <div class="stat-item">
@@ -135,15 +139,23 @@
                             <span class="stat-label">Current Streak</span>
                             <span class="stat-value" id="playerStreak">0</span>
                         </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Arena Rank</span>
+                            <span class="stat-value" id="playerRank">Unranked</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Rating</span>
+                            <span class="stat-value" id="playerRating">1200</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="arena-actions">
                     <button id="viewLeaderboardBtn" class="action-btn secondary">
-                        🏆 View Leaderboard
+                        📊 Global Leaderboard
                     </button>
-                    <button id="backToHomeBtn" class="action-btn secondary">
-                        🏠 Back to Home
+                    <button id="backToHomeBtn" class="action-btn danger">
+                        🚪 Exit Arena
                     </button>
                 </div>
             </div>
@@ -153,8 +165,8 @@
         <div id="queueScreen" class="arena-screen">
             <div class="queue-container">
                 <div class="queue-header">
-                    <h2>🔍 Finding Opponent...</h2>
-                    <p>Difficulty: <span id="selectedDifficulty" class="difficulty-badge"></span></p>
+                    <h2>� Quantum Matchmaking</h2>
+                    <p>Battleground: <span id="selectedDifficulty" class="difficulty-badge"></span></p>
                 </div>
                 
                 <div class="queue-animation">
@@ -162,12 +174,13 @@
                 </div>
                 
                 <div class="queue-info">
-                    <p>Queue Position: <span id="queuePosition">1</span></p>
-                    <p>Estimated Wait: <span id="estimatedWait">30s</span></p>
+                    <p>⚡ Queue Position: <span id="queuePosition">1</span></p>
+                    <p>⏱️ Estimated Wait: <span id="estimatedWait">30s</span></p>
+                    <p>🌐 Searching globally...</p>
                 </div>
                 
                 <button id="leaveQueueBtn" class="action-btn danger">
-                    Cancel Search
+                    ⚡ Abort Search
                 </button>
             </div>
         </div>
@@ -175,39 +188,40 @@
         <!-- Match Found Screen -->
         <div id="matchFoundScreen" class="arena-screen">
             <div class="match-found-container">
-                <h2>⚔️ Match Found!</h2>
+                <h2>⚔️ Battle Initialized!</h2>
                 
                 <div class="players-vs">
                     <div class="player-card">
-                        <div class="player-avatar">👤</div>
+                        <div class="player-avatar">🎯</div>
                         <h3 id="player1Name">You</h3>
                         <p id="player1Difficulty" class="difficulty-badge"></p>
                     </div>
                     <div class="vs-divider">VS</div>
                     <div class="player-card">
-                        <div class="player-avatar">👤</div>
+                        <div class="player-avatar">⚡</div>
                         <h3 id="player2Name">Opponent</h3>
                         <p id="player2Difficulty" class="difficulty-badge"></p>
                     </div>
                 </div>
                 
                 <div class="match-rules">
-                    <h3>Match Rules:</h3>
+                    <h3>⚡ Battle Protocol:</h3>
                     <ul>
-                        <li>5 questions total</li>
-                        <li>First to solve gets +5 bonus points</li>
-                        <li>Points based on test cases passed</li>
-                        <li>30 minutes maximum duration</li>
+                        <li>⭐ 5 coding challenges total</li>
+                        <li>🏆 First to solve gets +5 bonus points</li>
+                        <li>📊 Points based on test cases passed</li>
+                        <li>⏰ 30 minutes maximum duration</li>
+                        <li>🔥 Real-time code execution</li>
                     </ul>
                 </div>
                 
                 <div class="ready-countdown">
                     <div id="readyTimer">5</div>
-                    <p>Match starts in...</p>
+                    <p>Battle initializing in...</p>
                 </div>
                 
                 <button id="readyBtn" class="action-btn primary">
-                    ✓ Ready!
+                    ⚡ READY FOR BATTLE!
                 </button>
             </div>
         </div>
@@ -248,20 +262,20 @@
                 <!-- Problem Panel -->
                 <div class="problem-panel">
                     <div class="problem-header">
-                        <h3 id="problemTitle">Loading...</h3>
+                        <h3 id="problemTitle">Loading Challenge...</h3>
                         <span id="problemDifficulty" class="difficulty-badge">Easy</span>
                     </div>
                     
                     <div class="problem-content">
-                        <div id="problemDescription">Loading problem...</div>
+                        <div id="problemDescription">Initializing coding challenge...</div>
                         
                         <div class="problem-examples">
-                            <h4>Examples:</h4>
+                            <h4>💡 Examples:</h4>
                             <div id="problemExamples"></div>
                         </div>
                         
                         <div class="problem-constraints">
-                            <h4>Constraints:</h4>
+                            <h4>📋 Constraints:</h4>
                             <div id="problemConstraints"></div>
                         </div>
                     </div>
@@ -270,29 +284,32 @@
                 <!-- Code Panel -->
                 <div class="code-panel">
                     <div class="code-header">
-                        <select id="languageSelect">
-                            <option value="javascript">JavaScript</option>
-                            <option value="python">Python</option>
-                            <option value="c++">C++</option>
-                            <option value="java">Java</option>
-                        </select>
+                        <div class="header-left">
+                            <select id="languageSelect">
+                                <option value="javascript">JavaScript</option>
+                                <option value="python">Python</option>
+                                <option value="c++">C++</option>
+                                <option value="java">Java</option>
+                            </select>
+                            <span class="editor-label">Code Editor</span>
+                        </div>
                         
                         <div class="code-actions">
                             <button id="runTestBtn" class="code-btn test">
-                                ▶️ Run & Test
+                                ⚡ Test Code
                             </button>
                             <button id="submitBtn" class="code-btn submit">
-                                ✅ Submit
+                                🚀 Submit Solution
                             </button>
                         </div>
                     </div>
                     
                     <div id="codeEditor" class="code-editor"></div>
                     
-                    <!-- Results Panel -->
+                    <!-- Enhanced Results Panel -->
                     <div id="resultsPanel" class="results-panel">
                         <div class="results-header">
-                            <h4>Results</h4>
+                            <h4>🔬 Execution Results</h4>
                             <span id="resultsStatus" class="status"></span>
                         </div>
                         <div id="resultsContent" class="results-content"></div>
