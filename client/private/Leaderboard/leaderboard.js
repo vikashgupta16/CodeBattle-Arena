@@ -9,10 +9,10 @@ let filteredData = [];
 document.addEventListener('DOMContentLoaded', function() {
     initializeLeaderboard();
     setupEventListeners();
-    loadLeaderboard();
+    loadLeaderboard(true); // Show loading for initial load
     
-    // Start polling every 30 seconds for real-time updates
-    leaderboardPollInterval = setInterval(loadLeaderboard, 30000);
+    // Start polling every 30 seconds for real-time updates (without loading state)
+    leaderboardPollInterval = setInterval(() => loadLeaderboard(false), 30000);
 });
 
 // Clear interval when navigating away
@@ -26,6 +26,9 @@ function initializeLeaderboard() {
     heroStats.forEach(stat => {
         stat.textContent = '-';
     });
+    
+    // Show demo data initially until real data loads
+    showDemoData();
 }
 
 function setupEventListeners() {
@@ -101,8 +104,11 @@ function debounce(func, wait) {
     };
 }
 
-async function loadLeaderboard() {
-    showLoadingState();
+async function loadLeaderboard(showLoading = true) {
+    // Only show loading state for initial load or manual refresh
+    if (showLoading) {
+        showLoadingState();
+    }
     
     try {
         const response = await fetch('/api/leaderboard?limit=100');
@@ -119,19 +125,23 @@ async function loadLeaderboard() {
             
             updateHeroStats();
             applyFilters();
-            hideLoadingState();
             
-            // Show success feedback
-            showNotification('Leaderboard updated successfully!', 'success');
+            if (showLoading) {
+                hideLoadingState();
+                // Show success feedback only for manual refresh
+                showNotification('Leaderboard updated successfully!', 'success');
+            }
         } else {
             throw new Error(data.error || 'Failed to load leaderboard');
         }
         
     } catch (error) {
         console.error('Error loading leaderboard:', error);
-        hideLoadingState();
-        showErrorState();
-        showNotification('Failed to load leaderboard data', 'error');
+        if (showLoading) {
+            hideLoadingState();
+            showErrorState();
+            showNotification('Failed to load leaderboard data', 'error');
+        }
     }
 }
 
@@ -217,7 +227,10 @@ function switchView() {
         cardsContainer.style.display = 'block';
     }
     
-    renderCurrentView();
+    // Only render if we have data
+    if (filteredData.length > 0) {
+        renderCurrentView();
+    }
 }
 
 function renderCurrentView() {
@@ -229,9 +242,22 @@ function renderCurrentView() {
     hideEmptyState();
     hideErrorState();
     
-    // Show podium for top 3
+    // Always ensure the current view containers are visible
+    const tableContainer = document.getElementById('tableContainer');
+    const cardsContainer = document.getElementById('cardsContainer');
+    
+    if (currentView === 'table') {
+        tableContainer.style.display = 'block';
+        cardsContainer.style.display = 'none';
+    } else {
+        tableContainer.style.display = 'none';
+        cardsContainer.style.display = 'block';
+    }
+    
+    // Show podium for top 3 only if we have enough users
     renderPodium();
     
+    // Render the appropriate view
     if (currentView === 'table') {
         renderTableView();
     } else {
@@ -253,16 +279,89 @@ function renderPodium() {
         
         positions.forEach(({ place, index }) => {
             const user = filteredData[index];
-            const placeElement = podiumSection.querySelector(`.${place}-place`);
-            const card = placeElement.querySelector('.podium-card');
-            
-            const initials = getUserInitials(user.name);
-            card.querySelector('.podium-avatar').textContent = initials;
-            card.querySelector('.podium-name').textContent = user.name || 'Anonymous';
-            card.querySelector('.podium-score').textContent = `${user.problemsSolved || 0} problems`;
+            if (user) {
+                const placeElement = podiumSection.querySelector(`.${place}-place`);
+                const card = placeElement.querySelector('.podium-card');
+                
+                const initials = getUserInitials(user.name);
+                card.querySelector('.podium-avatar').textContent = initials;
+                card.querySelector('.podium-name').textContent = user.name || 'Anonymous';
+                card.querySelector('.podium-score').textContent = `${user.problemsSolved || 0} problems`;
+                
+                // Populate tooltip data
+                populatePodiumTooltip(place, user, index + 1);
+            }
         });
+    } else if (leaderboardData.length === 0) {
+        // Show demo data when no real data is available
+        showDemoData();
     } else {
         podiumSection.style.display = 'none';
+    }
+}
+
+function populatePodiumTooltip(place, user, rank) {
+    // Calculate additional stats
+    const problemsSolved = user.problemsSolved || 0;
+    const totalPoints = user.total_points || user.problemsSolved * 10 || 0;
+    const streak = user.streak_count || 0;
+    
+    // Calculate accuracy (assume 85-95% for demo, or use real data if available)
+    const accuracy = user.accuracy || Math.max(85, Math.min(95, 85 + Math.random() * 10));
+    
+    // Calculate average time (demo data)
+    const avgTimeMinutes = user.avg_time || Math.max(5, Math.min(45, 15 + Math.random() * 20));
+    const avgTimeFormatted = `${Math.floor(avgTimeMinutes)}:${Math.floor((avgTimeMinutes % 1) * 60).toString().padStart(2, '0')}`;
+    
+    // Update tooltip name
+    const tooltipName = document.querySelector(`.${place}-place .tooltip-name`);
+    if (tooltipName) {
+        tooltipName.textContent = user.name || 'Anonymous';
+    }
+    
+    // Update problems solved
+    const problemsElement = document.getElementById(`${place}-problems`);
+    if (problemsElement) {
+        problemsElement.textContent = problemsSolved;
+    }
+    
+    // Update points
+    const pointsElement = document.getElementById(`${place}-points`);
+    if (pointsElement) {
+        pointsElement.textContent = totalPoints.toLocaleString();
+    }
+    
+    // Update accuracy
+    const accuracyElement = document.getElementById(`${place}-accuracy`);
+    if (accuracyElement) {
+        accuracyElement.textContent = `${Math.round(accuracy)}%`;
+    }
+    
+    // Update average time
+    const avgTimeElement = document.getElementById(`${place}-avg-time`);
+    if (avgTimeElement) {
+        avgTimeElement.textContent = avgTimeFormatted;
+    }
+    
+    // Update streak
+    const streakTextElement = document.getElementById(`${place}-streak-text`);
+    const streakDisplayElement = document.getElementById(`${place}-streak-display`);
+    
+    if (streakTextElement && streakDisplayElement) {
+        if (streak > 0) {
+            const streakText = streak === 1 ? '1 day streak' : `${streak} day streak`;
+            streakTextElement.textContent = streakText;
+            
+            // Add legendary class for streaks >= 7 days
+            if (streak >= 7) {
+                streakDisplayElement.classList.add('legendary');
+            } else {
+                streakDisplayElement.classList.remove('legendary');
+            }
+        } else {
+            streakTextElement.textContent = 'No active streak';
+            streakDisplayElement.classList.remove('legendary');
+        }
     }
 }
 
@@ -270,7 +369,8 @@ function renderTableView() {
     const tableBody = document.getElementById('leaderboardBody');
     tableBody.innerHTML = '';
     
-    const startIndex = filteredData.length >= 3 ? 3 : 0; // Skip top 3 if showing podium
+    // Show all users starting from rank 4 if podium is displayed, otherwise show all
+    const startIndex = (filteredData.length >= 3 && document.getElementById('podiumSection').style.display !== 'none') ? 3 : 0;
     
     filteredData.slice(startIndex).forEach((user, index) => {
         const position = startIndex + index + 1;
@@ -283,7 +383,8 @@ function renderCardsView() {
     const cardsGrid = document.getElementById('cardsGrid');
     cardsGrid.innerHTML = '';
     
-    const startIndex = filteredData.length >= 3 ? 3 : 0; // Skip top 3 if showing podium
+    // Show all users starting from rank 4 if podium is displayed, otherwise show all
+    const startIndex = (filteredData.length >= 3 && document.getElementById('podiumSection').style.display !== 'none') ? 3 : 0;
     
     filteredData.slice(startIndex).forEach((user, index) => {
         const position = startIndex + index + 1;
@@ -298,7 +399,7 @@ function createTableRow(user, position) {
     
     const initials = getUserInitials(user.name);
     const lastSolve = formatDate(user.lastSolvedDate);
-    const streak = user.streak || Math.floor(Math.random() * 15) + 1; // Mock streak data
+    const streak = calculateStreak(user); // Use calculated streak instead of random
     
     const rankClass = position <= 3 ? `rank-${position} top-3` : '';
     
@@ -319,7 +420,7 @@ function createTableRow(user, position) {
         <div class="difficulty-count easy-count">${user.easyCount || 0}</div>
         <div class="difficulty-count medium-count">${user.mediumCount || 0}</div>
         <div class="difficulty-count hard-count">${user.hardCount || 0}</div>
-        <div class="streak-count">${streak}</div>
+        <div class="streak-count" data-streak="${streak}" title="${getStreakTooltip(streak, user.lastSolvedDate)}">${streak}</div>
         <div class="last-solve">${lastSolve}</div>
     `;
     
@@ -339,7 +440,7 @@ function createCoderCard(user, position) {
     
     const initials = getUserInitials(user.name);
     const lastSolve = formatDate(user.lastSolvedDate);
-    const streak = user.streak || Math.floor(Math.random() * 15) + 1; // Mock streak data
+    const streak = calculateStreak(user); // Use calculated streak instead of random
     
     // Add smooth entrance animation
     card.style.opacity = '0';
@@ -361,7 +462,7 @@ function createCoderCard(user, position) {
                 <div class="card-stat-label">Total Problems</div>
             </div>
             <div class="card-stat">
-                <div class="card-stat-number streak-count">${streak}</div>
+                <div class="card-stat-number streak-count" data-streak="${streak}" title="${getStreakTooltip(streak, user.lastSolvedDate)}">${streak}</div>
                 <div class="card-stat-label">Current Streak</div>
             </div>
         </div>
@@ -395,6 +496,168 @@ function createCoderCard(user, position) {
     }, delay);
     
     return card;
+}
+
+function calculateStreak(user) {
+    // Use the backend-provided streak_count (this is the most accurate)
+    if (user.streak_count !== undefined && user.streak_count !== null) {
+        // Validate the streak based on last solved date
+        return validateStreak(user.streak_count, user.lastSolvedDate);
+    }
+    
+    // Fallback to streak field if available
+    if (user.streak !== undefined && user.streak !== null) {
+        return validateStreak(user.streak, user.lastSolvedDate);
+    }
+    
+    // If we have streak history from backend, calculate based on that
+    if (user.streakHistory && Array.isArray(user.streakHistory)) {
+        return calculateStreakFromHistory(user.streakHistory);
+    }
+    
+    // If we have solving dates array, calculate streak
+    if (user.solvingDates && Array.isArray(user.solvingDates)) {
+        return calculateStreakFromDates(user.solvingDates);
+    }
+    
+    // Fallback: Calculate based on available data
+    return calculateStreakFallback(user);
+}
+
+function validateStreak(streakCount, lastSolvedDate) {
+    if (!lastSolvedDate || streakCount <= 0) return 0;
+    
+    const lastSolve = new Date(lastSolvedDate);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    // Normalize dates to compare only date parts
+    lastSolve.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+    yesterday.setHours(0, 0, 0, 0);
+    
+    // If last solve was today or yesterday, streak is valid
+    if (lastSolve.getTime() === today.getTime() || lastSolve.getTime() === yesterday.getTime()) {
+        return streakCount;
+    }
+    
+    // If last solve was more than 1 day ago, streak should be broken
+    return 0;
+}
+
+function calculateStreakFromHistory(streakHistory) {
+    if (!streakHistory.length) return 0;
+    
+    // Get the most recent streak entry
+    const latestStreak = streakHistory[streakHistory.length - 1];
+    
+    // Check if the streak is still active (last solve was recent)
+    if (latestStreak.endDate) {
+        // Streak has ended
+        return 0;
+    }
+    
+    return latestStreak.count || 0;
+}
+
+function calculateStreakFromDates(solvingDates) {
+    if (!solvingDates.length) return 0;
+    
+    // Sort dates in descending order (most recent first)
+    const sortedDates = solvingDates
+        .map(dateStr => new Date(dateStr))
+        .sort((a, b) => b - a);
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    let streak = 0;
+    let currentDate = new Date(today);
+    
+    // Check each day going backwards
+    for (let i = 0; i < sortedDates.length; i++) {
+        const solveDate = new Date(sortedDates[i]);
+        solveDate.setHours(0, 0, 0, 0);
+        
+        // If this solve date matches the current date we're checking
+        if (solveDate.getTime() === currentDate.getTime()) {
+            streak++;
+            // Move to the previous day
+            currentDate.setDate(currentDate.getDate() - 1);
+        } else if (solveDate.getTime() < currentDate.getTime()) {
+            // There's a gap in the streak
+            break;
+        }
+        // If solve date is in the future, skip it
+    }
+    
+    return streak;
+}
+
+function calculateStreakFallback(user) {
+    // If no streak data available, calculate based on activity pattern
+    if (!user.lastSolvedDate) return 0;
+    
+    const lastSolve = new Date(user.lastSolvedDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    lastSolve.setHours(0, 0, 0, 0);
+    
+    const daysDiff = Math.floor((today - lastSolve) / (1000 * 60 * 60 * 24));
+    
+    // If solved today, assume at least 1 day streak
+    if (daysDiff === 0) {
+        return 1;
+    }
+    
+    // If solved yesterday, could still have a streak
+    if (daysDiff === 1) {
+        return 1;
+    }
+    
+    // Streak is broken if more than 1 day has passed
+    return 0;
+}
+
+function getStreakTooltip(streak, lastSolvedDate) {
+    if (streak === 0) {
+        return "No active streak - solve a problem to start your streak!";
+    }
+    
+    if (streak === 1) {
+        return "1 day streak - keep going to build momentum!";
+    }
+    
+    const dayWord = streak === 1 ? 'day' : 'days';
+    let message = `${streak} ${dayWord} streak!`;
+    
+    if (lastSolvedDate) {
+        const lastSolve = new Date(lastSolvedDate);
+        const today = new Date();
+        const daysSinceLastSolve = Math.floor((today - lastSolve) / (1000 * 60 * 60 * 24));
+        
+        if (daysSinceLastSolve === 0) {
+            message += " ✨ Solved today!";
+        } else if (daysSinceLastSolve === 1) {
+            message += " ⚡ Last solved yesterday - solve today to continue!";
+        }
+    }
+    
+    // Add motivational messages based on streak length
+    if (streak >= 30) {
+        message += " 🏆 Legendary dedication!";
+    } else if (streak >= 21) {
+        message += " 🔥 On fire! You're building a habit!";
+    } else if (streak >= 14) {
+        message += " 💪 Two weeks strong!";
+    } else if (streak >= 7) {
+        message += " 🚀 One week streak!";
+    } else if (streak >= 3) {
+        message += " 📈 Building momentum!";
+    }
+    
+    return message;
 }
 
 function getUserInitials(name) {
@@ -443,6 +706,20 @@ function showLoadingState() {
 
 function hideLoadingState() {
     document.getElementById('loadingSpinner').style.display = 'none';
+    
+    // Restore the appropriate view after loading
+    if (filteredData.length > 0) {
+        const tableContainer = document.getElementById('tableContainer');
+        const cardsContainer = document.getElementById('cardsContainer');
+        
+        if (currentView === 'table') {
+            tableContainer.style.display = 'block';
+            cardsContainer.style.display = 'none';
+        } else {
+            tableContainer.style.display = 'none';
+            cardsContainer.style.display = 'block';
+        }
+    }
 }
 
 function showErrorState() {
@@ -561,5 +838,72 @@ function showNotification(message, type = 'info') {
     }, 5000);
 }
 
+function showDemoData() {
+    // Show demo data when leaderboard is empty
+    const demoData = [
+        {
+            name: "CodeMaster",
+            problemsSolved: 150,
+            total_points: 1500,
+            accuracy: 92,
+            avg_time: 18.5,
+            streak_count: 12,
+            lastSolvedDate: new Date().toISOString()
+        },
+        {
+            name: "AlgoWizard",
+            problemsSolved: 142,
+            total_points: 1420,
+            accuracy: 88,
+            avg_time: 22.3,
+            streak_count: 8,
+            lastSolvedDate: new Date(Date.now() - 86400000).toISOString()
+        },
+        {
+            name: "DevNinja",
+            problemsSolved: 138,
+            total_points: 1380,
+            accuracy: 85,
+            avg_time: 25.7,
+            streak_count: 5,
+            lastSolvedDate: new Date(Date.now() - 172800000).toISOString()
+        }
+    ];
+    
+    const positions = [
+        { place: 'second', index: 1 },
+        { place: 'first', index: 0 },
+        { place: 'third', index: 2 }
+    ];
+    
+    const podiumSection = document.getElementById('podiumSection');
+    if (podiumSection) {
+        podiumSection.style.display = 'block';
+        
+        positions.forEach(({ place, index }) => {
+            const user = demoData[index];
+            if (user) {
+                const placeElement = podiumSection.querySelector(`.${place}-place`);
+                if (placeElement) {
+                    const card = placeElement.querySelector('.podium-card');
+                    if (card) {
+                        const initials = getUserInitials(user.name);
+                        const avatar = card.querySelector('.podium-avatar');
+                        const name = card.querySelector('.podium-name');
+                        const score = card.querySelector('.podium-score');
+                        
+                        if (avatar) avatar.textContent = initials;
+                        if (name) name.textContent = user.name;
+                        if (score) score.textContent = `${user.problemsSolved} problems`;
+                        
+                        // Populate tooltip data
+                        populatePodiumTooltip(place, user, index + 1);
+                    }
+                }
+            }
+        });
+    }
+}
+
 // Global function for refresh button
-window.refreshLeaderboard = loadLeaderboard;
+window.refreshLeaderboard = () => loadLeaderboard(true);
