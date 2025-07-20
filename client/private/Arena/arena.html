@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arena - Real-Time Coding Duels</title>
+    <title>CODEBATTLE ARENA ⚡ Elite Coding Battleground</title>
     <link rel="stylesheet" href="arena.css">
     <link rel="stylesheet" href="../common/navigation.css">
     <link rel="stylesheet" href="../common/problemStyles.css">
+    
+    <!-- Modern Font Stack -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Clerk SDK -->
     <script 
@@ -17,7 +22,7 @@
         type="text/javascript">
     </script>
     
-    <!-- ACE Editor (same as coder.js) -->
+    <!-- ACE Editor -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ace.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/mode-c_cpp.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/mode-java.min.js"></script>
@@ -25,8 +30,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/theme-monokai.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ext-language_tools.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/ext-prompt.min.js"></script>
+    
     <!-- Socket.IO -->
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- Three.js for 3D Background Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <!-- Arena Modules -->
     <script src="modules/ArenaAuth.js"></script>
@@ -38,395 +47,942 @@
     <script src="modules/ArenaCore.js"></script>
 </head>
 <body>
+<body>
+    <!-- 3D Animated Background Canvas -->
+    <canvas id="arenaBackground" class="arena-bg-canvas"></canvas>
+    
+    <!-- Holographic Grid Overlay -->
+    <div class="holo-grid-overlay"></div>
+    
     <!-- Navigation Toggle Button -->
     <button class="nav-toggle outside-logo-sidebar" aria-label="Toggle navigation menu">
-        <img src="../privasset/sidebar-icon.png" alt="Menu" class="nav-icon">
+        <div class="nav-icon-modern">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
     </button>
 
     <!-- Navigation backdrop -->
     <div class="nav-backdrop"></div>
 
-    <!-- Navigation Menu -->
-    <nav class="codingPageNav" aria-label="Main navigation">
-        <button class="nav-close inside-logo-sidebar" aria-label="Toggle Navigation"></button>
-        <ul>
-            <li><a href="../HomePage/codigo.html" class="nav-link">Home</a></li>
-            <li><a href="#" class="nav-link current">Arena</a></li>
-            <li><a href="../HomePage/codigo.html#practice" class="nav-link">Practice</a></li>
-            <li><a href="../HomePage/codigo.html#help" class="nav-link">Ask AI</a></li>
-            <li><a href="../HomePage/codigo.html#contact" class="nav-link">Contact Us</a></li>
+    <!-- Futuristic Navigation Menu -->
+    <nav class="codingPageNav codebattle-nav" aria-label="Main navigation">
+        <button class="nav-close inside-logo-sidebar" aria-label="Toggle Navigation">
+            <div class="close-icon">
+                <span></span>
+                <span></span>
+            </div>
+        </button>
+        <div class="nav-brand">
+            <span class="brand-text">CODEBATTLE</span>
+            <div class="brand-pulse"></div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="../HomePage/codigo.html" class="nav-link"><span class="link-icon">🏠</span>Control Hub</a></li>
+            <li><a href="#" class="nav-link current"><span class="link-icon">⚔️</span>Combat Arena</a></li>
+            <li><a href="../HomePage/codigo.html#practice" class="nav-link"><span class="link-icon">🎯</span>Training Ground</a></li>
+            <li><a href="../HomePage/codigo.html#help" class="nav-link"><span class="link-icon">🤖</span>AI Assistant</a></li>
+            <li><a href="../HomePage/codigo.html#contact" class="nav-link"><span class="link-icon">📡</span>Communications</a></li>
             <li class="nav-actions">
-                <select name="theme-toggle" id="theme-toggle">
-                    <option value="dark-theme" selected>Dark theme</option>
-                    <option value="light-theme">Light theme</option>
-                </select>
-                <button onclick="authManager.logout()" class="logout-btn">Logout</button>
+                <div class="theme-selector">
+                    <div class="theme-quick-switch">
+                        <button class="theme-btn mini quantum active" data-theme="quantum" title="Quantum"></button>
+                        <button class="theme-btn mini light" data-theme="light" title="Light"></button>
+                        <button class="theme-btn mini neon" data-theme="neon" title="Neon"></button>
+                    </div>
+                </div>
+                <button onclick="authManager.logout()" class="logout-btn cyber-btn">
+                    <span class="btn-icon">🚪</span>
+                    Disconnect
+                </button>
             </li>
         </ul>
     </nav>
 
-    <main id="app">
-        <!-- Arena Menu -->
+    <main id="app" class="arena-main">
+        <!-- CodeBattle Arena Main Menu -->
         <div id="arenaMenu" class="arena-screen active">
-            <div class="container">
-                <div class="arena-header">
-                    <h1>⚡ CODE ARENA ⚡</h1>
-                    <p>Enter the digital battleground where coders clash in real-time programming duels</p>
-                </div>
-                
-                <div class="arena-stats">
-                    <div class="stat-card">
-                        <h3 id="onlineUsers">0</h3>
-                        <p>Active Coders</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3 id="activeMatches">0</h3>
-                        <p>Live Battles</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3 id="totalMatches">0</h3>
-                        <p>Total Duels</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3 id="queueLength">0</h3>
-                        <p>In Queue</p>
-                    </div>
-                </div>
-
-                <div class="difficulty-selection">
-                    <h2>🎯 Choose Your Battleground</h2>
-                    <div class="difficulty-buttons">
-                        <button class="difficulty-btn easy" data-difficulty="easy">
-                            <div class="difficulty-icon">🟢</div>
-                            <div class="difficulty-content">
-                                <h3>Novice Arena</h3>
-                                <p>Basic algorithms • 5 min per question • Perfect for beginners</p>
+            <div class="arena-container">
+                <!-- Epic Header with Holographic Effects -->
+                <header class="codebattle-arena-header">
+                    <div class="header-content">
+                        <div class="arena-logo">
+                            <div class="logo-core">
+                                <div class="logo-ring"></div>
+                                <div class="logo-center">⚡</div>
+                                <div class="logo-particles"></div>
                             </div>
-                        </button>
-                        <button class="difficulty-btn medium" data-difficulty="medium">
-                            <div class="difficulty-icon">🟡</div>
-                            <div class="difficulty-content">
-                                <h3>Warrior Arena</h3>
-                                <p>Intermediate challenges • 8 min per question • Dynamic programming</p>
-                            </div>
-                        </button>
-                        <button class="difficulty-btn hard" data-difficulty="hard">
-                            <div class="difficulty-icon">🔴</div>
-                            <div class="difficulty-content">
-                                <h3>Master Arena</h3>
-                                <p>Expert algorithms • 15 min per question • Complex optimization</p>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="player-stats">
-                    <h2>🏆 Combat Statistics</h2>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <span class="stat-label">Total Battles</span>
-                            <span class="stat-value" id="playerMatches">0</span>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Victories</span>
-                            <span class="stat-value" id="playerWins">0</span>
+                        <h1 class="arena-title">
+                            <span class="title-main">CODEBATTLE ARENA</span>
+                            <span class="title-sub">Elite Coding Battleground</span>
+                        </h1>
+                        <p class="arena-tagline">Where legends are forged in the crucible of code</p>
+                    </div>
+                    <div class="header-effects">
+                        <div class="energy-beams"></div>
+                        <div class="floating-code"></div>
+                    </div>
+                </header>
+                
+                <!-- Real-time Arena Statistics -->
+                <section class="arena-stats-grid">
+                    <div class="stat-card quantum">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <h3 id="onlineUsers" class="stat-number">0</h3>
+                            <p class="stat-label">Active Warriors</p>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Win Rate</span>
-                            <span class="stat-value" id="playerWinRate">0%</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Current Streak</span>
-                            <span class="stat-value" id="playerStreak">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Arena Rank</span>
-                            <span class="stat-value" id="playerRank">Unranked</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Rating</span>
-                            <span class="stat-value" id="playerRating">1200</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="arena-actions">
-                    <button id="viewLeaderboardBtn" class="action-btn secondary">
-                        📊 Global Leaderboard
-                    </button>
-                    <button id="backToHomeBtn" class="action-btn danger">
-                        🚪 Exit Arena
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Queue Screen -->
-        <div id="queueScreen" class="arena-screen">
-            <div class="queue-container">
-                <div class="queue-header">
-                    <h2>� Quantum Matchmaking</h2>
-                    <p>Battleground: <span id="selectedDifficulty" class="difficulty-badge"></span></p>
-                </div>
-                
-                <div class="queue-animation">
-                    <div class="spinner"></div>
-                </div>
-                
-                <div class="queue-info">
-                    <p>⚡ Queue Position: <span id="queuePosition">1</span></p>
-                    <p>⏱️ Estimated Wait: <span id="estimatedWait">30s</span></p>
-                    <p>🌐 Searching globally...</p>
-                </div>
-                
-                <button id="leaveQueueBtn" class="action-btn danger">
-                    ⚡ Abort Search
-                </button>
-            </div>
-        </div>
-
-        <!-- Match Found Screen -->
-        <div id="matchFoundScreen" class="arena-screen">
-            <div class="match-found-container">
-                <h2>⚔️ Battle Initialized!</h2>
-                
-                <div class="players-vs">
-                    <div class="player-card">
-                        <div class="player-avatar">🎯</div>
-                        <h3 id="player1Name">You</h3>
-                        <p id="player1Difficulty" class="difficulty-badge"></p>
-                    </div>
-                    <div class="vs-divider">VS</div>
-                    <div class="player-card">
-                        <div class="player-avatar">⚡</div>
-                        <h3 id="player2Name">Opponent</h3>
-                        <p id="player2Difficulty" class="difficulty-badge"></p>
-                    </div>
-                </div>
-                
-                <div class="match-rules">
-                    <h3>⚡ Battle Protocol:</h3>
-                    <ul>
-                        <li>⭐ 5 coding challenges total</li>
-                        <li>🏆 First to solve gets +5 bonus points</li>
-                        <li>📊 Points based on test cases passed</li>
-                        <li>⏰ 30 minutes maximum duration</li>
-                        <li>🔥 Real-time code execution</li>
-                    </ul>
-                </div>
-                
-                <div class="ready-countdown">
-                    <div id="readyTimer">5</div>
-                    <p>Battle initializing in...</p>
-                </div>
-                
-                <button id="readyBtn" class="action-btn primary">
-                    ⚡ READY FOR BATTLE!
-                </button>
-            </div>
-        </div>
-
-        <!-- Match Screen -->
-        <div id="matchScreen" class="arena-screen">
-            <!-- Match Header -->
-            <div class="match-header">
-                <div class="match-info">
-                    <h2>Question <span id="currentQuestionIndex">1</span> of 5</h2>
-                    <div class="timer-container">
-                        <div id="questionTimer" class="timer">05:00</div>
-                        <div class="timer-bar">
-                            <div id="timerProgress" class="timer-progress"></div>
-                        </div>
-                    </div>
-                    <div class="progress-info">
-                        <span>Score: <span id="currentScore">0</span></span>
-                        <span>Completed: <span id="questionsCompleted">0</span>/5</span>
-                    </div>
-                </div>
-                
-                <div class="players-score">
-                    <div class="player-score">
-                        <span id="playerScore">0</span>
-                        <p id="playerNameMatch">You</p>
-                    </div>
-                    <div class="score-divider">:</div>
-                    <div class="player-score opponent">
-                        <span id="opponentScore">0</span>
-                        <p id="opponentNameMatch">Opponent</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Match Content -->
-            <div class="match-content">
-                <!-- Problem Panel -->
-                <div class="problem-panel">
-                    <div class="problem-header">
-                        <h3 id="problemTitle">Loading Challenge...</h3>
-                        <span id="problemDifficulty" class="difficulty-badge">Easy</span>
+                        <div class="stat-pulse"></div>
                     </div>
                     
-                    <div class="problem-content">
-                        <div id="problemDescription">Initializing coding challenge...</div>
-                        
-                        <div class="problem-examples">
-                            <h4>💡 Examples:</h4>
-                            <div id="problemExamples"></div>
+                    <div class="stat-card cyber">
+                        <div class="stat-icon">⚔️</div>
+                        <div class="stat-content">
+                            <h3 id="activeMatches" class="stat-number">0</h3>
+                            <p class="stat-label">Live Battles</p>
+                        </div>
+                        <div class="stat-pulse"></div>
+                    </div>
+                    
+                    <div class="stat-card neural">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-content">
+                            <h3 id="totalMatches" class="stat-number">0</h3>
+                            <p class="stat-label">Total Conquests</p>
+                        </div>
+                        <div class="stat-pulse"></div>
+                    </div>
+                    
+                    <div class="stat-card plasma">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <h3 id="queueLength" class="stat-number">0</h3>
+                            <p class="stat-label">Queue Depth</p>
+                        </div>
+                        <div class="stat-pulse"></div>
+                    </div>
+                </section>
+
+                <!-- Battle Arena Selection -->
+                <section class="arena-selection">
+                    <div class="section-header">
+                        <h2 class="section-title">🎯 Choose Your Battlefield</h2>
+                        <p class="section-subtitle">Each arena tests different aspects of your coding prowess</p>
+                    </div>
+                    
+                    <div class="battlefield-grid">
+                        <div class="battlefield-card novice" data-difficulty="easy">
+                            <div class="battlefield-bg"></div>
+                            <div class="battlefield-content">
+                                <div class="battlefield-icon">🟢</div>
+                                <h3 class="battlefield-name">Beginner Battle</h3>
+                                <p class="battlefield-desc">Foundational algorithms and data structures</p>
+                                <div class="battlefield-stats">
+                                    <span class="stat">⏱️ 5 min per challenge</span>
+                                    <span class="stat">🎯 Perfect for beginners</span>
+                                    <span class="stat">📈 Build confidence</span>
+                                </div>
+                                <div class="battlefield-difficulty">
+                                    <div class="difficulty-bar">
+                                        <div class="difficulty-fill novice-fill"></div>
+                                    </div>
+                                    <span class="difficulty-text">Beginner</span>
+                                </div>
+                            </div>
+                            <div class="battlefield-hover-effect"></div>
                         </div>
                         
-                        <div class="problem-constraints">
-                            <h4>📋 Constraints:</h4>
-                            <div id="problemConstraints"></div>
+                        <div class="battlefield-card warrior" data-difficulty="medium">
+                            <div class="battlefield-bg"></div>
+                            <div class="battlefield-content">
+                                <div class="battlefield-icon">🟡</div>
+                                <h3 class="battlefield-name">Warrior Realm</h3>
+                                <p class="battlefield-desc">Advanced algorithms and optimization challenges</p>
+                                <div class="battlefield-stats">
+                                    <span class="stat">⏱️ 8 min per challenge</span>
+                                    <span class="stat">🧠 Dynamic programming</span>
+                                    <span class="stat">🔥 Intense competition</span>
+                                </div>
+                                <div class="battlefield-difficulty">
+                                    <div class="difficulty-bar">
+                                        <div class="difficulty-fill warrior-fill"></div>
+                                    </div>
+                                    <span class="difficulty-text">Intermediate</span>
+                                </div>
+                            </div>
+                            <div class="battlefield-hover-effect"></div>
+                        </div>
+                        
+                        <div class="battlefield-card master" data-difficulty="hard">
+                            <div class="battlefield-bg"></div>
+                            <div class="battlefield-content">
+                                <div class="battlefield-icon">🔴</div>
+                                <h3 class="battlefield-name">Master's Domain</h3>
+                                <p class="battlefield-desc">Elite-level algorithmic mastery required</p>
+                                <div class="battlefield-stats">
+                                    <span class="stat">⏱️ 15 min per challenge</span>
+                                    <span class="stat">🎖️ Complex optimization</span>
+                                    <span class="stat">👑 Legendary status</span>
+                                </div>
+                                <div class="battlefield-difficulty">
+                                    <div class="difficulty-bar">
+                                        <div class="difficulty-fill master-fill"></div>
+                                    </div>
+                                    <span class="difficulty-text">Expert</span>
+                                </div>
+                            </div>
+                            <div class="battlefield-hover-effect"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Combat Statistics Dashboard -->
+                <section class="combat-stats">
+                    <div class="section-header">
+                        <h2 class="section-title">🏆 Combat Profile</h2>
+                        <p class="section-subtitle">Your journey through the digital battlefield</p>
+                    </div>
+                    
+                    <div class="stats-dashboard">
+                        <div class="stats-primary">
+                            <div class="primary-stat">
+                                <div class="stat-icon-large">⚔️</div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="playerMatches">0</span>
+                                    <span class="stat-name">Total Battles</span>
+                                </div>
+                            </div>
+                            
+                            <div class="primary-stat">
+                                <div class="stat-icon-large">🏆</div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="playerWins">0</span>
+                                    <span class="stat-name">Victories</span>
+                                </div>
+                            </div>
+                            
+                            <div class="primary-stat">
+                                <div class="stat-icon-large">📊</div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="playerWinRate">0%</span>
+                                    <span class="stat-name">Win Rate</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-secondary">
+                            <div class="secondary-stat">
+                                <span class="secondary-label">Current Streak</span>
+                                <span class="secondary-value" id="playerStreak">0</span>
+                            </div>
+                            <div class="secondary-stat">
+                                <span class="secondary-label">Arena Rank</span>
+                                <span class="secondary-value" id="playerRank">Unranked</span>
+                            </div>
+                            <div class="secondary-stat">
+                                <span class="secondary-label">Combat Rating</span>
+                                <span class="secondary-value" id="playerRating">1200</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-progression">
+                            <div class="progression-bar">
+                                <div class="progression-fill" style="width: 42%"></div>
+                            </div>
+                            <span class="progression-text">Level 7 Warrior</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Action Command Center -->
+                <section class="command-center">
+                    <div class="command-grid">
+                        <button id="combatProfileBtn" class="command-btn">
+                            <div class="btn-icon">⚡</div>
+                            <div class="btn-content">
+                                <span class="btn-title">Combat Profile</span>
+                                <span class="btn-subtitle">Warrior Settings</span>
+                            </div>
+                            <div class="btn-glow"></div>
+                        </button>
+                        
+                        <button id="viewLeaderboardBtn" class="command-btn secondary">
+                            <div class="btn-icon">📊</div>
+                            <div class="btn-content">
+                                <span class="btn-title">Global Rankings</span>
+                                <span class="btn-subtitle">Elite Leaderboard</span>
+                            </div>
+                            <div class="btn-glow"></div>
+                        </button>
+                        
+                        <button id="backToHomeBtn" class="command-btn danger">
+                            <div class="btn-icon">🚪</div>
+                            <div class="btn-content">
+                                <span class="btn-title">Exit Arena</span>
+                                <span class="btn-subtitle">Return to Hub</span>
+                            </div>
+                            <div class="btn-glow"></div>
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Quantum Matchmaking Screen -->
+        <div id="queueScreen" class="arena-screen">
+            <div class="quantum-screen">
+                <div class="quantum-loader">
+                    <div class="quantum-circle">
+                        <div class="quantum-particles">
+                            <div class="quantum-particle"></div>
+                            <div class="quantum-particle"></div>
+                            <div class="quantum-particle"></div>
+                            <div class="quantum-particle"></div>
+                            <div class="quantum-particle"></div>
+                            <div class="quantum-particle"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Code Panel -->
-                <div class="code-panel">
-                    <div class="code-header">
-                        <div class="header-left">
-                            <select id="languageSelect">
+                <div class="quantum-status">
+                    <h2 class="quantum-title">⚡ Quantum Matchmaking</h2>
+                    <p class="quantum-subtitle">Synchronizing with the neural network...</p>
+                    
+                    <div class="queue-info-panel">
+                        <div class="battlefield-selected">
+                            <span class="status-icon">🎯</span>
+                            <span>Battlefield:</span>
+                            <span id="selectedDifficulty" class="difficulty-badge">EASY</span>
+                        </div>
+                        
+                        <div class="quantum-stats">
+                            <div class="quantum-stat">
+                                <span class="stat-icon">📍</span>
+                                <span class="stat-value" id="queuePosition">1</span>
+                                <span class="stat-label">Queue Position</span>
+                            </div>
+                            <div class="quantum-stat">
+                                <span class="stat-icon">⏱️</span>
+                                <span class="stat-value" id="estimatedWait">30s</span>
+                                <span class="stat-label">Estimated Wait</span>
+                            </div>
+                            <div class="quantum-stat">
+                                <span class="stat-icon">🌐</span>
+                                <span class="stat-value">Global Sync</span>
+                                <span class="stat-label">Network</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="queue-animation">
+                        <div class="queue-status-text">
+                            <span id="queueStatusMessage">🔍 Scanning for worthy opponents...</span>
+                        </div>
+                        <div class="queue-dots">
+                            <div class="queue-dot"></div>
+                            <div class="queue-dot"></div>
+                            <div class="queue-dot"></div>
+                        </div>
+                        
+                        <div class="quantum-messages" style="margin-top: 2rem;">
+                            <div class="message-line">🧠 Analyzing skill matrices...</div>
+                            <div class="message-line">⚡ Quantum entanglement in progress...</div>
+                            <div class="message-line">🎯 Lock acquired. Preparing for battle...</div>
+                        </div>
+                    </div>
+                    
+                    <button id="leaveQueueBtn" class="abort-search-btn">
+                        <span>⚡ Abort Search</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Battle Initialization Screen -->
+        <div id="matchFoundScreen" class="arena-screen">
+            <div class="battle-init-container">
+                <div class="battle-header">
+                    <h2 class="battle-title">⚔️ BATTLE PROTOCOL INITIALIZED</h2>
+                    <div class="battle-subtitle">Neural link established • Combat systems online</div>
+                </div>
+                
+                <div class="warriors-face-off">
+                    <div class="warrior-profile left">
+                        <div class="warrior-avatar">
+                            <div class="avatar-ring"></div>
+                            <div class="avatar-core">🎯</div>
+                            <div class="avatar-glow"></div>
+                        </div>
+                        <h3 id="player1Name" class="warrior-name">You</h3>
+                        <div class="warrior-stats">
+                            <span class="warrior-rank" id="player1Difficulty">Warrior</span>
+                            <span class="warrior-rating">1200 CR</span>
+                        </div>
+                        <div class="warrior-energy">
+                            <div class="energy-bar">
+                                <div class="energy-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="vs-arena">
+                        <div class="vs-lightning">
+                            <div class="lightning-bolt"></div>
+                        </div>
+                        <div class="vs-text">VS</div>
+                        <div class="arena-energy"></div>
+                    </div>
+                    
+                    <div class="warrior-profile right">
+                        <div class="warrior-avatar">
+                            <div class="avatar-ring"></div>
+                            <div class="avatar-core">⚡</div>
+                            <div class="avatar-glow"></div>
+                        </div>
+                        <h3 id="player2Name" class="warrior-name">Opponent</h3>
+                        <div class="warrior-stats">
+                            <span class="warrior-rank" id="player2Difficulty">Warrior</span>
+                            <span class="warrior-rating">1180 CR</span>
+                        </div>
+                        <div class="warrior-energy">
+                            <div class="energy-bar">
+                                <div class="energy-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="battle-protocol">
+                    <h3 class="protocol-title">⚡ ENGAGEMENT PROTOCOLS</h3>
+                    <div class="protocol-grid">
+                        <div class="protocol-item">
+                            <span class="protocol-icon">⭐</span>
+                            <span class="protocol-text">5 Coding Challenges</span>
+                        </div>
+                        <div class="protocol-item">
+                            <span class="protocol-icon">🏆</span>
+                            <span class="protocol-text">+5 Speed Bonus</span>
+                        </div>
+                        <div class="protocol-item">
+                            <span class="protocol-icon">📊</span>
+                            <span class="protocol-text">Test Case Scoring</span>
+                        </div>
+                        <div class="protocol-item">
+                            <span class="protocol-icon">⏰</span>
+                            <span class="protocol-text">30 Min Maximum</span>
+                        </div>
+                        <div class="protocol-item">
+                            <span class="protocol-icon">🔥</span>
+                            <span class="protocol-text">Real-time Execution</span>
+                        </div>
+                        <div class="protocol-item">
+                            <span class="protocol-icon">🎯</span>
+                            <span class="protocol-text">No Surrender</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="initialization-countdown">
+                    <div class="countdown-ring">
+                        <div class="countdown-number" id="readyTimer">5</div>
+                        <div class="countdown-progress"></div>
+                    </div>
+                    <p class="countdown-text">Combat systems initializing...</p>
+                </div>
+                
+                <button id="readyBtn" class="ready-btn">
+                    <span class="btn-icon">⚡</span>
+                    <span class="btn-text">READY FOR COMBAT</span>
+                    <div class="btn-energy-pulse"></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Elite Combat Interface -->
+        <div id="matchScreen" class="arena-screen">
+            <!-- Neural Command Interface -->
+            <div class="neural-command-bar">
+                <div class="command-left">
+                    <div class="challenge-indicator">
+                        <span class="challenge-text">Challenge</span>
+                        <span id="currentQuestionIndex" class="challenge-number">1</span>
+                        <span class="challenge-total">/ 5</span>
+                    </div>
+                    
+                    <div class="neural-timer">
+                        <div class="timer-core">
+                            <div id="questionTimer" class="timer-display">05:00</div>
+                            <div class="timer-ring">
+                                <div id="timerProgress" class="timer-progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="combat-metrics">
+                        <span class="metric">Score: <span id="currentScore" class="metric-value">0</span></span>
+                        <span class="metric">Solved: <span id="questionsCompleted" class="metric-value">0</span>/5</span>
+                    </div>
+                </div>
+                
+                <div class="command-center-display">
+                    <div class="warriors-scoreboard">
+                        <div class="warrior-score player">
+                            <div class="score-avatar">🎯</div>
+                            <div class="score-info">
+                                <span id="playerScore" class="score-number">0</span>
+                                <span id="playerNameMatch" class="score-name">You</span>
+                            </div>
+                        </div>
+                        
+                        <div class="score-separator">
+                            <div class="separator-line"></div>
+                            <span class="separator-vs">VS</span>
+                            <div class="separator-line"></div>
+                        </div>
+                        
+                        <div class="warrior-score opponent">
+                            <div class="score-avatar">⚡</div>
+                            <div class="score-info">
+                                <span id="opponentScore" class="score-number">0</span>
+                                <span id="opponentNameMatch" class="score-name">Opponent</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Elite Coding Environment -->
+            <div class="combat-workspace">
+                <!-- Problem Analysis Panel -->
+                <div class="problem-analyzer">
+                    <div class="analyzer-header">
+                        <div class="problem-meta">
+                            <h3 id="problemTitle" class="problem-name">Loading Neural Challenge...</h3>
+                            <span id="problemDifficulty" class="difficulty-tag">Easy</span>
+                        </div>
+                        <div class="analyzer-controls">
+                            <button class="control-btn" title="Expand Problem">📋</button>
+                            <button class="control-btn" title="AI Hint">🤖</button>
+                            <button class="control-btn" title="Problem Notes">📝</button>
+                        </div>
+                    </div>
+                    
+                    <div class="problem-workspace">
+                        <div class="problem-description-panel">
+                            <div id="problemDescription" class="problem-content">
+                                Initializing neural challenge protocols...
+                            </div>
+                        </div>
+                        
+                        <div class="problem-examples-panel">
+                            <h4 class="panel-title">💡 Neural Patterns</h4>
+                            <div id="problemExamples" class="examples-content"></div>
+                        </div>
+                        
+                        <div class="problem-constraints-panel">
+                            <h4 class="panel-title">📋 System Constraints</h4>
+                            <div id="problemConstraints" class="constraints-content"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Code Terminal -->
+                <div class="code-terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <div class="terminal-dots">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <div class="terminal-title">Neural Code Interface</div>
+                        </div>
+                        
+                        <div class="coding-controls">
+                            <div class="language-selector">
+                                <select id="languageSelect" class="language-dropdown">
+                                    <option value="javascript">JavaScript ⚡</option>
+                                    <option value="python">Python 🐍</option>
+                                    <option value="c++">C++ ⚙️</option>
+                                    <option value="java">Java ☕</option>
+                                </select>
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button id="runTestBtn" class="action-btn test-btn">
+                                    <span class="btn-icon">⚡</span>
+                                    <span class="btn-text">Execute</span>
+                                </button>
+                                <button id="submitBtn" class="action-btn submit-btn">
+                                    <span class="btn-icon">🚀</span>
+                                    <span class="btn-text">Deploy</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal-workspace">
+                        <div id="codeEditor" class="neural-editor"></div>
+                        
+                        <!-- Advanced Results Console -->
+                        <div id="resultsPanel" class="results-console">
+                            <div class="console-header">
+                                <div class="console-title">
+                                    <span class="console-icon">🔬</span>
+                                    <span class="console-text">Execution Analysis</span>
+                                </div>
+                                <div id="resultsStatus" class="execution-status"></div>
+                            </div>
+                            <div id="resultsContent" class="console-output"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Victory/Defeat Analysis Screen -->
+        <div id="matchEndScreen" class="arena-screen">
+            <div class="battle-result-container">
+                <div id="matchResult" class="result-display">
+                    <div class="result-animation">
+                        <div id="resultIcon" class="result-emblem">🏆</div>
+                        <div class="result-effects"></div>
+                    </div>
+                    <h2 id="resultTitle" class="result-title">VICTORY ACHIEVED</h2>
+                    <div class="result-subtitle">Neural dominance established</div>
+                </div>
+                
+                <div class="combat-analysis">
+                    <div class="analysis-header">
+                        <h3>⚡ Combat Analysis</h3>
+                        <p>Post-battle neural scan complete</p>
+                    </div>
+                    
+                    <div class="warriors-final-stats">
+                        <div class="final-warrior-card player">
+                            <div class="warrior-header">
+                                <div class="warrior-avatar-final">🎯</div>
+                                <h4 id="finalPlayerName" class="warrior-name-final">You</h4>
+                            </div>
+                            <div class="score-breakdown">
+                                <div class="primary-score" id="finalPlayerScore">0</div>
+                                <div class="score-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Challenges</span>
+                                        <span class="detail-value" id="finalPlayerQuestions">0</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Speed Bonus</span>
+                                        <span class="detail-value">+<span id="finalPlayerBonus">0</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="vs-final">
+                            <div class="vs-lightning-final"></div>
+                        </div>
+                        
+                        <div class="final-warrior-card opponent">
+                            <div class="warrior-header">
+                                <div class="warrior-avatar-final">⚡</div>
+                                <h4 id="finalOpponentName" class="warrior-name-final">Opponent</h4>
+                            </div>
+                            <div class="score-breakdown">
+                                <div class="primary-score" id="finalOpponentScore">0</div>
+                                <div class="score-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Challenges</span>
+                                        <span class="detail-value" id="finalOpponentQuestions">0</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Speed Bonus</span>
+                                        <span class="detail-value">+<span id="finalOpponentBonus">0</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="battle-metrics">
+                    <div class="metric-card">
+                        <span class="metric-icon">⏱️</span>
+                        <span class="metric-label">Combat Duration</span>
+                        <span class="metric-value" id="matchDuration">0:00</span>
+                    </div>
+                </div>
+                
+                <div class="next-mission-controls">
+                    <button id="playAgainBtn" class="mission-btn primary">
+                        <span class="btn-icon">⚔️</span>
+                        <span class="btn-text">Next Battle</span>
+                        <div class="btn-energy"></div>
+                    </button>
+                    <button id="backToArenaBtn" class="mission-btn secondary">
+                        <span class="btn-icon">🏠</span>
+                        <span class="btn-text">Return to Base</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campaign Complete Screen -->
+        <div id="matchCompleteScreen" class="arena-screen">
+            <div class="campaign-container">
+                <div class="campaign-header">
+                    <div class="achievement-ring">
+                        <div class="ring-outer"></div>
+                        <div class="ring-inner"></div>
+                        <div class="achievement-icon">🎉</div>
+                    </div>
+                    <h1 class="campaign-title">CAMPAIGN COMPLETE</h1>
+                    <p class="campaign-subtitle">Neural matrix synchronization achieved</p>
+                </div>
+                
+                <div class="campaign-stats">
+                    <div class="stat-pod">
+                        <div class="pod-icon">🏆</div>
+                        <h3 id="finalScore" class="pod-value">0</h3>
+                        <p class="pod-label">Final Score</p>
+                    </div>
+                    <div class="stat-pod">
+                        <div class="pod-icon">✅</div>
+                        <h3 id="questionsCompletedFinal" class="pod-value">0</h3>
+                        <p class="pod-label">Challenges Conquered</p>
+                    </div>
+                    <div class="stat-pod">
+                        <div class="pod-icon">⚡</div>
+                        <h3 id="averageTime" class="pod-value">--</h3>
+                        <p class="pod-label">Average Response</p>
+                    </div>
+                </div>
+                
+                <div class="campaign-actions">
+                    <button id="playAgainBtn" class="campaign-btn primary">
+                        <span class="btn-icon">🔄</span>
+                        <span class="btn-text">New Campaign</span>
+                    </button>
+                    <button id="viewLeaderboardBtn2" class="campaign-btn secondary">
+                        <span class="btn-icon">🏆</span>
+                        <span class="btn-text">Elite Rankings</span>
+                    </button>
+                    <button id="backToMenuBtn" class="campaign-btn tertiary">
+                        <span class="btn-icon">🏠</span>
+                        <span class="btn-text">Command Center</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Elite Rankings Modal -->
+        <div id="leaderboardModal" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <div class="header-content">
+                        <h2 class="modal-title">🏆 ELITE RANKINGS</h2>
+                        <p class="modal-subtitle">Global Neural Hierarchy</p>
+                    </div>
+                    <button id="closeLeaderboardBtn" class="modal-close">
+                        <span class="close-icon">×</span>
+                    </button>
+                </div>
+                
+                <div class="leaderboard-workspace">
+                    <div class="ranking-filters">
+                        <button class="filter-btn active" data-filter="all">All Warriors</button>
+                        <button class="filter-btn" data-filter="novice">Novice</button>
+                        <button class="filter-btn" data-filter="warrior">Warrior</button>
+                        <button class="filter-btn" data-filter="master">Master</button>
+                    </div>
+                    
+                    <div id="leaderboardList" class="elite-rankings">
+                        <!-- Elite warriors will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combat Profile Modal -->
+        <div id="profileModal" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2 class="modal-title">⚡ Combat Profile</h2>
+                    <button id="closeProfileBtn" class="modal-close">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="profile-section">
+                        <h3>Warrior Identity</h3>
+                        <div class="profile-field">
+                            <label for="profileDisplayName">Display Name:</label>
+                            <input type="text" id="profileDisplayName" placeholder="Enter your warrior name">
+                        </div>
+                        <div class="profile-field">
+                            <label for="profileBattleCry">Battle Cry:</label>
+                            <input type="text" id="profileBattleCry" placeholder="Your signature battle cry">
+                        </div>
+                        <div class="profile-field">
+                            <label for="profileLanguage">Favorite Language:</label>
+                            <select id="profileLanguage">
                                 <option value="javascript">JavaScript</option>
                                 <option value="python">Python</option>
-                                <option value="c++">C++</option>
                                 <option value="java">Java</option>
+                                <option value="cpp">C++</option>
+                                <option value="c">C</option>
                             </select>
-                            <span class="editor-label">Code Editor</span>
-                        </div>
-                        
-                        <div class="code-actions">
-                            <button id="runTestBtn" class="code-btn test">
-                                ⚡ Test Code
-                            </button>
-                            <button id="submitBtn" class="code-btn submit">
-                                🚀 Submit Solution
-                            </button>
                         </div>
                     </div>
-                    
-                    <div id="codeEditor" class="code-editor"></div>
-                    
-                    <!-- Enhanced Results Panel -->
-                    <div id="resultsPanel" class="results-panel">
-                        <div class="results-header">
-                            <h4>🔬 Execution Results</h4>
-                            <span id="resultsStatus" class="status"></span>
-                        </div>
-                        <div id="resultsContent" class="results-content"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Match End Screen -->
-        <div id="matchEndScreen" class="arena-screen">
-            <div class="match-end-container">
-                <div id="matchResult" class="match-result">
-                    <h2 id="resultTitle">Match Complete!</h2>
-                    <div id="resultIcon" class="result-icon">🏆</div>
-                </div>
-                
-                <div class="final-scores">
-                    <div class="final-score-card">
-                        <h3 id="finalPlayerName">You</h3>
-                        <div class="score-details">
-                            <div class="score-main" id="finalPlayerScore">0</div>
-                            <div class="score-breakdown">
-                                <span>Questions: <span id="finalPlayerQuestions">0</span></span>
-                                <span>Bonus: +<span id="finalPlayerBonus">0</span></span>
+                    <div class="profile-section">
+                        <h3>Neural Theme</h3>
+                        <div class="theme-grid">
+                            <button class="theme-btn" data-theme="quantum">
+                                <div class="theme-preview quantum"></div>
+                                <span>Quantum</span>
+                            </button>
+                            <button class="theme-btn" data-theme="light">
+                                <div class="theme-preview light"></div>
+                                <span>Light</span>
+                            </button>
+                            <button class="theme-btn" data-theme="neon">
+                                <div class="theme-preview neon"></div>
+                                <span>Neon</span>
+                            </button>
+                            <button class="theme-btn" data-theme="cyber">
+                                <div class="theme-preview cyber"></div>
+                                <span>Cyber</span>
+                            </button>
+                            <button class="theme-btn" data-theme="matrix">
+                                <div class="theme-preview matrix"></div>
+                                <span>Matrix</span>
+                            </button>
+                            <button class="theme-btn" data-theme="dark">
+                                <div class="theme-preview dark"></div>
+                                <span>Dark</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Combat Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="profileRank">0</div>
+                                <div class="stat-label">Rank</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="profileSolved">0</div>
+                                <div class="stat-label">Problems Solved</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="profileStreak">0</div>
+                                <div class="stat-label">Current Streak</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="profileWins">0</div>
+                                <div class="stat-label">Contests Won</div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="final-score-card opponent">
-                        <h3 id="finalOpponentName">Opponent</h3>
-                        <div class="score-details">
-                            <div class="score-main" id="finalOpponentScore">0</div>
-                            <div class="score-breakdown">
-                                <span>Questions: <span id="finalOpponentQuestions">0</span></span>
-                                <span>Bonus: +<span id="finalOpponentBonus">0</span></span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                
-                <div class="match-stats">
-                    <h3>Match Statistics</h3>
-                    <div class="stats-row">
-                        <span>Duration:</span>
-                        <span id="matchDuration">0:00</span>
-                    </div>
-                </div>
-                
-                <div class="match-end-actions">
-                    <button id="playAgainBtn" class="action-btn primary">
-                        ⚔️ Play Again
-                    </button>
-                    <button id="backToArenaBtn" class="action-btn secondary">
-                        🏠 Back to Arena
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Match Complete Screen -->
-        <div id="matchCompleteScreen" class="arena-screen">
-            <div class="container">
-                <div class="match-complete-header">
-                    <h1>🎉 Match Complete!</h1>
-                    <p>Congratulations on completing all questions!</p>
-                </div>
-                
-                <div class="final-stats">
-                    <div class="stat-card">
-                        <h3 id="finalScore">0</h3>
-                        <p>Final Score</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3 id="questionsCompletedFinal">0</h3>
-                        <p>Questions Completed</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3 id="averageTime">--</h3>
-                        <p>Average Time</p>
-                    </div>
-                </div>
-                
-                <div class="match-complete-actions">
-                    <button id="playAgainBtn" class="action-btn primary">
-                        🔄 Play Again
-                    </button>
-                    <button id="viewLeaderboardBtn" class="action-btn secondary">
-                        🏆 View Leaderboard
-                    </button>
-                    <button id="backToMenuBtn" class="action-btn secondary">
-                        🏠 Back to Menu
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Leaderboard Modal -->
-        <div id="leaderboardModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>🏆 Arena Leaderboard</h2>
-                    <button id="closeLeaderboardBtn" class="close-btn">&times;</button>
-                </div>
-                <div class="leaderboard-content">
-                    <div id="leaderboardList" class="leaderboard-list">
-                        <!-- Leaderboard items will be populated here -->
-                    </div>
+                <div class="modal-footer">
+                    <button id="saveProfileBtn" class="action-btn primary">Save Profile</button>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Notifications -->
-    <div id="notifications" class="notifications-container"></div>
+    <!-- Neural Notification System -->
+    <div id="notifications" class="notification-system"></div>
 
+    <!-- Floating Combat HUD -->
+    <div class="combat-hud">
+        <div class="hud-element network-status">
+            <span class="hud-icon">📡</span>
+            <span class="hud-text">ONLINE</span>
+        </div>
+        <div class="hud-element fps-counter">
+            <span class="hud-text">60 FPS</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="../common/auth.js"></script>
     <script src="../common/navigation.js"></script>
     <script src="arena.js"></script>
+    
+    <!-- 3D Background Initialization -->
+    <script>
+        // Initialize 3D background on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initArenaBackground();
+        });
+        
+        function initArenaBackground() {
+            const canvas = document.getElementById('arenaBackground');
+            if (!canvas || !window.THREE) return;
+            
+            // Basic Three.js setup for animated background
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0);
+            
+            // Create floating particles
+            const geometry = new THREE.BufferGeometry();
+            const vertices = [];
+            const colors = [];
+            
+            for (let i = 0; i < 5000; i++) {
+                vertices.push(
+                    (Math.random() - 0.5) * 2000,
+                    (Math.random() - 0.5) * 2000,
+                    (Math.random() - 0.5) * 2000
+                );
+                
+                const color = new THREE.Color();
+                color.setHSL(Math.random() * 0.3 + 0.5, 0.8, 0.5);
+                colors.push(color.r, color.g, color.b);
+            }
+            
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            
+            const material = new THREE.PointsMaterial({
+                size: 2,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.6
+            });
+            
+            const particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+            
+            camera.position.z = 1000;
+            
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                particles.rotation.x += 0.0005;
+                particles.rotation.y += 0.0005;
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Handle resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+    </script>
 </body>
 </html>

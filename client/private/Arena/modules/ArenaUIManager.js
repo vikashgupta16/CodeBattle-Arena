@@ -8,7 +8,17 @@ class ArenaUIManager {
     }
 
     setupEventListeners(arena) {
-        // Difficulty selection
+        // Difficulty selection - battlefield cards
+        document.querySelectorAll('.battlefield-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const difficulty = card.dataset.difficulty;
+                if (difficulty) {
+                    arena.joinQueue(difficulty);
+                }
+            });
+        });
+
+        // Legacy difficulty selection buttons (if any)
         document.querySelectorAll('.difficulty-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const difficulty = btn.dataset.difficulty;
@@ -49,6 +59,10 @@ class ArenaUIManager {
             this.showLeaderboard();
         });
 
+        document.getElementById('viewLeaderboardBtn2')?.addEventListener('click', () => {
+            this.showLeaderboard();
+        });
+
         document.getElementById('closeLeaderboardBtn')?.addEventListener('click', () => {
             this.hideLeaderboard();
         });
@@ -59,6 +73,35 @@ class ArenaUIManager {
 
         document.getElementById('backToArenaBtn')?.addEventListener('click', () => {
             this.showScreen('arenaMenu', arena);
+        });
+
+        // Combat Profile button
+        document.getElementById('combatProfileBtn')?.addEventListener('click', () => {
+            this.showCombatProfile(arena);
+        });
+
+        // Theme switching buttons
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.dataset.theme;
+                this.switchTheme(theme, arena);
+            });
+        });
+
+        // Profile modal close
+        document.getElementById('profileModal')?.addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                this.hideCombatProfile();
+            }
+        });
+
+        document.getElementById('closeProfileBtn')?.addEventListener('click', () => {
+            this.hideCombatProfile();
+        });
+
+        // Profile save button
+        document.getElementById('saveProfileBtn')?.addEventListener('click', () => {
+            this.saveCombatProfile(arena);
         });
 
         // Modal close on outside click
@@ -150,6 +193,27 @@ class ArenaUIManager {
         document.getElementById('queuePosition').textContent = data.position;
         const estimatedWait = data.position * 30; // Rough estimate
         document.getElementById('estimatedWait').textContent = `${estimatedWait}s`;
+        
+        // Update queue status message with dynamic text
+        const statusMessages = [
+            '🔍 Scanning for worthy opponents...',
+            '🧠 Analyzing skill matrices...',
+            '⚡ Quantum entanglement in progress...',
+            '🎯 Lock acquired. Preparing for battle...'
+        ];
+        
+        const messageIndex = Math.min(data.position - 1, statusMessages.length - 1);
+        const statusElement = document.getElementById('queueStatusMessage');
+        if (statusElement) {
+            statusElement.textContent = statusMessages[messageIndex] || statusMessages[0];
+        }
+        
+        // Update selected difficulty display
+        const difficultyElement = document.getElementById('selectedDifficulty');
+        if (difficultyElement && data.difficulty) {
+            difficultyElement.textContent = data.difficulty.toUpperCase();
+            difficultyElement.className = `difficulty-badge ${data.difficulty}`;
+        }
     }
 
     updateMatchInfo(matchData) {
@@ -244,6 +308,159 @@ class ArenaUIManager {
             </div>
         `).join('');
     }
+
+    // Combat Profile functionality
+    async showCombatProfile(arena) {
+        try {
+            const response = await fetch('/api/arena/combat-profile', {
+                headers: { 'Authorization': `Bearer ${await Clerk.session?.getToken()}` }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    this.populateCombatProfile(data.profile);
+                    document.getElementById('profileModal').classList.add('active');
+                }
+            }
+        } catch (error) {
+            console.error('❌ Failed to load combat profile:', error);
+            this.showNotification('Failed to load combat profile', 'error');
+        }
+    }
+
+    populateCombatProfile(profile) {
+        document.getElementById('profileDisplayName').value = profile.displayName || '';
+        document.getElementById('profileBattleCry').value = profile.battleCry || '';
+        document.getElementById('profileLanguage').value = profile.favoriteLanguage || 'javascript';
+        
+        // Update current theme selection
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.theme === profile.theme) {
+                btn.classList.add('active');
+            }
+        });
+
+        // Update stats display
+        if (profile.stats) {
+            document.getElementById('profileRank').textContent = profile.stats.rank || 0;
+            document.getElementById('profileSolved').textContent = profile.stats.problemsSolved || 0;
+            document.getElementById('profileStreak').textContent = profile.stats.streakCount || 0;
+            document.getElementById('profileWins').textContent = profile.stats.contestsWon || 0;
+        }
+    }
+
+    hideCombatProfile() {
+        document.getElementById('profileModal').classList.remove('active');
+    }
+
+    async saveCombatProfile(arena) {
+        try {
+            const profileData = {
+                displayName: document.getElementById('profileDisplayName').value,
+                battleCry: document.getElementById('profileBattleCry').value,
+                favoriteLanguage: document.getElementById('profileLanguage').value,
+                theme: document.querySelector('.theme-btn.active')?.dataset.theme || 'quantum'
+            };
+
+            const response = await fetch('/api/arena/combat-profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${await Clerk.session?.getToken()}`
+                },
+                body: JSON.stringify(profileData)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    this.showNotification('Combat profile updated successfully!', 'success');
+                    this.hideCombatProfile();
+                    
+                    // Apply theme immediately
+                    this.applyTheme(profileData.theme);
+                }
+            } else {
+                throw new Error('Failed to save profile');
+            }
+        } catch (error) {
+            console.error('❌ Failed to save combat profile:', error);
+            this.showNotification('Failed to save combat profile', 'error');
+        }
+    }
+
+    async switchTheme(theme, arena) {
+        try {
+            // Update active theme button
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.theme === theme) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Apply theme immediately
+            this.applyTheme(theme);
+
+            // Save theme preference
+            const response = await fetch('/api/user/theme', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${await Clerk.session?.getToken()}`
+                },
+                body: JSON.stringify({ theme })
+            });
+
+            if (response.ok) {
+                this.showNotification(`Theme switched to ${theme}!`, 'success');
+            }
+        } catch (error) {
+            console.error('❌ Failed to switch theme:', error);
+            this.showNotification('Failed to switch theme', 'error');
+        }
+    }
+
+    applyTheme(theme) {
+        // Remove existing theme classes
+        document.body.classList.remove('theme-quantum', 'theme-light', 'theme-neon', 'theme-dark', 'theme-cyber', 'theme-matrix');
+        
+        // Add new theme class
+        document.body.classList.add(`theme-${theme}`);
+        
+        // Store theme in localStorage for persistence
+        localStorage.setItem('arenaTheme', theme);
+        
+        console.log(`🎨 Theme applied: ${theme}`);
+    }
+
+    // Load saved theme on initialization
+    async loadSavedTheme() {
+        try {
+            // First try to load from server
+            const response = await fetch('/api/user/theme', {
+                headers: { 'Authorization': `Bearer ${await Clerk.session?.getToken()}` }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success && data.theme) {
+                    this.applyTheme(data.theme);
+                    return;
+                }
+            }
+        } catch (error) {
+            console.warn('Failed to load theme from server, using localStorage');
+        }
+
+        // Fallback to localStorage
+        const savedTheme = localStorage.getItem('arenaTheme') || 'quantum';
+        this.applyTheme(savedTheme);
+    }
 }
+
+window.ArenaUIManager = ArenaUIManager;
 
 window.ArenaUIManager = ArenaUIManager;

@@ -652,6 +652,89 @@ class ArenaDBHandler {
             throw error;
         }
     }
+
+    /**
+     * Get combat profile for a user
+     */
+    async getCombatProfile(userId) {
+        try {
+            // Import UserDBHandler to access user data
+            const { UserDBHandler } = await import('./database.js');
+            
+            const user = await UserDBHandler.Users.findOne({ userID: userId });
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            // Return combat profile with defaults if not set
+            return {
+                displayName: user.combatProfile?.displayName || user.name || 'Anonymous Warrior',
+                avatar: user.combatProfile?.avatar || '',
+                battleCry: user.combatProfile?.battleCry || 'Code or die!',
+                favoriteLanguage: user.combatProfile?.favoriteLanguage || 'javascript',
+                theme: user.combatProfile?.theme || user.theme || 'quantum',
+                stats: {
+                    rank: user.rank || 0,
+                    problemsSolved: user.problemsSolved || 0,
+                    streakCount: user.streak_count || 0,
+                    contestsWon: user.contests_count || 0
+                }
+            };
+        } catch (error) {
+            console.error('[ArenaDBHandler] getCombatProfile error:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Update combat profile for a user
+     */
+    async updateCombatProfile(userId, profileData) {
+        try {
+            // Import UserDBHandler to access user data
+            const { UserDBHandler } = await import('./database.js');
+            
+            const updateData = {
+                'combatProfile.displayName': profileData.displayName,
+                'combatProfile.avatar': profileData.avatar,
+                'combatProfile.battleCry': profileData.battleCry,
+                'combatProfile.favoriteLanguage': profileData.favoriteLanguage,
+                'combatProfile.theme': profileData.theme
+            };
+
+            // Also update the main theme field
+            if (profileData.theme) {
+                updateData.theme = profileData.theme;
+            }
+
+            const updatedUser = await UserDBHandler.Users.findOneAndUpdate(
+                { userID: userId },
+                { $set: updateData },
+                { new: true }
+            );
+
+            if (!updatedUser) {
+                throw new Error('User not found');
+            }
+
+            return {
+                displayName: updatedUser.combatProfile?.displayName,
+                avatar: updatedUser.combatProfile?.avatar,
+                battleCry: updatedUser.combatProfile?.battleCry,
+                favoriteLanguage: updatedUser.combatProfile?.favoriteLanguage,
+                theme: updatedUser.combatProfile?.theme,
+                stats: {
+                    rank: updatedUser.rank,
+                    problemsSolved: updatedUser.problemsSolved,
+                    streakCount: updatedUser.streak_count,
+                    contestsWon: updatedUser.contests_count
+                }
+            };
+        } catch (error) {
+            console.error('[ArenaDBHandler] updateCombatProfile error:', error);
+            throw error;
+        }
+    }
 }
 
 export { ArenaDBHandler };

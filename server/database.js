@@ -30,7 +30,15 @@ class UserDBHandler {
         easyCount: { type: Number, default: 0 },
         mediumCount: { type: Number, default: 0 },
         hardCount: { type: Number, default: 0 },
-        realWorldCount: { type: Number, default: 0 }
+        realWorldCount: { type: Number, default: 0 },
+        theme: { type: String, default: 'quantum' },
+        combatProfile: {
+            displayName: { type: String, default: '' },
+            avatar: { type: String, default: '' },
+            battleCry: { type: String, default: '' },
+            favoriteLanguage: { type: String, default: 'javascript' },
+            theme: { type: String, default: 'quantum' }
+        }
     });
 
     // Add indexes for leaderboard performance
@@ -212,6 +220,35 @@ class UserDBHandler {
             return true;
         } catch (error) {
             console.error(`[UserDBHandler Error] Failed to update stats for user ${userId}:`, error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get user by ID
+     */
+    async getUserById(userId) {
+        try {
+            return await UserDBHandler.Users.findOne({ userID: userId });
+        } catch (error) {
+            console.error(`[UserDBHandler Error] Failed to get user ${userId}:`, error);
+            throw error;
+        }
+    }
+
+    /**
+     * Update user theme preference
+     */
+    async updateUserTheme(userId, theme) {
+        try {
+            const updatedUser = await UserDBHandler.Users.findOneAndUpdate(
+                { userID: userId },
+                { $set: { theme: theme } },
+                { new: true }
+            );
+            return updatedUser;
+        } catch (error) {
+            console.error(`[UserDBHandler Error] Failed to update theme for user ${userId}:`, error);
             throw error;
         }
     }

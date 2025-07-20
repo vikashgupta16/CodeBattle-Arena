@@ -158,6 +158,71 @@ app.get('/api/arena/player-stats/:userId', async (req, res) => {
     }
 });
 
+// Combat Profile endpoints
+app.get('/api/arena/combat-profile', clerk.requireAuth(), async (req, res) => {
+    try {
+        const userId = req.auth.userId;
+        const combatProfile = await arenaDBHandler.getCombatProfile(userId);
+        res.json({ success: true, profile: combatProfile });
+    } catch (error) {
+        console.error('Get combat profile error:', error);
+        res.status(500).json({ success: false, error: 'Failed to get combat profile' });
+    }
+});
+
+app.post('/api/arena/combat-profile', clerk.requireAuth(), express.json(), async (req, res) => {
+    try {
+        const userId = req.auth.userId;
+        const { displayName, avatar, theme, battleCry, favoriteLanguage } = req.body;
+        
+        const updatedProfile = await arenaDBHandler.updateCombatProfile(userId, {
+            displayName,
+            avatar,
+            theme,
+            battleCry,
+            favoriteLanguage
+        });
+        
+        res.json({ success: true, profile: updatedProfile });
+    } catch (error) {
+        console.error('Update combat profile error:', error);
+        res.status(500).json({ success: false, error: 'Failed to update combat profile' });
+    }
+});
+
+// Theme switching endpoint
+app.post('/api/user/theme', clerk.requireAuth(), express.json(), async (req, res) => {
+    try {
+        const userId = req.auth.userId;
+        const { theme } = req.body;
+        
+        // Validate theme
+        const validThemes = ['quantum', 'light', 'neon', 'dark', 'cyber', 'matrix'];
+        if (!validThemes.includes(theme)) {
+            return res.status(400).json({ success: false, error: 'Invalid theme' });
+        }
+        
+        // Update user theme preference
+        const updatedUser = await uDBHandler.updateUserTheme(userId, theme);
+        
+        res.json({ success: true, theme: updatedUser.theme });
+    } catch (error) {
+        console.error('Update theme error:', error);
+        res.status(500).json({ success: false, error: 'Failed to update theme' });
+    }
+});
+
+app.get('/api/user/theme', clerk.requireAuth(), async (req, res) => {
+    try {
+        const userId = req.auth.userId;
+        const user = await uDBHandler.getUserById(userId);
+        res.json({ success: true, theme: user.theme || 'quantum' });
+    } catch (error) {
+        console.error('Get theme error:', error);
+        res.status(500).json({ success: false, error: 'Failed to get theme' });
+    }
+});
+
 // AI Assistance endpoints
 app.post('/api/ai/analyze-code', express.json(), async (req, res) => {
     try {

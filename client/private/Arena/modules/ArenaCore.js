@@ -90,6 +90,9 @@ class ArenaCore {
 
     async initializeComponents() {
         try {
+            // Load saved theme first
+            await this.uiManager.loadSavedTheme();
+            
             // Initialize Socket.IO
             this.socket = this.socketManager.init(this);
             
